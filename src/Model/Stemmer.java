@@ -1,4 +1,4 @@
-package sample;
+package Model;
 /*
 
    Porter stemmer in Java. The original paper is in
