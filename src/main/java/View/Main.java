@@ -30,9 +30,9 @@ public class Main extends Application {
                 "   The 22-23 January edition of the Skopje newspaper VECER in \n" +
                 "   November 1993    May 1993 \n" +
                 "Kiro Gligorov, President of the Republic      76/15           78/13 \n" +
-                "Vasil Tupurkovski, former Macedonian          50/36           43/37 \n" +
+                "Vasil Tupurkovski, former Macedonian          100445.45           43/37 \n" +
                 "   official in Federal Yugoslavia \n" +
-                "Ljubomir Frckovski, Interior Minister        1020.56          42/43 \n" +
+                "Ljubomir Frckovski, Interior Minister        1,330          42/43 \n" +
                 "Stojan Andov, Parliamentary Chairman          48/41           48/39 \n" +
                 " March       June      September    December \n" +
                 " Deputy Prime Minister    39          39         50              37 \n" +
@@ -47,7 +47,7 @@ public class Main extends Application {
         Document doc = Jsoup.parse(doc_for_test);
         String text = doc.select(tags[6]).text();
         StringTokenizer st = new StringTokenizer(text, " /:\"()");//all the tokens in <TEXT>
-        String regex = "[0-9, /,]+";
+        String regex = "[0-9, /,]+[0-9, /.]+";
         String num;
         while (st.hasMoreElements()) {
             String current = st.nextToken();
@@ -55,18 +55,22 @@ public class Main extends Application {
                 if (current.contains(",")) {
                     num = comaToWord(current);
                     System.out.println(num);
+                } else if (current.contains(".")) {
+                    num = dotToWord(current);
+                    System.out.println(num);
                 } else
-                    System.out.println(Integer.parseInt(current));
+                    System.out.println(current);
             }
 
         }
+        System.exit(0);
     }
 
     /**
      * Func that turns numbers with coma into the right representative
      *
      * @param current - the number with the coma (1,234 etc)
-     * @return The correct representative of the number (1,234 -> 1.234K)
+     * @return The correct representative of the number (1,234 -> 1.234K, 10,340 -> 10.34K)
      */
     public static String comaToWord(String current) {
         String[] num = current.split(",");
@@ -80,20 +84,60 @@ public class Main extends Application {
                     result = num[i].charAt(j) + result;
                 }
             }
-            if (i == 1)
+            if (i == 1 && done)
                 result = '.' + result;
         }
         char letter = ' ';
-        if(num.length == 2)
+        if (num.length == 2)
             letter = 'K';
-        else if(num.length == 3)
+        else if (num.length == 3)
             letter = 'M';
-        else if(num.length == 4)
+        else if (num.length == 4)
             letter = 'B';
-        else
-            letter = ' ';
         result = num[0] + result + letter;
         return result;
     }
-    //launch(args);
+
+    /**
+     * Func that turns numbers with dot into the right representative
+     *
+     * @param current - the number with the dot (1045.54 etc)
+     * @return The correct representative of the number (1045.56 -> 1.04556K, 1034.1 -> 1.034K)
+     */
+    public static String dotToWord(String current) {
+        String[] num = current.split("\\."); //[1020,400] -> 1.0204K
+        String result = "";
+        boolean done = false;
+        for (int j = num[1].length() - 1; j >= 0; j--) { //for after the dot
+            if (num[1].charAt(j) != '0' && !done)
+                done = true;
+            if (done) {
+                result = num[1].charAt(j) + result;
+            }
+        }
+
+        int three = 0;
+        for (int j = num[0].length() - 1; j >= 0; j--) {//for before the dot
+            if (three == 3) {
+                if (j <= 2){
+                    result = '.' + result;
+                }
+                three = 0;
+            }
+            result = num[0].charAt(j) + result;
+            three++;
+        }
+        result = result + sizeToLetter(num[0].length());
+        return result;
+    }
+
+    private static String sizeToLetter(int length) {
+        if(length > 3 && length <= 6)
+            return "K";
+        else if(length > 6 && length <= 9)
+            return "M";
+        else if(length > 9 )
+            return "B";
+        return "";
+    }
 }
