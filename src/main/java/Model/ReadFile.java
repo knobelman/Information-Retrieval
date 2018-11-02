@@ -42,7 +42,8 @@ public class ReadFile {
             }else{
                 document = new Doc(doc_num_iterator.next().text(), "");
             }
-            parse.parsing(document);
+            System.out.println(document.getDoc_num());
+            //parse.parsing(document);
         }
     }
 

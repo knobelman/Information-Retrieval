@@ -1,4 +1,5 @@
 package Model;
+import org.jsoup.nodes.Document;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -7,25 +8,29 @@ import java.util.HashSet;
  */
 public class Parse {
 
-    private HashMap hm = new HashMap<String, String>();
+    private HashMap hmNum = new HashMap<String, String>();
+    private HashMap hmSign = new HashMap<String, String>();
+    private HashMap hmDate = new HashMap<String, String>();
     private HashSet stop_words = new HashSet<String>();
 
     public Parse() {
         //initialize hm
-        hm.put("Thousand","K"); hm.put("Million","M"); hm.put("Billion","B"); hm.put("Trillion","00B");
-        hm.put("percent", "%"); hm.put("percentage","%"); hm.put("$","Dollars");
-        hm.put("Jan","01"); hm.put("JAN","01"); hm.put("January","01"); hm.put("JANUARY","01");
-        hm.put("Feb","02");hm.put("FEB","02"); hm.put("February","02"); hm.put("FEBRUARY","02");
-        hm.put("Mar","03"); hm.put("MAR","03"); hm.put("March","03");hm.put("MARCH","03");
-        hm.put("Apr","04");hm.put("APR","04"); hm.put("April","04"); hm.put("APRIL","04");
-        hm.put("May","05"); hm.put("MAY","05");
-        hm.put("Jun","06"); hm.put("JUN","06"); hm.put("June","06");hm.put("JUNE","06");
-        hm.put("Jul","07"); hm.put("JUL","07"); hm.put("July","07");hm.put("JULY","07");
-        hm.put("Aug","08"); hm.put("AUG","08"); hm.put("August","08");hm.put("AUGUST","08");
-        hm.put("Sep","09"); hm.put("SEP","09"); hm.put("September","09");hm.put("SEPTEMBER","09");
-        hm.put("Oct","10"); hm.put("OCT","10"); hm.put("October","10");hm.put("OCTOBER","10");
-        hm.put("Nov","11"); hm.put("NOV","11"); hm.put("November","11");hm.put("NOVEMBER","11");
-        hm.put("Dec","12"); hm.put("DEC","12"); hm.put("December","12");hm.put("DECEMBER","12");
+        hmNum.put("Thousand","K"); hmNum.put("Million","M"); hmNum.put("Billion","B"); hmNum.put("Trillion","000B");
+        hmNum.put("thousand","K"); hmNum.put("million","M"); hmNum.put("billion","B"); hmNum.put("trillion","000B");
+        hmNum.put("k","K"); hmNum.put("m","M"); hmNum.put("b","B"); hmNum.put("bn","B"); hmNum.put("t","000B"); hmNum.put("tn","000B");
+        hmSign.put("percent", "%"); hmSign.put("percentage","%"); hmSign.put("$"," Dollars"); hmSign.put("Dollars"," Dollars");
+        hmDate.put("Jan","01"); hmDate.put("JAN","01"); hmDate.put("January","01");  hmDate.put("JANUARY","01");
+        hmDate.put("Feb","02"); hmDate.put("FEB","02"); hmDate.put("February","02"); hmDate.put("FEBRUARY","02");
+        hmDate.put("Mar","03"); hmDate.put("MAR","03"); hmDate.put("March","03");    hmDate.put("MARCH","03");
+        hmDate.put("Apr","04"); hmDate.put("APR","04"); hmDate.put("April","04");    hmDate.put("APRIL","04");
+        hmDate.put("May","05"); hmDate.put("MAY","05");
+        hmDate.put("Jun","06"); hmDate.put("JUN","06"); hmDate.put("June","06");     hmDate.put("JUNE","06");
+        hmDate.put("Jul","07"); hmDate.put("JUL","07"); hmDate.put("July","07");     hmDate.put("JULY","07");
+        hmDate.put("Aug","08"); hmDate.put("AUG","08"); hmDate.put("August","08");   hmDate.put("AUGUST","08");
+        hmDate.put("Sep","09"); hmDate.put("SEP","09"); hmDate.put("September","09");hmDate.put("SEPTEMBER","09");
+        hmDate.put("Oct","10"); hmDate.put("OCT","10"); hmDate.put("October","10");  hmDate.put("OCTOBER","10");
+        hmDate.put("Nov","11"); hmDate.put("NOV","11"); hmDate.put("November","11"); hmDate.put("NOVEMBER","11");
+        hmDate.put("Dec","12"); hmDate.put("DEC","12"); hmDate.put("December","12"); hmDate.put("DECEMBER","12");
 
         //initialize stop_words
         stop_words.add("a"); stop_words.add("a's"); stop_words.add("able"); stop_words.add("about"); stop_words.add("above"); stop_words.add("according");
@@ -75,39 +80,235 @@ public class Parse {
         stop_words.add("ie"); stop_words.add("if"); stop_words.add("ignored");
     }
 
-
-
     public void parsing(Doc document) {
-//        String doc_for_test = "<DOC>\n" + "<DOCNO> FBIS3-1 </DOCNO>\n" + "<HT>  \"cr00000011094001\" </HT>\n" + "<HEADER>\n" +
-//                "<H2>   March Reports </H2>\n" +
-//                "<DATE1>  1 March 1994 </DATE1>\n" +
-//                "Article Type:FBIS " + "</HEADER>\n" +
-//                "<TEXT>\n" + "POLITICIANS,  PARTY PREFERENCES \n" +
-//                "   The 22-23 January edition of the Skopje newspaper VECER in \n" +
-//                "   November 1993    May 1993 \n" +
-//                "Kiro Gligorov, President of the Republic      76/15           78/13 \n" +
-//                "Vasil Tupurkovski, former Macedonian          50/36           43/37 \n" +
-//                "   official in Federal Yugoslavia \n" +
-//                "Ljubomir Frckovski, Interior Minister        10,023          42/43 \n" +
-//                "Stojan Andov, Parliamentary Chairman          48/41           48/39 \n" +
-//                " March       June      September    December \n" +
-//                " Deputy Prime Minister    39          39         50              37 \n" +
-//                " Yes           No       Do Not Know \n" +
-//                "SDSM           28           51          21 \n" +
-//                "VMRO-DPMNE     15           72          14 \n" +
-//                "LP             19           59          22 \n" +
-//                "PDP-NDP*       20           73           7 \n" +
-//                "*Party for Democratic Prosperity-People's Democratic Party \n" +
-//                "<TEXT>\n" + "</DOC>";
-//        Doc doc = Jsoup.parse(doc_for_test);
-//        String text = doc.select(tags[6]).text();
-//        StringTokenizer st = new StringTokenizer(text, " /:\"()");
-//        String regex = "[0-9, /,]+";
-//        while (st.hasMoreElements()) {
-//            String current = st.nextToken();
-//            if (current.matches(regex)) {
-//                System.out.println(current);
-//            }
-//        }
+        String text = document.getDoc_content();
+        //StringTokenizer st = new StringTokenizer(text, " /:\"()");
+        String[]tokenz = text.split("[: ()]");
+        for(int i=0; i<tokenz.length; i++){//for to go over all tokenz
+            String current = tokenz[i];
+            String currValue = "";
+            if(current.matches("-?(0|[1-9]\\d*)")) {//check if token is made of only digits
+                currValue = numberFirst(tokenz[i], tokenz[i + 1], tokenz[i + 2], tokenz[i + 3]);
+            }
+            else if(current.charAt(0) == '$'){//if first char is '$'
+                currValue = dollarFirst(tokenz[i], tokenz[i + 1]);
+            }
+            else if(hmDate.containsKey(current)){//if first token is month
+                currValue = dateFirst(tokenz[i], tokenz[i + 1]);
+                if(currValue.contains("-"))//if the second token is a year\month, ignore that token
+                    i++;
+            }
+            System.out.print(currValue);
+        }
+    }
+
+    /**
+     * Done: $100 million, $100,
+     * @param s1 - first token with the $
+     * @param s2 - second token
+     * @return
+     */
+    private String dollarFirst(String s1, String s2) {
+        String curr = s1.substring(1,s1.length());
+        if(!hmNum.containsKey(s2)){//second token isn't from hmNum
+            curr = numberFirst(curr,"","","") + " Dollars";
+        }
+        else{//second token is from hmNum
+            curr = numberFirst(curr,s2,"","") + " Dollars";
+        }
+        System.out.print(curr);
+        return "";
+    }
+
+    /**
+     * Done - May 1994, May 14, May
+     * @param s1 - first token (month)
+     * @param s2 - second token (year,day)
+     * @return
+     */
+    private String dateFirst(String s1, String s2) {
+        String result = "";
+        if(s2.matches("-?(0|[1-9]\\d*)")) {
+            result = wordAndNum(s1 + " " + s2);
+        }
+        else{
+            result = s1;
+        }
+        return result;
+    }
+
+    /**
+     *  Done: 123 Thousand, 55 Million, 55 Billion, 7 Trillion, percent, percentage, 2 3/4, 2 3/4 Dollars,
+     *        100 billion/million/billion U.S. dollars, 4 MAY, 14 JUNE,
+     *
+     *  Todo: , . % 100 bn Dollars
+     * @param s1 - first token
+     * @param s2 - second token
+     * @param s3 - third token
+     * @param s4 - fourth token
+     * @return
+     */
+    private String numberFirst(String s1, String s2, String s3, String s4) {
+        if(hmDate.containsKey(s2)){//the second token is a month V
+            return wordAndNum(s1 + " " + s2);
+        }
+        else if(hmNum.containsKey(s2)){//the token is a number/word
+            if(s3.equals("U.S.") && s4.equals("dollars")){
+                return toMillion(wordAndNum(s1 + " " + s2)) + " " + s4;
+            }
+            else
+                return wordAndNum(s1 + " " + s2);
+        }
+        else if(hmSign.containsKey(s2)){//the second token is a sign V
+            return wordAndNum(s1 + " " + s2);
+        }
+        else if(s2.contains("/")){//the second token is a fraction V
+            if(s3.equals("Dollars")){//the third word is "Dollars" - num fraction Dollars
+                return wordAndNum(s1 + " " + s2 + " " + s3);
+            }
+            else{//num fraction
+                return wordAndNum(s1 + " " + s2);
+            }
+        }
+        else
+            return s1;
+    }
+
+    private String toMillion(String s) {
+        String c = s.substring(s.length()-1,s.length());
+        String result = "";
+        if(c.equals("M") || c.equals("m"))
+            result = s.substring(0,s.length()-1) + " " + c;
+        else if(c.equals("B") || c.equals("b") || c.equals("bn"))//todo - fix bn in wordAndNum
+            result = s.substring(0,s.length()-1) + "000 " + "M";
+        else if(c.equals("T") || c.equals("t"))
+            result = s.substring(0,s.length()-1) + "000000 " + "M";
+        return result;
+    }
+
+
+    /**
+     * Func that turns numbers with coma into the right representative
+     * @param current - the number with the coma (1,234 etc)
+     * @return The correct representative of the number (1,234 -> 1.234K, 10,340 -> 10.34K)
+     */
+    public String comaToWord(String current) {
+        String[] num = current.split(",");
+        String result = "";
+        boolean done = false;
+        for (int i = num.length - 1; i > 0; i--) {
+            for (int j = num[i].length() - 1; j >= 0; j--) {
+                if (num[i].charAt(j) != '0' && !done)
+                    done = true;
+                if (done) {
+                    result = num[i].charAt(j) + result;
+                }
+            }
+            if (i == 1 && done)
+                result = '.' + result;
+        }
+        char letter = ' ';
+        if (num.length == 2)
+            letter = 'K';
+        else if (num.length == 3)
+            letter = 'M';
+        else if (num.length == 4)
+            letter = 'B';
+        else
+            letter = 0;
+        result = num[0] + result + letter;
+        return result;
+    }
+
+    /**
+     * Func that turns numbers with dot into the right representative
+     * @param current - the number with the dot (1045.54 etc)
+     * @return The correct representative of the number (1045.56 -> 1.04556K, 1034.1 -> 1.034K)
+     */
+    public String dotToWord(String current) {
+        String[] num = current.split("\\."); //[1020,400] -> 1.0204K
+        String result = "";
+        boolean done = false;
+        for (int j = num[1].length() - 1; j >= 0; j--) { //for after the dot
+            if (num[1].charAt(j) != '0' && !done)
+                done = true;
+            if (done) {
+                result = num[1].charAt(j) + result;
+            }
+        }
+
+        int three = 0;
+        for (int j = num[0].length() - 1; j >= 0; j--) {//for before the dot
+            if (three == 3) {
+                if (j <= 2){
+                    result = '.' + result;
+                }
+                three = 0;
+            }
+            result = num[0].charAt(j) + result;
+            three++;
+        }
+        result = result + sizeToLetter(num[0].length());
+        return result;
+    }
+
+    private String sizeToLetter(int length) {
+        if(length > 3 && length <= 6)
+            return "K";
+        else if(length > 6 && length <= 9)
+            return "M";
+        else if(length > 9 )
+            return "B";
+        return "";
+    }
+
+    /**
+     * Func that turns numbers with words into the right representative
+     * @param current - string made of a word and number (100 Million, 14 May ...)
+     * @return he correct representative of the number (100 Million -> 100M)
+     */
+    public String wordAndNum(String current){
+        String[] curr = current.split(" "); //[100,Million] -> 100M
+        int numIndex;
+        if(isNumeric(curr[0]))
+            numIndex = 0;
+        else
+            numIndex = 1;
+        String result = "";
+        if(curr.length == 3 || curr[1].contains("/")){// num fraction Dollars / num fraction
+            result = current;
+        }
+        else if(hmDate.containsKey(curr[1-numIndex])){//its a Date
+            if(curr[numIndex].length() == 4)//the number is a year
+                result = comaToWord(curr[numIndex]) + "-" + hmDate.get(curr[1 - numIndex]);
+            else {//the number is a day in a month
+                if(Integer.parseInt(curr[numIndex])<10)
+                    result = hmDate.get(curr[1 - numIndex]) + "-0" + comaToWord(curr[numIndex]);
+                else
+                    result = hmDate.get(curr[1 - numIndex]) + "-" + comaToWord(curr[numIndex]);
+            }
+        }
+        else if(hmNum.containsKey(curr[1-numIndex])){//it's a number
+            result = comaToWord(curr[numIndex]) + hmNum.get(curr[1 - numIndex]);
+        }
+        else if(hmSign.containsKey(curr[1-numIndex])) {//it's a sign
+            result = comaToWord(curr[numIndex]) + hmSign.get(curr[1 - numIndex]);
+        }
+        return result;
+    }
+
+    private boolean isNumeric(String strNum)
+    {
+        if(!strNum.contains(","))
+            return strNum.matches("-?\\d+(\\.\\d+)?");
+        else{
+            return true;
+        }
+    }
+
+    public String numberAndSign(String current){
+        String curr =  current.substring(1);
+        String result = wordAndNum(curr) + hmNum.get("$");
+        return result;
     }
 }
