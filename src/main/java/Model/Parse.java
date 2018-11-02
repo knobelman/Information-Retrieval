@@ -1,12 +1,6 @@
 package Model;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.StringTokenizer;
 
 /**
  * Created by Maor on 10/30/2018.
@@ -16,7 +10,7 @@ public class Parse {
     private HashMap hm = new HashMap<String, String>();
     private HashSet stop_words = new HashSet<String>();
 
-    public Parse(File[] file) {
+    public Parse() {
         //initialize hm
         hm.put("Thousand","K"); hm.put("Million","M"); hm.put("Billion","B"); hm.put("Trillion","00B");
         hm.put("percent", "%"); hm.put("percentage","%"); hm.put("$","Dollars");
@@ -79,13 +73,11 @@ public class Parse {
         stop_words.add("hither"); stop_words.add("hopefully"); stop_words.add("how"); stop_words.add("howbeit"); stop_words.add("however");
         stop_words.add("i"); stop_words.add("i'd"); stop_words.add("i'll"); stop_words.add("i'm"); stop_words.add("i've");
         stop_words.add("ie"); stop_words.add("if"); stop_words.add("ignored");
-
-        parsing(file);
     }
 
 
 
-    public void parsing(File[] folder) {
+    public void parsing(Doc document) {
 //        String doc_for_test = "<DOC>\n" + "<DOCNO> FBIS3-1 </DOCNO>\n" + "<HT>  \"cr00000011094001\" </HT>\n" + "<HEADER>\n" +
 //                "<H2>   March Reports </H2>\n" +
 //                "<DATE1>  1 March 1994 </DATE1>\n" +
@@ -107,7 +99,7 @@ public class Parse {
 //                "PDP-NDP*       20           73           7 \n" +
 //                "*Party for Democratic Prosperity-People's Democratic Party \n" +
 //                "<TEXT>\n" + "</DOC>";
-//        Document doc = Jsoup.parse(doc_for_test);
+//        Doc doc = Jsoup.parse(doc_for_test);
 //        String text = doc.select(tags[6]).text();
 //        StringTokenizer st = new StringTokenizer(text, " /:\"()");
 //        String regex = "[0-9, /,]+";

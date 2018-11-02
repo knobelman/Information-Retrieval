@@ -4,39 +4,54 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.io.*;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
- * Created by Maor on 10/30/2018.
+ * This class read all files in a given path
  */
 public class ReadFile {
-    private String doc_number;
-    private File current;
     private String path;
-    private File dir;
-    private HashMap docs = new HashMap<String, String>();
+    private File root;
 
     public ReadFile(String path) throws IOException {
         this.path = path;
-        this.dir = new File(path);
-        listFilesForFolder(this.dir);
+        this.root = new File(path);
+        listFilesForFolder(this.root);
     }
 
-    public void insert_into_hash(File file) throws IOException {
+    /**
+     * send to parse
+     * @param file - file to insert
+     * @throws IOException
+     */
+    public void sendToParse(File file) throws IOException {
         Document doc = Jsoup.parse(readFile(file.toString()));
-        String[] tags = {"DOCNO", "HEADER", "H2", "DATE1", "H3", "TI", "TEXT","F[P]"};
+        String[] tags = {"DOCNO", "HEADER", "H2", "DATE1", "H3", "TI", "TEXT"};
         Elements doc_num = doc.select(tags[0]);
-        Elements content = doc.select(tags[1]);
-        Iterator<Element> doc_nums = doc_num.iterator();
-        Iterator<Element> doc_content = content.iterator();
-        while (doc_nums.hasNext()) {
-            docs.put(doc_nums.next().text(), doc_content.next().text());
+        Elements doc_content = doc.select(tags[6]);
+        Iterator<Element> doc_num_iterator = doc_num.iterator();
+        Iterator<Element> doc_content_iterator = doc_content.iterator();
+        Parse parse = new Parse();
+        while (doc_num_iterator.hasNext()) {
+            Doc document;
+            if (doc_content_iterator.hasNext()){
+                document = new Doc(doc_num_iterator.next().text(), doc_content_iterator.next().text());
+            }else{
+                document = new Doc(doc_num_iterator.next().text(), "");
+            }
+            parse.parsing(document);
         }
     }
 
+    /**
+     * read file using bufferedReader
+     * @param fileName - file to read
+     * @return the content of the file
+     * @throws IOException
+     */
     String readFile(String fileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         try {
@@ -54,30 +69,19 @@ public class ReadFile {
         }
     }
 
-    public void listFilesForFolder(final File folder) throws IOException {
-        for (final File fileEntry : folder.listFiles()) {
+    /**
+     * recursive function to get all the files in a directory
+     * @param root - the root of the files
+     * @throws IOException
+     */
+    public void listFilesForFolder(final File root) throws IOException {
+        for (final File fileEntry : root.listFiles()) {
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry);
             } else {
-                insert_into_hash(fileEntry);
+                sendToParse(fileEntry);
             }
         }
-    }
-
-    public String getDoc_number() {
-        return doc_number;
-    }
-
-    public void setDoc_number(String doc_number) {
-        this.doc_number = doc_number;
-    }
-
-    public File getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(File current) {
-        this.current = current;
     }
 
     public String getPath() {
@@ -86,5 +90,13 @@ public class ReadFile {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public File getRoot() {
+        return root;
+    }
+
+    public void setRoot(File root) {
+        this.root = root;
     }
 }
