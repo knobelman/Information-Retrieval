@@ -1,5 +1,4 @@
 package Model;
-import org.jsoup.nodes.Document;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -82,9 +81,8 @@ public class Parse {
 
     public void parsing(Doc document) {
         String text = document.getDoc_content();
-        //StringTokenizer st = new StringTokenizer(text, " /:\"()");
         String[]tokenz = text.split("[: ()]");
-        for(int i=0; i<tokenz.length; i++){//for to go over all tokenz
+        for(int i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
             String currValue = "";
             if(current.matches("-?(0|[1-9]\\d*)")) {//check if token is made of only digits

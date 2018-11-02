@@ -5,9 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * This class read all files in a given path
@@ -16,30 +14,31 @@ public class ReadFile {
     private String path;
     private File root;
 
-    public ReadFile(String path) throws IOException {
+    public ReadFile(String path) {
         this.path = path;
         this.root = new File(path);
-        listFilesForFolder(this.root);
+        try {
+            listFilesForFolder(this.root);
+        } catch (IOException e) {
+        }
     }
 
     /**
-     * send to parse
-     * @param file - file to insert
-     * @throws IOException
+     * parsing documents
+     * @param file - file to parse
      */
-    public void sendToParse(File file) throws IOException {
+    public void sendToParse(File file) {
         Document doc = Jsoup.parse(readFile(file.toString()));
-        String[] tags = {"DOCNO", "HEADER", "H2", "DATE1", "H3", "TI", "TEXT"};
-        Elements doc_num = doc.select(tags[0]);
-        Elements doc_content = doc.select(tags[6]);
+        Elements doc_num = doc.select("DOCNO");
+        Elements doc_content = doc.select("TEXT");
         Iterator<Element> doc_num_iterator = doc_num.iterator();
         Iterator<Element> doc_content_iterator = doc_content.iterator();
         Parse parse = new Parse();
         while (doc_num_iterator.hasNext()) {
             Doc document;
-            if (doc_content_iterator.hasNext()){
+            if (doc_content_iterator.hasNext()) {
                 document = new Doc(doc_num_iterator.next().text(), doc_content_iterator.next().text());
-            }else{
+            } else {
                 document = new Doc(doc_num_iterator.next().text(), "");
             }
             System.out.println(document.getDoc_num());
@@ -49,25 +48,34 @@ public class ReadFile {
 
     /**
      * read file using bufferedReader
+     *
      * @param fileName - file to read
      * @return the content of the file
      * @throws IOException
      */
-    String readFile(String fileName) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fileName));
+    String readFile(String fileName) {
+        BufferedReader br = null;
+        StringBuilder sb = new StringBuilder();
         try {
-            StringBuilder sb = new StringBuilder();
+            br = new BufferedReader(new FileReader(fileName));
+        } catch (FileNotFoundException e) {
+        }
+        try {
             String line = br.readLine();
-
             while (line != null) {
                 sb.append(line);
                 sb.append("\n");
                 line = br.readLine();
             }
             return sb.toString();
+        } catch (IOException e) {
         } finally {
-            br.close();
+            try {
+                br.close();
+            } catch (IOException e) {
+            }
         }
+        return sb.toString();
     }
 
     /**

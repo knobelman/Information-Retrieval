@@ -5,8 +5,13 @@ import Model.Parse;
 import Model.ReadFile;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Iterator;
 
 /**
@@ -18,11 +23,19 @@ public class HomeView {
     public javafx.scene.control.Button LOAD;
     public javafx.scene.control.TextField path;
 
-    public void load(ActionEvent actionEvent) throws IOException {
-        ReadFile rd = new ReadFile(path.getText());
+    public void load(ActionEvent actionEvent){
+        DirectoryChooser fc = new DirectoryChooser();
+        fc.setTitle("Load");
+        File file = fc.showDialog(null);
+        if (file != null) {
+            String path = file.getAbsolutePath();
+            ReadFile rd = new ReadFile(path);
+        }
+
 //        while (documentCollection.hasNext()) {
 //            System.out.println(documentCollection.next().getDoc_num());
 //            System.out.println(documentCollection.next().getDoc_content());
             //Parse Parse_doc = new Parse(documentCollection.next());
-        }
+
+    }
 }
