@@ -26,28 +26,37 @@ public class ReadFile {
      * parsing documents
      * @param file - file to parse
      */
-    public void sendToParse(File file) {
-        String file_content = file.toString();
-        Document doc = Jsoup.parse(readFile(file_content));
+    public void CreateDoc(File file) {
+        String path = file.toString();
+        Document doc = Jsoup.parse(readFile(path));
         Elements docs = doc.select("DOC");
-        Doc document;
+        Doc document = null;
         //loop throughout all the documents
         for (Element d: docs){
             String doc_num = d.select("DOCNO").text();
             String doc_content = d.select("TEXT").text();
-            String doc_city = d.select("F[P=104]").text().split(" ")[0].toUpperCase();
-            document = new Doc(doc_num,doc_content, doc_city);
+            String doc_city = d.select("F[P=104]").text().split(" ")[0];
+            String doc_city_to_upper = doc_city.toUpperCase();
+            int position;
+            String positions ="";
+            position = doc_content.indexOf(doc_city);
+            if (!(doc_city.equals(""))) {
+                while (position >= 0) {
+                    positions = positions + position +", ";
+                    position = doc_content.indexOf(doc_city, position + 1);
+                }
+            }
+            document = new Doc(path,doc_num,doc_content, doc_city);
+            System.out.println("PATH: " + document.getPath());
             System.out.println("DOCNUM: " +document.getDoc_num());
             System.out.println("DOCTEXT: " + document.getDoc_content());
             System.out.println("DOCCITY: " + document.getCity());
+            System.out.println("POSITIONS: " + positions);
         }
-
-        Parse parse = new Parse();
     }
 
     /**
      * read file using bufferedReader
-     *
      * @param fileName - file to read
      * @return the content of the file
      * @throws IOException
@@ -87,7 +96,7 @@ public class ReadFile {
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry);
             } else {
-                sendToParse(fileEntry);
+                CreateDoc(fileEntry);
             }
         }
     }

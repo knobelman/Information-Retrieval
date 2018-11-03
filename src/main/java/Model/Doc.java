@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class Doc implements Serializable {
     private String doc_num;
     private String doc_content;
+    private String path;
     private int max_tf;
     private int specialWordCount;
     private String city;
@@ -15,13 +16,15 @@ public class Doc implements Serializable {
 
     /**
      * C'tor
+     * @param path
      * @param doc_num
      * @param doc_content
      */
-    public Doc(String doc_num, String doc_content,String city) {
+    public Doc(String path, String doc_num, String doc_content, String city) {
         this.doc_num = doc_num;
         this.doc_content = doc_content;
         this.city = city;
+        this.path = path;
     }
 
     public String getDoc_num() {
@@ -70,5 +73,13 @@ public class Doc implements Serializable {
 
     public void setMostFrequentTerm(String mostFrequentTerm) {
         this.mostFrequentTerm = mostFrequentTerm;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }
