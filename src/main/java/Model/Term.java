@@ -8,5 +8,32 @@ import java.util.ArrayList;
 public class Term {
     private String df;
     private String tf;
-    private ArrayList<String> documents;
+    private ArrayList<Doc> documents;
+
+    public Term() {
+    }
+
+    public String getDf() {
+        return df;
+    }
+
+    public void setDf(String df) {
+        this.df = df;
+    }
+
+    public String getTf() {
+        return tf;
+    }
+
+    public void setTf(String tf) {
+        this.tf = tf;
+    }
+
+    public ArrayList<Doc> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(ArrayList<Doc> documents) {
+        this.documents = documents;
+    }
 }

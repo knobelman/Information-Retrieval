@@ -5,7 +5,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.*;
-import java.util.Iterator;
 
 /**
  * This class read all files in a given path
@@ -28,18 +27,19 @@ public class ReadFile {
      * @param file - file to parse
      */
     public void sendToParse(File file) {
-        Document doc = Jsoup.parse(readFile(file.toString()));
+        String file_content = file.toString();
+        Document doc = Jsoup.parse(readFile(file_content));
         Elements docs = doc.select("DOC");
         Doc document;
         //loop throughout all the documents
         for (Element d: docs){
             String doc_num = d.select("DOCNO").text();
             String doc_content = d.select("TEXT").text();
-            String doc_city = d.select("F[P=104]").text().split(" ")[0];
+            String doc_city = d.select("F[P=104]").text().split(" ")[0].toUpperCase();
             document = new Doc(doc_num,doc_content, doc_city);
-//            System.out.println("DOCNUM: " +document.getDoc_num());
-//            System.out.println("DOCTEXT: " + document.getDoc_content());
-//            System.out.println("DOCCITY: " + document.getCity());
+            System.out.println("DOCNUM: " +document.getDoc_num());
+            System.out.println("DOCTEXT: " + document.getDoc_content());
+            System.out.println("DOCCITY: " + document.getCity());
         }
 
         Parse parse = new Parse();

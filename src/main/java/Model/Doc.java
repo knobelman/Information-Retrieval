@@ -9,8 +9,9 @@ public class Doc implements Serializable {
     private String doc_num;
     private String doc_content;
     private int max_tf;
-    private int specialCounter;
+    private int specialWordCount;
     private String city;
+    private String mostFrequentTerm; //extra
 
     /**
      * C'tor
@@ -47,19 +48,27 @@ public class Doc implements Serializable {
         this.max_tf = max_tf;
     }
 
-    public int getSpecialCounter() {
-        return specialCounter;
-    }
-
-    public void setSpecialCounter(int specialCounter) {
-        this.specialCounter = specialCounter;
-    }
-
     public String getCity() {
         return city;
     }
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public int getSpecialWordCount() {
+        return specialWordCount;
+    }
+
+    public void setSpecialWordCount(int specialWordCount) {
+        this.specialWordCount = specialWordCount;
+    }
+
+    public String getMostFrequentTerm() {
+        return mostFrequentTerm;
+    }
+
+    public void setMostFrequentTerm(String mostFrequentTerm) {
+        this.mostFrequentTerm = mostFrequentTerm;
     }
 }

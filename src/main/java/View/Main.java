@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.apache.lucene.document.Field;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import java.awt.*;
