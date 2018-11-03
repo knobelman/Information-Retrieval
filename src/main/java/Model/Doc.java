@@ -10,15 +10,17 @@ public class Doc implements Serializable {
     private String doc_content;
     private int max_tf;
     private int specialCounter;
+    private String city;
 
     /**
      * C'tor
      * @param doc_num
      * @param doc_content
      */
-    public Doc(String doc_num, String doc_content) {
+    public Doc(String doc_num, String doc_content,String city) {
         this.doc_num = doc_num;
         this.doc_content = doc_content;
+        this.city = city;
     }
 
     public String getDoc_num() {
@@ -51,5 +53,13 @@ public class Doc implements Serializable {
 
     public void setSpecialCounter(int specialCounter) {
         this.specialCounter = specialCounter;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

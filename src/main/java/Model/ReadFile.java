@@ -29,21 +29,20 @@ public class ReadFile {
      */
     public void sendToParse(File file) {
         Document doc = Jsoup.parse(readFile(file.toString()));
-        Elements doc_num = doc.select("DOCNO");
-        Elements doc_content = doc.select("TEXT");
-        Iterator<Element> doc_num_iterator = doc_num.iterator();
-        Iterator<Element> doc_content_iterator = doc_content.iterator();
-        Parse parse = new Parse();
-        while (doc_num_iterator.hasNext()) {
-            Doc document;
-            if (doc_content_iterator.hasNext()) {
-                document = new Doc(doc_num_iterator.next().text(), doc_content_iterator.next().text());
-            } else {
-                document = new Doc(doc_num_iterator.next().text(), "");
-            }
-            System.out.println(document.getDoc_num());
-            //parse.parsing(document);
+        Elements docs = doc.select("DOC");
+        Doc document;
+        //loop throughout all the documents
+        for (Element d: docs){
+            String doc_num = d.select("DOCNO").text();
+            String doc_content = d.select("TEXT").text();
+            String doc_city = d.select("F[P=104]").text().split(" ")[0];
+            document = new Doc(doc_num,doc_content, doc_city);
+//            System.out.println("DOCNUM: " +document.getDoc_num());
+//            System.out.println("DOCTEXT: " + document.getDoc_content());
+//            System.out.println("DOCCITY: " + document.getCity());
         }
+
+        Parse parse = new Parse();
     }
 
     /**
