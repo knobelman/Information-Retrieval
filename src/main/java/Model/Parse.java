@@ -501,11 +501,11 @@ public class Parse {
         doc1.setDoc_content(input);
         p.parsing(doc1);
         ArrayList<Term> termsReturn = doc1.getTermsInDoc();
-        String result = "";
-        for(Term t: termsReturn){
-            result = result + t.toString()+" ";
-        }
-        result = result.substring(0,result.length()-1);
+        String result = termsReturn.get(0).toString();
+//        for(Term t: termsReturn){
+//            result = result + t.toString()+" ";
+//        }
+        //result = result.substring(0,result.length()-1);
         if (result.equals(output)) {
             System.out.println("TEST " + number + " PASS");
             return 1;
