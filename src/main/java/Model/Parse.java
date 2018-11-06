@@ -492,7 +492,7 @@ public class Parse {
         pass += test("1","step-by-step","step-by-step");
         pass += test("2","1-1","1-1");
         count +=1;
-        System.out.println("PASS " + pass + "/" + count);
+        System.out.println("~*~ SUMMERY: PASS " + pass + "/" + count +" ~*~");
     }
 
     public static int test(String number, String input,String output) {
@@ -503,13 +503,14 @@ public class Parse {
         ArrayList<Term> termsReturn = doc1.getTermsInDoc();
         String result = "";
         for(Term t: termsReturn){
-            result = result + t.toString();
+            result = result + t.toString()+" ";
         }
+        result = result.substring(0,result.length()-1);
         if (result.equals(output)) {
             System.out.println("TEST " + number + " PASS");
             return 1;
         } else {
-            System.out.println("TEST " + number + " FAILED, INPUT: " + input + ", OUTPUT: " + result );
+            System.out.println("TEST " + number + " FAILED| INPUT: " + input + "| OUTPUT: " + result + "| EXCEPTED: " + output);
             return 0;
         }
     }
