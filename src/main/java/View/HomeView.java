@@ -1,6 +1,7 @@
 package View;
 
 import Model.Doc;
+import Model.Indexer;
 import Model.Parse;
 import Model.ReadFile;
 import javafx.event.ActionEvent;
@@ -29,7 +30,7 @@ public class HomeView {
         File file = fc.showDialog(null);
         if (file != null) {
             String path = file.getAbsolutePath();
-            ReadFile rd = new ReadFile(path);
+            Indexer indexer = new Indexer(path);
         }
 
 //        while (documentCollection.hasNext()) {

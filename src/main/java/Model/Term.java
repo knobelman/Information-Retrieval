@@ -1,17 +1,19 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Maor on 11/2/2018.
  */
-public class Term {
+public class Term implements Serializable{
     private String term;
     private String df;
     private String tf;
     private ArrayList<Doc> documents;
 
-    public Term() {
+    public Term(String term) {
+        this.term = term;
     }
 
     public String getDf() {
@@ -44,5 +46,10 @@ public class Term {
 
     public void setTerm(String term) {
         this.term = term;
+    }
+
+    //override tostring
+    public String toString() {
+        return this.getTerm().toString();
     }
 }

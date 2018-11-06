@@ -1,4 +1,9 @@
 package Model;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -11,6 +16,7 @@ public class Parse {
     private HashMap hmSign = new HashMap<String, String>();
     private HashMap hmDate = new HashMap<String, String>();
     private HashSet stop_words = new HashSet<String>();
+    int i;
 
     public Parse() {
         //initialize hm
@@ -32,90 +38,167 @@ public class Parse {
         hmDate.put("Dec","12"); hmDate.put("DEC","12"); hmDate.put("December","12"); hmDate.put("DECEMBER","12");
 
         //initialize stop_words
-        stop_words.add("a"); stop_words.add("a's"); stop_words.add("able"); stop_words.add("about"); stop_words.add("above"); stop_words.add("according");
-        stop_words.add("accordingly"); stop_words.add("across"); stop_words.add("actually");
-        stop_words.add("after"); stop_words.add("afterwards"); stop_words.add("again"); stop_words.add("against"); stop_words.add("ain't");
-        stop_words.add("all"); stop_words.add("allow"); stop_words.add("allows");
-        stop_words.add("almost"); stop_words.add("alone"); stop_words.add("along"); stop_words.add("already"); stop_words.add("also");
-        stop_words.add("although"); stop_words.add("always"); stop_words.add("am"); stop_words.add("among");
-        stop_words.add("amongst"); stop_words.add("an"); stop_words.add("and"); stop_words.add("another"); stop_words.add("any");
-        stop_words.add("anybody"); stop_words.add("anyhow"); stop_words.add("anyone"); stop_words.add("anything"); stop_words.add("anyway");
-        stop_words.add("anyways"); stop_words.add("anywhere"); stop_words.add("apart"); stop_words.add("appear"); stop_words.add("appreciate");
-        stop_words.add("appropriate"); stop_words.add("are"); stop_words.add("aren't"); stop_words.add("around"); stop_words.add("as");
-        stop_words.add("aside"); stop_words.add("ask"); stop_words.add("asking"); stop_words.add("associated"); stop_words.add("at");
-        stop_words.add("available"); stop_words.add("away"); stop_words.add("awfully"); stop_words.add("b"); stop_words.add("be");
-        stop_words.add("became"); stop_words.add("because"); stop_words.add("become"); stop_words.add("becomes"); stop_words.add("becoming");
-        stop_words.add("been"); stop_words.add("before"); stop_words.add("beforehand"); stop_words.add("behind"); stop_words.add("being");
-        stop_words.add("believe"); stop_words.add("below"); stop_words.add("beside"); stop_words.add("besides"); stop_words.add("best");
-        stop_words.add("better"); stop_words.add("between"); stop_words.add("beyond"); stop_words.add("both"); stop_words.add("brief");
-        stop_words.add("but"); stop_words.add("by"); stop_words.add("c"); stop_words.add("c'mon"); stop_words.add("c's");
-        stop_words.add("came"); stop_words.add("can"); stop_words.add("can't"); stop_words.add("cannot"); stop_words.add("cant");
-        stop_words.add("cause"); stop_words.add("causes"); stop_words.add("certain"); stop_words.add("certainly"); stop_words.add("changes");
-        stop_words.add("clearly"); stop_words.add("co"); stop_words.add("com"); stop_words.add("come"); stop_words.add("comes");
-        stop_words.add("concerning"); stop_words.add("consequently"); stop_words.add("consider"); stop_words.add("considering"); stop_words.add("contain");
-        stop_words.add("containing"); stop_words.add("contains"); stop_words.add("corresponding"); stop_words.add("could"); stop_words.add("couldn't");
-        stop_words.add("course"); stop_words.add("currently"); stop_words.add("d"); stop_words.add("definitely"); stop_words.add("described");
-        stop_words.add("despite"); stop_words.add("did"); stop_words.add("didn't"); stop_words.add("different"); stop_words.add("do");
-        stop_words.add("does"); stop_words.add("doesn't"); stop_words.add("doing"); stop_words.add("don't"); stop_words.add("done");
-        stop_words.add("down"); stop_words.add("downwards"); stop_words.add("during"); stop_words.add("e"); stop_words.add("each");
-        stop_words.add("edu"); stop_words.add("eg"); stop_words.add("eight"); stop_words.add("either"); stop_words.add("else");
-        stop_words.add("elsewhere"); stop_words.add("enough"); stop_words.add("entirely"); stop_words.add("especially"); stop_words.add("et");
-        stop_words.add("etc"); stop_words.add("even"); stop_words.add("ever"); stop_words.add("every"); stop_words.add("everybody");
-        stop_words.add("everyone"); stop_words.add("everything"); stop_words.add("everywhere"); stop_words.add("ex"); stop_words.add("exactly");
-        stop_words.add("example"); stop_words.add("except"); stop_words.add("f"); stop_words.add("far"); stop_words.add("few");
-        stop_words.add("fifth"); stop_words.add("first"); stop_words.add("five"); stop_words.add("followed"); stop_words.add("following");
-        stop_words.add("follows"); stop_words.add("for"); stop_words.add("former"); stop_words.add("formerly"); stop_words.add("forth");
-        stop_words.add("four"); stop_words.add("from"); stop_words.add("further"); stop_words.add("furthermore"); stop_words.add("g");
-        stop_words.add("get"); stop_words.add("gets"); stop_words.add("getting"); stop_words.add("given"); stop_words.add("gives");
-        stop_words.add("go"); stop_words.add("goes"); stop_words.add("going"); stop_words.add("gone"); stop_words.add("got");
-        stop_words.add("gotten"); stop_words.add("greetings"); stop_words.add("h"); stop_words.add("had"); stop_words.add("hadn't");
-        stop_words.add("happens"); stop_words.add("hardly"); stop_words.add("has"); stop_words.add("hasn't"); stop_words.add("have");
-        stop_words.add("haven't"); stop_words.add("having"); stop_words.add("he"); stop_words.add("he's"); stop_words.add("hello");
-        stop_words.add("help"); stop_words.add("hence"); stop_words.add("her"); stop_words.add("here"); stop_words.add("here's");
-        stop_words.add("hereafter"); stop_words.add("hereby"); stop_words.add("herein"); stop_words.add("hereupon"); stop_words.add("hers");
-        stop_words.add("herself"); stop_words.add("hi"); stop_words.add("him"); stop_words.add("himself"); stop_words.add("his");
-        stop_words.add("hither"); stop_words.add("hopefully"); stop_words.add("how"); stop_words.add("howbeit"); stop_words.add("however");
-        stop_words.add("i"); stop_words.add("i'd"); stop_words.add("i'll"); stop_words.add("i'm"); stop_words.add("i've");
-        stop_words.add("ie"); stop_words.add("if"); stop_words.add("ignored");
+        readStopWords("C:/Users/Maor/Desktop/corpus/STOPWORDS");
+    }
+
+    public void readStopWords(String fileName) {
+        BufferedReader br = null;
+        StringBuilder sb = new StringBuilder();
+        try {
+            br = new BufferedReader(new FileReader(fileName));
+        } catch (FileNotFoundException e) {
+        }
+        try {
+            String line = br.readLine();
+            while (line != null) {
+                stop_words.add(line);
+                line = br.readLine();
+            }
+        } catch (IOException e) {
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+            }
+        }
     }
 
     public void parsing(Doc document) {
         String text = document.getDoc_content();
         String[]tokenz = text.split("[: ()]");
-        for(int i=0; i < tokenz.length; i++){//for to go over all tokenz
+        for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
             String currValue = "";
-            if(current.matches("-?(0|[1-9]\\d*)")) {//check if token is made of only digits
-                currValue = numberFirst(tokenz[i], tokenz[i + 1], tokenz[i + 2], tokenz[i + 3]);
+            if(current.equals("") || current.equals(",") || current.equals("\\.") || stop_words.contains(current)){
+                continue;
             }
-            else if(current.charAt(0) == '$'){//if first char is '$'
-                currValue = dollarFirst(tokenz[i], tokenz[i + 1]);
+            else if(current.charAt(current.length()-1)=='.' || current.charAt(current.length()-1)==',')
+                tokenz[i] = current.substring(0, current.length()-1);
+            if(current.contains("-") || current.equals("Between") || current.equals("between")){//10-part,6-7 etc'
+                if(current.contains("-"))
+                    currValue = current;
+                else if(i + 1 < tokenz.length && isValidNum(tokenz[i+1])){
+                    if(i + 2 < tokenz.length && tokenz[i+2].equals("and"))
+                        if(i + 3 < tokenz.length && isValidNum(tokenz[i+3]))
+                            currValue = tokenz[i] +" "+ tokenz[i+1] +" "+ tokenz[i+2] +" "+ tokenz[i+3];
+                }
+            }
+            else if(current.charAt(0) == '$'){//if first char is '$' V
+                if(i + 1 >= tokenz.length)
+                    currValue = dollarFirst(tokenz[i], "");
+                else
+                    currValue = dollarFirst(tokenz[i], tokenz[i + 1]);
+            }
+            else if(isValidNum(current)) {//check if token is a valid number
+                if(i + 1 >= tokenz.length)
+                    currValue = numberFirst(tokenz[i], "", "", "");
+                else if(i + 2 >= tokenz.length)
+                    currValue = numberFirst(tokenz[i], tokenz[i + 1], "", "");
+                else if(i + 3 >= tokenz.length)
+                    currValue = numberFirst(tokenz[i], tokenz[i + 1], tokenz[i + 2], "");
+                else
+                    currValue = numberFirst(tokenz[i], tokenz[i + 1], tokenz[i + 2], tokenz[i + 3]);
+            }
+            else if(current.contains("%")){//%6 etc'
+                currValue = current;
             }
             else if(hmDate.containsKey(current)){//if first token is month
-                currValue = dateFirst(tokenz[i], tokenz[i + 1]);
-                if(currValue.contains("-"))//if the second token is a year\month, ignore that token
+                if(i + 1 >= tokenz.length)//if month comes alone
+                    currValue = tokenz[i];
+                else
+                    currValue = dateFirst(tokenz[i], tokenz[i + 1]);
+                if(currValue.contains("-"))//if is a date- ignore next token alone
                     i++;
             }
-            System.out.print(currValue);
+            else{
+                currValue = tokenz[i];
+            }
+            //System.out.println(currValue);
+            document.addTermToDoc(currValue);
         }
     }
 
+    private boolean isValidNum(String current){
+        if(current.matches("-?(0|[1-9]\\d*)"))//regular number
+            return true;
+        else if(current.contains(".") && current.charAt(current.length()-1)!='.') {//number with .
+            String[] currSplit = current.split("\\.");
+            if (currSplit[0].matches("-?(0|[1-9]\\d*)") && currSplit[1].matches("-?(0|[1-9]\\d*)"))
+                return true;
+        }
+        else if(current.contains(",")){//number with ,
+            String[] currSplit = current.split(",");
+            for(String s : currSplit){
+                if(!s.matches("-?(0|[0-9]\\d*)"))
+                    return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
     /**
-     * Done: $100 million, $100,
+     * Done: $100 million, $100
      * @param s1 - first token with the $
      * @param s2 - second token
      * @return
      */
     private String dollarFirst(String s1, String s2) {
-        String curr = s1.substring(1,s1.length());
+        String curr = s1.substring(1);//lose the $
         if(!hmNum.containsKey(s2)){//second token isn't from hmNum
-            curr = numberFirst(curr,"","","") + " Dollars";
+            curr = numberFirstMoney(curr,"") + " Dollars";
+            i++;
         }
         else{//second token is from hmNum
-            curr = numberFirst(curr,s2,"","") + " Dollars";
+            curr = toMillionMoney(numberFirstMoney(curr,s2)) + " Dollars";
+            i+=2;
         }
-        System.out.print(curr);
-        return "";
+        return curr;
+    }
+
+    /**
+     * Takes care of number when it is about money
+     * @param s1 - the number
+     * @param s2 - the amount (million...)
+     * @return - the correct value
+     */
+    private String numberFirstMoney(String s1, String s2) {
+        if(hmNum.containsKey(s2)){//the second token is from hmNum (million, billion, bn, t...)
+            if(s2.equals("trillion"))//because is 000B
+                return numberFirst(s1,"","","") + hmNum.get(s2);
+            else
+                return numberFirst(s1,"","","") + " " + hmNum.get(s2);
+        }
+        else{
+            return toMillionMoney(numberFirst(s1,"","",""));
+        }
+    }
+
+    /**
+     *
+     * @param s String num + size
+     * @return 100 bn -> 100000 M \ 100M -> 100 M
+     */
+    private String toMillionMoney(String s){
+        String[] c = new String[2];
+        if(s.contains(" "))
+            c = s.split(" ");
+        else {
+            c[0] = s.substring(0,s.length()-1);
+            c[1] = s.substring(s.length() - 1);
+        }
+        String result = "";
+        if(c[1].equals("M") || c[1].equals("m") || c[1].equals("million"))
+            result = c[0] + " " + "M";
+        else if(c[1].equals("B") || c[1].equals("b") || c[1].equals("bn") || c[1].equals("billion"))
+            result = c[0] + "000 " + "M";
+        else if(c[1].equals("T") || c[1].equals("t") || c[1].equals("trillion"))
+            result = c[0] + "000000 " + "M";
+        else if(c[1].equals("K"))
+            result = c[0] + ",000";
+        else
+            result = s;
+        return result;
     }
 
     /**
@@ -127,7 +210,7 @@ public class Parse {
     private String dateFirst(String s1, String s2) {
         String result = "";
         if(s2.matches("-?(0|[1-9]\\d*)")) {
-            result = wordAndNum(s1 + " " + s2);
+            result = wordAndNumNumeric(s1 + " " + s2);
         }
         else{
             result = s1;
@@ -148,49 +231,58 @@ public class Parse {
      */
     private String numberFirst(String s1, String s2, String s3, String s4) {
         if(hmDate.containsKey(s2)){//the second token is a month V
-            return wordAndNum(s1 + " " + s2);
+            i++;
+            return wordAndNumNumeric(s1 + " " + s2);
         }
-        else if(hmNum.containsKey(s2)){//the token is a number/word
-            if(s3.equals("U.S.") && s4.equals("dollars")){
-                return toMillion(wordAndNum(s1 + " " + s2)) + " " + s4;
+        else if(hmNum.containsKey(s2)){//the token is a number/word V
+            if((s3.equals("U.S.") && s4.equals("dollars"))){//320 million U.S. dollars etc'
+                i+=3;
+                return toMillionMoney(numberFirstMoney(s1,s2)) + " " + s4;
+            }
+            else if(s3.equals("Dollars")) {//320 million Dollars etc'
+                i+=2;
+                return toMillionMoney(numberFirstMoney(s1, s2)) + " " + s3;
+            }
+            else {
+                i+=1;
+                return wordAndNumNumeric(s1 + " " + s2);
+            }
+        }
+        else if(hmSign.containsKey(s2)){//the second token is a sign from hmSign V
+            i+=1;
+            if(s2.equals("Dollars")){//price Dollar
+                return numberFirstMoney(s1,"") + " Dollars";
             }
             else
-                return wordAndNum(s1 + " " + s2);
-        }
-        else if(hmSign.containsKey(s2)){//the second token is a sign V
-            return wordAndNum(s1 + " " + s2);
+                return wordAndNumNumeric(s1 + " " + s2);//number percent
         }
         else if(s2.contains("/")){//the second token is a fraction V
             if(s3.equals("Dollars")){//the third word is "Dollars" - num fraction Dollars
-                return wordAndNum(s1 + " " + s2 + " " + s3);
+                i+=2;
+                return wordAndNumNumeric(s1 + " " + s2 + " " + s3);
             }
             else{//num fraction
-                return wordAndNum(s1 + " " + s2);
+                i++;
+                return wordAndNumNumeric(s1 + " " + s2);
             }
+        }
+        else if(s1.contains(",")){//450,000
+            i++;
+            return comaToWord(s1);
+        }
+        else if(s1.contains(".")) {//2.5
+            return dotToWord(s1);
         }
         else
             return s1;
     }
-
-    private String toMillion(String s) {
-        String c = s.substring(s.length()-1,s.length());
-        String result = "";
-        if(c.equals("M") || c.equals("m"))
-            result = s.substring(0,s.length()-1) + " " + c;
-        else if(c.equals("B") || c.equals("b") || c.equals("bn"))//todo - fix bn in wordAndNum
-            result = s.substring(0,s.length()-1) + "000 " + "M";
-        else if(c.equals("T") || c.equals("t"))
-            result = s.substring(0,s.length()-1) + "000000 " + "M";
-        return result;
-    }
-
 
     /**
      * Func that turns numbers with coma into the right representative
      * @param current - the number with the coma (1,234 etc)
      * @return The correct representative of the number (1,234 -> 1.234K, 10,340 -> 10.34K)
      */
-    public String comaToWord(String current) {
+    private String comaToWord(String current) {
         String[] num = current.split(",");
         String result = "";
         boolean done = false;
@@ -214,7 +306,11 @@ public class Parse {
             letter = 'B';
         else
             letter = 0;
-        result = num[0] + result + letter;
+        if (letter == 0){
+            result = num[0] + result;
+        }else {
+            result = num[0] + result + letter;
+        }
         return result;
     }
 
@@ -223,8 +319,10 @@ public class Parse {
      * @param current - the number with the dot (1045.54 etc)
      * @return The correct representative of the number (1045.56 -> 1.04556K, 1034.1 -> 1.034K)
      */
-    public String dotToWord(String current) {
-        String[] num = current.split("\\."); //[1020,400] -> 1.0204K
+    private String dotToWord(String current) {
+        String[] num = current.split("\\.");
+        if(num[0].length()<4)
+            return current;
         String result = "";
         boolean done = false;
         for (int j = num[1].length() - 1; j >= 0; j--) { //for after the dot
@@ -261,14 +359,14 @@ public class Parse {
     }
 
     /**
-     * Func that turns numbers with words into the right representative
+     * Func that turns numbers with words into the right representative - no money
      * @param current - string made of a word and number (100 Million, 14 May ...)
      * @return he correct representative of the number (100 Million -> 100M)
      */
-    public String wordAndNum(String current){
+    private String wordAndNumNumeric(String current){
         String[] curr = current.split(" "); //[100,Million] -> 100M
         int numIndex;
-        if(isNumeric(curr[0]))
+        if(isValidNum(curr[0]))
             numIndex = 0;
         else
             numIndex = 1;
@@ -295,18 +393,124 @@ public class Parse {
         return result;
     }
 
-    private boolean isNumeric(String strNum)
-    {
-        if(!strNum.contains(","))
-            return strNum.matches("-?\\d+(\\.\\d+)?");
-        else{
-            return true;
-        }
+    public static void main(String[] args){
+        /**
+         * NUMBERS
+         */
+        int pass = 0;
+        int count = 0;
+
+        System.out.println("~*~ Numbers Tests ~*~");
+        pass += test("1","10,123","10.123K");
+        count +=1;
+        pass += test("2", "123 Thousand","123K");
+        count +=1;
+        pass += test("3","1010.56","1.01056K");
+        count +=1;
+        pass += test("4","10,123,000","10.123M");
+        count +=1;
+        pass += test("6","55 Million","55M");
+        count +=1;
+        pass += test("7","1010.56","1.01056K");
+        count +=1;
+        pass += test("8","10,123,000,000","10.123B");
+        count +=1;
+        pass += test("9","55 Billion","55B");
+        count +=1;
+        pass += test("10","7 Trillion","7000B");
+        count +=1;
+        pass += test("11","204","204");
+        count +=1;
+        pass += test("12","-500","-500");
+        count +=1;
+
+        /**
+         * Percentage
+         */
+        System.out.println("~*~ Percentage Tests ~*~");
+        pass += test("1","6%","6%");
+        count +=1;
+        pass += test("2","10.6 percent","10.6%");
+        count +=1;
+        pass += test("3","6%","6%");
+        count +=1;
+        pass += test("4","10.6 percentage","10.6%");
+        count +=1;
+        pass += test("5","1000%","1000%");
+        count +=1;
+
+        /**
+         * Prices
+         */
+        System.out.println("~*~ Prices Tests ~*~");
+        pass += test("1","1.7320 Dollars","1.7320 Dollars");
+        count +=1;
+        pass += test("2","22 3/4 Dollars","22 3/4 Dollars");
+        count +=1;
+        pass += test("3","$450,000","450,000 Dollars");
+        count +=1;
+        pass += test("4","1,000,000 Dollars","1 M Dollars");
+        count +=1;
+        pass += test("5","$450,000,000","450 M Dollars");
+        count +=1;
+        pass += test("6","$100 million","100 M Dollars");
+        count +=1;
+        pass += test("7","20.6m Dollars","20.6 M Dollars");
+        count +=1;
+        pass += test("8","$100 billion","100000 M Dollars");
+        count +=1;
+        pass += test("9","100bn Dollars","100000 M Dollars");
+        count +=1;
+        pass += test("10","100 billion U.S. dollars","100000 M Dollars");
+        count +=1;
+        pass += test("11","320 million U.S. dollars","320 M Dollars");
+        count +=1;
+        pass += test("12","1 trillion U.S. dollars","1000000 M Dollars");
+        count +=1;
+
+        /**
+         * Date
+         */
+        System.out.println("~*~ Date Tests ~*~");
+        pass += test("1","14 MAY","05-14");
+        count +=1;
+        pass += test("2","14 May","05-14");
+        count +=1;
+        pass += test("3","JUNE 4","06-04");
+        count +=1;
+        pass += test("4","June 4","06-04");
+        count +=1;
+        pass += test("5","May 1994","1994-05");
+        count +=1;
+        pass += test("6","MAY 1994","1994-05");
+        count +=1;
+
+        /**
+         * Hyphen
+         */
+        System.out.println("~*~ Hyphen Tests ~*~");
+        pass += test("1","step-by-step","step-by-step");
+        pass += test("2","1-1","1-1");
+        count +=1;
+        System.out.println("PASS " + pass + "/" + count);
     }
 
-    public String numberAndSign(String current){
-        String curr =  current.substring(1);
-        String result = wordAndNum(curr) + hmNum.get("$");
-        return result;
+    public static int test(String number, String input,String output) {
+        Parse p = new Parse();
+        Doc doc1 = new Doc();
+        doc1.setDoc_content(input);
+        p.parsing(doc1);
+        ArrayList<Term> termsReturn = doc1.getTermsInDoc();
+        String result = "";
+        for(Term t: termsReturn){
+            result = result + t.toString();
+        }
+        if (result.equals(output)) {
+            System.out.println("TEST " + number + " PASS");
+            return 1;
+        } else {
+            System.out.println("TEST " + number + " FAILED, INPUT: " + input + ", OUTPUT: " + result );
+            return 0;
+        }
     }
 }

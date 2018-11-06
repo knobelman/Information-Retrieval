@@ -24,7 +24,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         launch(args);
 //        HashMap hmDate = new HashMap<String, String>();
 //        hmDate.put("01","Jan");

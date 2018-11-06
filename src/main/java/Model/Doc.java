@@ -1,6 +1,10 @@
 package Model;
 
+import org.apache.lucene.index.IndexableField;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * This class represents a document
@@ -12,8 +16,12 @@ public class Doc implements Serializable {
     private int max_tf;
     private int specialWordCount;
     private String city;
+    private ArrayList<Term> termsInDoc;
     private String mostFrequentTerm; //extra
 
+    public Doc(){
+        this.termsInDoc = new ArrayList<>();
+    }
     /**
      * C'tor
      * @param path
@@ -25,6 +33,7 @@ public class Doc implements Serializable {
         this.doc_content = doc_content;
         this.city = city;
         this.path = path;
+        this.termsInDoc = new ArrayList<>();
     }
 
     public String getDoc_num() {
@@ -81,5 +90,21 @@ public class Doc implements Serializable {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public Iterator<IndexableField> iterator() {
+        return null;
+    }
+
+    public ArrayList<Term> getTermsInDoc() {
+        return termsInDoc;
+    }
+
+    public void addTermToDoc(String term){
+        this.termsInDoc.add(new Term(term));
+    }
+
+    public void setTermsInDoc(ArrayList<Term> termsInDoc) {
+        this.termsInDoc = termsInDoc;
     }
 }
