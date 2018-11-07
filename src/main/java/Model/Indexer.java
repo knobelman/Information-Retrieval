@@ -11,14 +11,13 @@ import org.apache.lucene.index.IndexWriterConfig;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 //external sort - אלגוריתם לאינקדסינג
 
 public class Indexer {
-    StandardAnalyzer analyzer = new StandardAnalyzer();
-    IndexWriterConfig config = new IndexWriterConfig(analyzer);
     private String rootPath;
     private static ReadFile ourCorpus;
     private HashSet<Doc> DocumentsToParse;
@@ -45,6 +44,8 @@ public class Indexer {
                 init(fileEntry);
             } else {
                 DocumentsToParse = ourCorpus.fromFileToDoc(fileEntry);
+                System.out.println(fileEntry.toString());
+
                 for(Doc d: DocumentsToParse){
 //                    ArrayList<Term> d_terms = new ArrayList<Term>(20);
 //                    d_terms.add(new Term("hello"));
@@ -52,6 +53,7 @@ public class Indexer {
 //                    d_terms.add(new Term("bey"));
 //                    d_terms.add(new Term("good"));
                     parser.parsing(d);
+                    System.out.println();
                     //ArrayList<Term> d_terms = d.getTermsInDoc();
 //                    linkedHashMap.put(d_terms.get(0),new ArrayList());
 //                    for(Term t: d_terms) {

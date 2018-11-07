@@ -30,7 +30,9 @@ public class HomeView {
         File file = fc.showDialog(null);
         if (file != null) {
             String path = file.getAbsolutePath();
+            double before = System.currentTimeMillis();
             Indexer indexer = new Indexer(path);
+            System.out.println((System.currentTimeMillis()-before)/1000);
         }
 
 //        while (documentCollection.hasNext()) {

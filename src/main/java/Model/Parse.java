@@ -15,7 +15,8 @@ public class Parse {
     private HashMap hmNum = new HashMap<String, String>();
     private HashMap hmSign = new HashMap<String, String>();
     private HashMap hmDate = new HashMap<String, String>();
-    private HashSet stop_words = new HashSet<String>();
+    private HashSet hsDot = new HashSet<String>();
+    private HashSet stop_words = new HashSet<Character>();
     int i;
 
     public Parse() {
@@ -36,7 +37,7 @@ public class Parse {
         hmDate.put("Oct","10"); hmDate.put("OCT","10"); hmDate.put("October","10");  hmDate.put("OCTOBER","10");
         hmDate.put("Nov","11"); hmDate.put("NOV","11"); hmDate.put("November","11"); hmDate.put("NOVEMBER","11");
         hmDate.put("Dec","12"); hmDate.put("DEC","12"); hmDate.put("December","12"); hmDate.put("DECEMBER","12");
-
+        hsDot.add(','); hsDot.add('.'); hsDot.add(':'); hsDot.add(';'); hsDot.add('|'); hsDot.add(' '); hsDot.add('"');
         //initialize stop_words
         readStopWords("C:/Users/Maor/Desktop/corpus/STOPWORDS");
     }
@@ -63,17 +64,32 @@ public class Parse {
         }
     }
 
-    public void parsing(Doc document) {
-        String text = document.getDoc_content();
-        String[]tokenz = text.split("[: ()]");
+    public Doc parsing(Doc document) {
+        String text = document.getDoc_content();//("[: () -- ]");
+        String[]tokenz = text.split("[() : -- \\[.*?\\]]");
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
+            //System.out.println(current);
             String currValue = "";
-            if(current.equals("") || current.equals(",") || current.equals("\\.") || stop_words.contains(current)){
+            if(hsDot.contains(current) || stop_words.contains(current) || current.equals("")){
                 continue;
             }
-            else if(current.charAt(current.length()-1)=='.' || current.charAt(current.length()-1)==',')
-                tokenz[i] = current.substring(0, current.length()-1);
+            else if(hsDot.contains(current.charAt(current.length()-1))){
+                do {
+                    tokenz[i] = current.substring(0, current.length() - 1);
+                    current = tokenz[i];
+                }while(current.length()>0 && hsDot.contains(current.charAt(current.length()-1)));
+                if(current.length()==0)
+                    continue;
+            }
+            else if(hsDot.contains(current.charAt(0))){
+                do {
+                    tokenz[i] = current.substring(1, current.length());
+                    current = tokenz[i];
+                }while(current.length()>0 && hsDot.contains(current.charAt(0)));
+                if(current.length()==0)
+                    continue;
+            }
             if(current.contains("-") || current.equals("Between") || current.equals("between")){//10-part,6-7 etc'
                 if(current.contains("-"))
                     currValue = current;
@@ -114,8 +130,11 @@ public class Parse {
                 currValue = tokenz[i];
             }
             //System.out.println(currValue);
+
             document.addTermToDoc(currValue);
         }
+
+        return document;
     }
 
     private boolean isValidNum(String current){
@@ -132,6 +151,8 @@ public class Parse {
                 if(!s.matches("-?(0|[0-9]\\d*)"))
                     return false;
             }
+            if(currSplit[currSplit.length-1].length()<3)//if after ',' there are less then 3 digits
+                return false;
             return true;
         }
         return false;
@@ -145,6 +166,8 @@ public class Parse {
      */
     private String dollarFirst(String s1, String s2) {
         String curr = s1.substring(1);//lose the $
+        if(curr.length()==0)
+            return s1;
         if(!hmNum.containsKey(s2)){//second token isn't from hmNum
             curr = numberFirstMoney(curr,"") + " Dollars";
             i++;
@@ -230,14 +253,14 @@ public class Parse {
      * @return
      */
     private String numberFirst(String s1, String s2, String s3, String s4) {
-        if(hmDate.containsKey(s2)){//the second token is a month V
+        if(s1.length()<=2 & hmDate.containsKey(s2)){//the second token is a month V
             i++;
             return wordAndNumNumeric(s1 + " " + s2);
         }
         else if(hmNum.containsKey(s2)){//the token is a number/word V
             if((s3.equals("U.S.") && s4.equals("dollars"))){//320 million U.S. dollars etc'
                 i+=3;
-                return toMillionMoney(numberFirstMoney(s1,s2)) + " " + s4;
+                return toMillionMoney(numberFirstMoney(s1,s2)) + " " + "Dollars";
             }
             else if(s3.equals("Dollars")) {//320 million Dollars etc'
                 i+=2;
@@ -378,7 +401,7 @@ public class Parse {
             if(curr[numIndex].length() == 4)//the number is a year
                 result = comaToWord(curr[numIndex]) + "-" + hmDate.get(curr[1 - numIndex]);
             else {//the number is a day in a month
-                if(Integer.parseInt(curr[numIndex])<10)
+                if(Integer.parseInt(curr[numIndex])<10) //todo to fix tomorrow!
                     result = hmDate.get(curr[1 - numIndex]) + "-0" + comaToWord(curr[numIndex]);
                 else
                     result = hmDate.get(curr[1 - numIndex]) + "-" + comaToWord(curr[numIndex]);
@@ -400,98 +423,112 @@ public class Parse {
         int pass = 0;
         int count = 0;
 
-        System.out.println("~*~ Numbers Tests ~*~");
-        pass += test("1","10,123","10.123K");
-        count +=1;
-        pass += test("2", "123 Thousand","123K");
-        count +=1;
-        pass += test("3","1010.56","1.01056K");
-        count +=1;
-        pass += test("4","10,123,000","10.123M");
-        count +=1;
-        pass += test("6","55 Million","55M");
-        count +=1;
-        pass += test("7","1010.56","1.01056K");
-        count +=1;
-        pass += test("8","10,123,000,000","10.123B");
-        count +=1;
-        pass += test("9","55 Billion","55B");
-        count +=1;
-        pass += test("10","7 Trillion","7000B");
-        count +=1;
-        pass += test("11","204","204");
-        count +=1;
-        pass += test("12","-500","-500");
-        count +=1;
-
-        /**
-         * Percentage
-         */
-        System.out.println("~*~ Percentage Tests ~*~");
-        pass += test("1","6%","6%");
-        count +=1;
-        pass += test("2","10.6 percent","10.6%");
-        count +=1;
-        pass += test("3","6%","6%");
-        count +=1;
-        pass += test("4","10.6 percentage","10.6%");
-        count +=1;
-        pass += test("5","1000%","1000%");
-        count +=1;
-
-        /**
-         * Prices
-         */
-        System.out.println("~*~ Prices Tests ~*~");
-        pass += test("1","1.7320 Dollars","1.7320 Dollars");
-        count +=1;
-        pass += test("2","22 3/4 Dollars","22 3/4 Dollars");
-        count +=1;
-        pass += test("3","$450,000","450,000 Dollars");
-        count +=1;
-        pass += test("4","1,000,000 Dollars","1 M Dollars");
-        count +=1;
-        pass += test("5","$450,000,000","450 M Dollars");
-        count +=1;
-        pass += test("6","$100 million","100 M Dollars");
-        count +=1;
-        pass += test("7","20.6m Dollars","20.6 M Dollars");
-        count +=1;
-        pass += test("8","$100 billion","100000 M Dollars");
-        count +=1;
-        pass += test("9","100bn Dollars","100000 M Dollars");
-        count +=1;
-        pass += test("10","100 billion U.S. dollars","100000 M Dollars");
-        count +=1;
-        pass += test("11","320 million U.S. dollars","320 M Dollars");
-        count +=1;
-        pass += test("12","1 trillion U.S. dollars","1000000 M Dollars");
-        count +=1;
-
-        /**
-         * Date
-         */
-        System.out.println("~*~ Date Tests ~*~");
-        pass += test("1","14 MAY","05-14");
-        count +=1;
-        pass += test("2","14 May","05-14");
-        count +=1;
-        pass += test("3","JUNE 4","06-04");
-        count +=1;
-        pass += test("4","June 4","06-04");
-        count +=1;
-        pass += test("5","May 1994","1994-05");
-        count +=1;
-        pass += test("6","MAY 1994","1994-05");
-        count +=1;
+//        System.out.println("~*~ Numbers Tests ~*~");
+          pass += test("1","1,044 January","10.123K");
+//        count +=1;
+//        pass += test("2", "123 Thousand","123K");
+//        count +=1;
+//        pass += test("3","1010.56","1.01056K");
+//        count +=1;
+//        pass += test("4","10,123,000","10.123M");
+//        count +=1;
+//        pass += test("6","55 Million","55M");
+//        count +=1;
+//        pass += test("7","1010.56","1.01056K");
+//        count +=1;
+//        pass += test("8","10,123,000,000","10.123B");
+//        count +=1;
+//        pass += test("9","55 Billion","55B");
+//        count +=1;
+//        pass += test("10","7 Trillion","7000B");
+//        count +=1;
+//        pass += test("11","204","204");
+//        count +=1;
+//        pass += test("12","-500","-500");
+//        count +=1;
+//
+//        /**
+//         * Percentage
+//         */
+//        System.out.println("~*~ Percentage Tests ~*~");
+//        pass += test("1","6%","6%");
+//        count +=1;
+//        pass += test("2","10.6 percent","10.6%");
+//        count +=1;
+//        pass += test("3","6%","6%");
+//        count +=1;
+//        pass += test("4","10.6 percentage","10.6%");
+//        count +=1;
+//        pass += test("5","1000%","1000%");
+//        count +=1;
+//
+//        /**
+//         * Prices
+//         */
+//        System.out.println("~*~ Prices Tests ~*~");
+//        pass += test("1","1.7320 Dollars","1.7320 Dollars");
+//        count +=1;
+//        pass += test("2","22 3/4 Dollars","22 3/4 Dollars");
+//        count +=1;
+//        pass += test("3","$450,000","450,000 Dollars");
+//        count +=1;
+//        pass += test("4","1,000,000 Dollars","1 M Dollars");
+//        count +=1;
+//        pass += test("5","$450,000,000","450 M Dollars");
+//        count +=1;
+//        pass += test("6","$100 million","100 M Dollars");
+//        count +=1;
+//        pass += test("7","20.6 m Dollars","20.6 M Dollars");
+//        count +=1;
+//        pass += test("8","$100 billion","100000 M Dollars");
+//        count +=1;
+//        pass += test("9","100 bn Dollars","100000 M Dollars");
+//        count +=1;
+//        pass += test("10","100 billion U.S. dollars","100000 M Dollars");
+//        count +=1;
+//        pass += test("11","320 million U.S. dollars","320 M Dollars");
+//        count +=1;
+//        pass += test("12","1 trillion U.S. dollars","1000000 M Dollars");
+//        count +=1;
+//        pass += test("13","4 March","03-04"); //check
+//        count +=1;
+//
+//        /**
+//         * Date
+//         */
+//        System.out.println("~*~ Date Tests ~*~");
+//        pass += test("1","14 MAY","05-14");
+//        count +=1;
+//        pass += test("2","14 May","05-14");
+//        count +=1;
+//        pass += test("3","JUNE 4","06-04");
+//        count +=1;
+//        pass += test("4","June 4","06-04");
+//        count +=1;
+//        pass += test("5","May 1994","1994-05");
+//        count +=1;
+//        pass += test("6","MAY 1994","1994-05");
+//        count +=1;
 
         /**
          * Hyphen
          */
         System.out.println("~*~ Hyphen Tests ~*~");
-        pass += test("1","step-by-step","step-by-step");
-        pass += test("2","1-1","1-1");
-        count +=1;
+//        pass += test("1","step-by-step","step-by-step");
+//        count +=1;
+//        pass += test("2","1-1","1-1");
+//        count +=1;
+          //pass += test("3",",,","4.6K"); //todo not working
+//        pass += test("4",",,",""); //todo not working
+//        pass += test("4","Xinhua,","Xinhua"); //todo not working
+//        todo |Foreign investment ($ bi-|2.8
+//        pass += test("5","2,831 January","1.04K"); //todo error - fix!
+//          pass += test("5","$100 fdfd","1.04K"); //todo error - fix!
+//        pass += test("5","3.4 October",""); //todo error - fix!
+//        pass += test("5","investment $",""); //todo error - fix!
+//        pass += test("5","$ fddfdf",""); //todo error - fix!
+
+
         System.out.println("~*~ SUMMERY: PASS " + pass + "/" + count +" ~*~");
     }
 
@@ -500,7 +537,7 @@ public class Parse {
         Doc doc1 = new Doc();
         doc1.setDoc_content(input);
         p.parsing(doc1);
-        ArrayList<Term> termsReturn = doc1.getTermsInDoc();
+        HashMap<String,Term> termsReturn = doc1.getTermsInDoc();
         String result = termsReturn.get(0).toString();
 //        for(Term t: termsReturn){
 //            result = result + t.toString()+" ";

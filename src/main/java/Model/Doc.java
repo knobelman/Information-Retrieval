@@ -4,6 +4,8 @@ import org.apache.lucene.index.IndexableField;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 
 /**
@@ -16,11 +18,11 @@ public class Doc implements Serializable {
     private int max_tf;
     private int specialWordCount;
     private String city;
-    private ArrayList<Term> termsInDoc;
+    private HashMap<String,Term> termsInDoc;
     private String mostFrequentTerm; //extra
 
     public Doc(){
-        this.termsInDoc = new ArrayList<>();
+        this.termsInDoc = new HashMap<>();
     }
     /**
      * C'tor
@@ -33,7 +35,7 @@ public class Doc implements Serializable {
         this.doc_content = doc_content;
         this.city = city;
         this.path = path;
-        this.termsInDoc = new ArrayList<>();
+        this.termsInDoc = new HashMap<>();
     }
 
     public String getDoc_num() {
@@ -92,19 +94,18 @@ public class Doc implements Serializable {
         this.path = path;
     }
 
-    public Iterator<IndexableField> iterator() {
-        return null;
-    }
-
-    public ArrayList<Term> getTermsInDoc() {
+    public HashMap<String, Term> getTermsInDoc() {
         return termsInDoc;
     }
 
     public void addTermToDoc(String term){
-        this.termsInDoc.add(new Term(term));
-    }
-
-    public void setTermsInDoc(ArrayList<Term> termsInDoc) {
-        this.termsInDoc = termsInDoc;
+        if(termsInDoc.containsKey(term)){
+            termsInDoc.get(term).incAmounts(this.doc_num);
+        }
+        else {
+            Term nTerm = new Term(term);
+            this.termsInDoc.put(term, nTerm);
+            nTerm.incAmounts(this.doc_num);
+        }
     }
 }
