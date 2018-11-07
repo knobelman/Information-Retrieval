@@ -20,10 +20,6 @@ public class ReadFile {
         this.root = new File(path);
     }
 
-    public ReadFile(){
-
-    }
-
     /**
      * parsing documents
      * @param file - file to parse
@@ -85,8 +81,6 @@ public class ReadFile {
         }
         return sb.toString();
     }
-
-
     public String getPath() {
         return path;
     }
@@ -102,14 +96,4 @@ public class ReadFile {
     public void setRoot(File root) {
         this.root = root;
     }
-
-    //    public void listFilesForFolder(final File root) throws IOException {
-//        for (final File fileEntry : root.listFiles()) {
-//            if (fileEntry.isDirectory()) {
-//                listFilesForFolder(fileEntry);
-//            } else {
-//                fromFileToDoc(fileEntry);
-//            }
-//        }
-//    }
 }

@@ -1,35 +1,29 @@
 package Model;
-
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 //external sort - אלגוריתם לאינקדסינג
 
 public class Indexer {
     private String rootPath;
-    private static ReadFile ourCorpus;
+    private static ReadFile readFileObject;
     private HashSet<Doc> DocumentsToParse;
-    private Parse parser = new Parse();
     private LinkedHashMap<Term, ArrayList> linkedHashMap = new LinkedHashMap<Term, ArrayList>();
+    private Parse Parser = new Parse();
+
 
     public Indexer(String rootPath) {
         this.rootPath = rootPath;
-        this.ourCorpus = new ReadFile(rootPath);
-        this.DocumentsToParse = new HashSet<Doc>();
+        this.readFileObject = new ReadFile(rootPath);
+        this.DocumentsToParse = new HashSet<>();
         try {
-            init(ourCorpus.getRoot());
+            init(readFileObject.getRoot());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,36 +37,28 @@ public class Indexer {
             if (fileEntry.isDirectory()) {
                 init(fileEntry);
             } else {
-                DocumentsToParse = ourCorpus.fromFileToDoc(fileEntry);
-                System.out.println(fileEntry.toString());
-
+                DocumentsToParse = readFileObject.fromFileToDoc(fileEntry);
                 for(Doc d: DocumentsToParse){
-//                    ArrayList<Term> d_terms = new ArrayList<Term>(20);
-//                    d_terms.add(new Term("hello"));
-//                    d_terms.add(new Term("hey"));
-//                    d_terms.add(new Term("bey"));
-//                    d_terms.add(new Term("good"));
-                    parser.parsing(d);
-                    System.out.println();
-                    //ArrayList<Term> d_terms = d.getTermsInDoc();
-//                    linkedHashMap.put(d_terms.get(0),new ArrayList());
-//                    for(Term t: d_terms) {
-//                        //linkedHashMap.get(t).add(d);
-//                    }
-
-                    //writeToTempPostingFile();
-
-
-
-                    //clean linkedhashmap
-
-
-
-                    //parser.parsing(d);
-                        //IndexWriter w = new IndexWriter(index, config);
-                        //addDoc(w, d.getDoc_content(), d.getDoc_num());
+                    //System.out.println(d.getPath());
+                    Parser.parsing(d);
+                    System.out.println("hello");
                 }
-
+//                    Thread ParserThread = new Thread(() -> {
+//                        //System.out.println(d.getPath());
+//                        Parse parser = new Parse();
+//                        parser.parsing(d);
+//                    });
+//                    Parsers.add(ParserThread);
+//                    ParserThread.start();
+//                }
+//
+//                for (Thread CurrentParser: Parsers){
+//                    try {
+//                        CurrentParser.join();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             }
         }
     }

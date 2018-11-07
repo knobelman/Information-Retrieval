@@ -32,7 +32,7 @@ public class HomeView {
             String path = file.getAbsolutePath();
             double before = System.currentTimeMillis();
             Indexer indexer = new Indexer(path);
-            System.out.println((System.currentTimeMillis()-before)/1000);
+            System.out.println((System.currentTimeMillis()-before)/1000/60 +" Minutes");
         }
 
 //        while (documentCollection.hasNext()) {
