@@ -9,6 +9,7 @@ public class Indexer {
     private static ReadFile readFileObject;
     private HashSet<Doc> DocumentsToParse;
     private ArrayList<Thread> DocsThread;
+    private Posting postingObject;
     private LinkedHashMap<Term, ArrayList> linkedHashMap = new LinkedHashMap<Term, ArrayList>();
     private Parse Parser = new Parse();
 
@@ -18,6 +19,7 @@ public class Indexer {
         this.readFileObject = new ReadFile(rootPath);
         this.DocumentsToParse = new HashSet<>();
         this.DocsThread = new ArrayList<>();
+        this.postingObject = new Posting(this.rootPath);
         try {
             init(readFileObject.getRoot(),stemm);
         } catch (IOException e) {
@@ -37,7 +39,12 @@ public class Indexer {
                 DocumentsToParse = readFileObject.fromFileToDoc(fileEntry);
                 for (Doc d : DocumentsToParse) {
                     Parser.parsing(d,stemm);
-            }
+                    postingObject.posting(d.getTermsInDoc());
+                }
+                postingObject.createPostingFile();
+                postingObject.clearDic();
+
+
 //                Thread t = new Thread(() -> DocumentsToParse = readFileObject.fromFileToDoc(fileEntry));
 //                DocsThread.add(t);
 //                t.start();
@@ -46,10 +53,6 @@ public class Indexer {
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
-                for (Doc d : DocumentsToParse) {
-                    //System.out.println(d.getPath());
-                    Parser.parsing(d, stemm);
-                }
 
 //                for (Thread CurrentDoc : DocsThread) {
 //                    try {

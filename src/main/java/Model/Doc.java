@@ -1,12 +1,9 @@
 package Model;
 
-import org.apache.lucene.index.IndexableField;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 
 /**
  * This class represents a document

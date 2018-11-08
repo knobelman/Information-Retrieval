@@ -60,21 +60,15 @@ public class Term implements Serializable,Comparable<Term>{
         this.term = term;
     }
 
-    //override tostring
-    public String toString() {
-        return term;
-    }
-
     @Override
     public int compareTo(Term o) {
         return 0;
     }
 
-//    public String getPosition() {
-//        return position;
-//    }
-
-//    public void setPosition(String position) {
-//        this.position = position;
-//    }
+    @Override
+    public String toString() {
+        return  "'" + term + '\'' +
+                ", df=" + df +
+                ", amountInDoc=" + amountInDoc;
+    }
 }

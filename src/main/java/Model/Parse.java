@@ -37,7 +37,7 @@ public class Parse {
         hmDate.put("Nov","11"); hmDate.put("NOV","11"); hmDate.put("November","11"); hmDate.put("NOVEMBER","11");
         hmDate.put("Dec","12"); hmDate.put("DEC","12"); hmDate.put("December","12"); hmDate.put("DECEMBER","12");
         hsDot.add(','); hsDot.add('.'); hsDot.add(':'); hsDot.add(';'); hsDot.add('|'); hsDot.add(' '); hsDot.add('"');
-        hsDot.add('['); hsDot.add(']');
+        hsDot.add('['); hsDot.add(']'); hsDot.add('$'); hsDot.add('*'); hsDot.add('\'');
         //initialize stop_words
         readStopWords("C:/Users/Maor/Desktop/corpus/STOPWORDS");
     }
@@ -136,7 +136,10 @@ public class Parse {
                 stemmer.stem();
                 currValue = stemmer.toString();
             }
-                document.addTermToDoc(currValue);
+
+            document.addTermToDoc(currValue);
+            System.out.println(currValue);
+
         }
         return document;
     }
