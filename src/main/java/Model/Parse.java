@@ -15,7 +15,7 @@ public class Parse {
     private HashMap hmSign = new HashMap<String, String>();
     private HashMap hmDate = new HashMap<String, String>();
     private HashSet hsDot = new HashSet<String>();
-    private HashSet stop_words = new HashSet<Character>();
+    private HashSet stop_words = new HashSet<String>();
     int i;
 
     public Parse() {
@@ -37,9 +37,9 @@ public class Parse {
         hmDate.put("Nov","11"); hmDate.put("NOV","11"); hmDate.put("November","11"); hmDate.put("NOVEMBER","11");
         hmDate.put("Dec","12"); hmDate.put("DEC","12"); hmDate.put("December","12"); hmDate.put("DECEMBER","12");
         hsDot.add(','); hsDot.add('.'); hsDot.add(':'); hsDot.add(';'); hsDot.add('|'); hsDot.add(' '); hsDot.add('"');
-        hsDot.add('['); hsDot.add(']'); hsDot.add('$'); hsDot.add('*'); hsDot.add('\'');
+        hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add("--");
         //initialize stop_words
-        readStopWords("C:/Users/Maor/Desktop/corpus/STOPWORDS");
+        readStopWords("C:\\Users\\Maor\\Desktop\\corpus\\STOPWORDS");
     }
 
     public void readStopWords(String fileName) {
@@ -69,26 +69,34 @@ public class Parse {
         String[]tokenz = text.split("[: ()]");
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
-            //System.out.println(current);
             String currValue = "";
-            if(hsDot.contains(current) || stop_words.contains(current) || current.equals("")){
+            if(current.equals(""))//if empty token
+                continue;
+            if(current.contains("--")){ //todo ask yaniv
+                current = current.replaceAll("--","");
+                document.addTermToDoc(current);
                 continue;
             }
-            if(hsDot.contains(current.charAt(current.length()-1))){
+            if(hsDot.contains(current.charAt(current.length()-1))){//if there is a sign at the end
                 do {
                     tokenz[i] = current.substring(0, current.length() - 1);
                     current = tokenz[i];
                 }while(current.length()>0 && hsDot.contains(current.charAt(current.length()-1)));
-                if(current.length()==0)
+                if(current.length()==0) {
                     continue;
+                }
             }
-            if(hsDot.contains(current.charAt(0))){
+            if(hsDot.contains(current.charAt(0))){//if there is a sign in the beginning
                 do {
                     tokenz[i] = current.substring(1, current.length());
                     current = tokenz[i];
                 }while(current.length()>0 && hsDot.contains(current.charAt(0)));
-                if(current.length()==0)
+                if(current.length()==0) {
                     continue;
+                }
+            }
+            if(hsDot.contains(current) || stop_words.contains(current)){//if the raw token is a stop word
+                continue;
             }
             if(current.contains("-") || current.equals("Between") || current.equals("between")){//10-part,6-7 etc'
                 if(current.contains("-"))
@@ -138,8 +146,7 @@ public class Parse {
             }
 
             document.addTermToDoc(currValue);
-            System.out.println(currValue);
-
+            //System.out.println(currValue);
         }
         return document;
     }

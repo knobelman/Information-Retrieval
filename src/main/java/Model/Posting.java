@@ -7,67 +7,72 @@ import java.util.*;
  * Created by Maor on 11/8/2018.
  */
 public class Posting {
-    private ArrayList<Term> Dictionary;
-    byte[] objectToByteArray;
+    ArrayList<String> allLines;
     private String rootPath;
     private static int postingFilecounter;
 
     public Posting(String rootPath) {
-        this.Dictionary = new ArrayList<>();
-        this.rootPath = rootPath + "\\PostingFiles";
+        allLines = new ArrayList<>();
+        this.rootPath = "C:\\Users\\Maor\\Desktop\\PostingFile";
     }
 
-    public ArrayList<Term> getDictionary() {
-        return Dictionary;
-    }
+//    public void posting(LinkedHashMap<String, HashMap<String, Term>> termsInDoc) {
+//        for (Term term : termsInDoc.values()) {
+//            this.Dictionary.add(term);
+//        }
+//        sort();
+//    }
 
-    public void posting(HashMap<String, Term> termsInDoc) {
-        for (Term term : termsInDoc.values()) {
-//            System.out.println(term.toString());
-            this.Dictionary.add(term);
-        }
-        sort();
-        //ArrayList<Term> dictionary2 = readDictionary();
-    }
-
-    private void sort(){
-        this.Dictionary.sort((o1, o2) -> (o1.getTerm().compareTo(o2.getTerm())));
-    }
-
-    public void createPostingFile() {
+    public void createPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap) {
         try {
-            this.objectToByteArray = convertToBytes(this.Dictionary);
-            FileOutputStream fos = new FileOutputStream(this.rootPath + "\\" + postingFilecounter);
-            fos.write(objectToByteArray);
-            fos.close();
+            Iterator it = linkedHashMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
+                allLines.add(pair.getKey() + "|" + pair.getValue()+"\n");
+                it.remove();
+            }
+            sort();
+            FileWriter fw = new FileWriter(this.rootPath + "\\" + postingFilecounter);
+            for(String s: allLines){
+                fw.write(s);
+            }
+            fw.close();
+            clearDic();
             postingFilecounter++;
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
-    private ArrayList readDictionary(){
-        try {
-            FileInputStream fis = new FileInputStream(this.rootPath + "\\" + postingFilecounter);
-            ByteArrayInputStream in = new ByteArrayInputStream(this.objectToByteArray);
-            ObjectInputStream is = new ObjectInputStream(in);
-            return (ArrayList)is.readObject();
-        } catch (Exception e){
+    private void sort(){
+        allLines.sort((o1, o2) -> {
+            String s1 = o1.substring(0, o1.indexOf('|'));
+            String s2 = o2.substring(0, o2.indexOf('|'));
+            return s1.compareTo(s2);
+        });
+    }
 
-        }
-        return null;
-    }
-    private byte[] convertToBytes(Object object) throws IOException {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-             ObjectOutput out = new ObjectOutputStream(bos)) {
-            out.writeObject(object);
-            return bos.toByteArray();
-        }
-    }
+//    private ArrayList readDictionary(){
+//        try {
+//            FileInputStream fis = new FileInputStream(this.rootPath + "\\" + postingFilecounter);
+//            ByteArrayInputStream in = new ByteArrayInputStream(this.objectToByteArray);
+//            ObjectInputStream is = new ObjectInputStream(in);
+//            return (ArrayList)is.readObject();
+//        } catch (Exception e){
+//
+//        }
+//        return null;
+//    }
+//    private byte[] convertToBytes(Object object) throws IOException {
+//        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//             ObjectOutput out = new ObjectOutputStream(bos)) {
+//            out.writeObject(object);
+//            return bos.toByteArray();
+//        }
+//    }
 
     public void clearDic() {
-        this.Dictionary = new ArrayList<>();
+        this.allLines =new ArrayList<>();
     }
 }
 

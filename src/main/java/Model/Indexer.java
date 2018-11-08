@@ -10,7 +10,7 @@ public class Indexer {
     private HashSet<Doc> DocumentsToParse;
     private ArrayList<Thread> DocsThread;
     private Posting postingObject;
-    private LinkedHashMap<Term, ArrayList> linkedHashMap = new LinkedHashMap<Term, ArrayList>();
+    private HashMap<String,HashMap<String,Integer>> linkedHashMap = new LinkedHashMap<>();
     private Parse Parser = new Parse();
 
 
@@ -39,10 +39,23 @@ public class Indexer {
                 DocumentsToParse = readFileObject.fromFileToDoc(fileEntry);
                 for (Doc d : DocumentsToParse) {
                     Parser.parsing(d,stemm);
-                    postingObject.posting(d.getTermsInDoc());
+                    for(Map.Entry<String,Term> entry : d.getTermsInDoc().entrySet()) {
+                        String termname = entry.getKey();
+                        Term value = entry.getValue();
+                        String doc_name = d.getDoc_num();
+                        if(linkedHashMap.containsKey(termname)){
+                            Integer newint =  new Integer(d.getTermsInDoc().get(termname).getTf(doc_name));
+                            linkedHashMap.get(termname).put(d.getDoc_num(),newint);
+                        }else {
+                            HashMap<String, Integer> current = new HashMap();
+                            current.put(doc_name, new Integer(value.getTf(doc_name)));
+                            linkedHashMap.put(termname, current);
+                        }
+                    }
+                   // postingObject.posting(linkedHashMap);
                 }
-                postingObject.createPostingFile();
-                postingObject.clearDic();
+                postingObject.createPostingFile(this.linkedHashMap);
+                linkedHashMap = new LinkedHashMap<>();
 
 
 //                Thread t = new Thread(() -> DocumentsToParse = readFileObject.fromFileToDoc(fileEntry));
