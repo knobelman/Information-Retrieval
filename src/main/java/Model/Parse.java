@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 /**
  * Created by Maor on 10/30/2018.
@@ -67,7 +66,6 @@ public class Parse {
     public Doc parsing(Doc document) {
         String text = document.getDoc_content();//("[: () -- ]");
         String[]tokenz = text.split("[: ()]");
-        //String[]tokenz = text.split("[() : -- \\[.*?\\]]");
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
             //System.out.println(current);
@@ -130,11 +128,11 @@ public class Parse {
             else{
                 currValue = tokenz[i];
             }
-            //System.out.println(currValue);
-
+            if(currValue.length() > 1 && currValue.charAt(0)=='[' && currValue.charAt(currValue.length()-1) == ']'){
+                currValue = currValue.substring(1,currValue.length()-1);
+            }
             document.addTermToDoc(currValue);
         }
-
         return document;
     }
 

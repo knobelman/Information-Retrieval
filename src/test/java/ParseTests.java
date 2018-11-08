@@ -10,12 +10,12 @@ import java.util.Map;
  */
 public class ParseTests {
     public static void main(String[] args){
-        /**
-         * NUMBERS
-         */
         int pass = 0;
         int count = 0;
 
+        /**
+         * NUMBERS
+         */
         System.out.println("~*~ Numbers Tests ~*~");
         pass += test("1","10,123","10.123K");
         count +=1;
@@ -112,6 +112,12 @@ public class ParseTests {
         pass += test("2","1-1","1-1");
         count +=1;
         pass += test("3","Xinhua,","Xinhua");
+        count +=1;
+        pass += test("4","[Xinhua]","Xinhua");
+        count +=1;
+        pass += test("5","(Xinhua)","Xinhua");
+        count +=1;
+        pass += test("6","Xinhua--","Xinhua");
         count +=1;
         System.out.println("~*~ SUMMERY: PASS " + pass + "/" + count +" ~*~");
     }
