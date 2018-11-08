@@ -1,11 +1,5 @@
 package Model;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.IndexWriter;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 //external sort - אלגוריתם לאינקדסינג
@@ -19,13 +13,13 @@ public class Indexer {
     private Parse Parser = new Parse();
 
 
-    public Indexer(String rootPath) {
+    public Indexer(String rootPath, boolean stemm) {
         this.rootPath = rootPath;
         this.readFileObject = new ReadFile(rootPath);
         this.DocumentsToParse = new HashSet<>();
         this.DocsThread = new ArrayList<>();
         try {
-            init(readFileObject.getRoot());
+            init(readFileObject.getRoot(),stemm);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -33,32 +27,37 @@ public class Indexer {
 
     /**
      * @param file
+     * @param stemm
      */
-    public void init(final File file) throws IOException {
+    public void init(final File file, boolean stemm) throws IOException {
         for (final File fileEntry : file.listFiles()) {
             if (fileEntry.isDirectory()) {
-                init(fileEntry);
+                init(fileEntry, stemm);
             } else {
-//                DocumentsToParse = readFileObject.fromFileToDoc(fileEntry);
-//                for (Doc d : DocumentsToParse) {
-//                    Parser.parsing(d);
-//            }
-                Thread t = new Thread(() -> DocumentsToParse = readFileObject.fromFileToDoc(fileEntry));
-                DocsThread.add(t);
-                t.start();
-
+                DocumentsToParse = readFileObject.fromFileToDoc(fileEntry);
+                for (Doc d : DocumentsToParse) {
+                    Parser.parsing(d,stemm);
+            }
+//                Thread t = new Thread(() -> DocumentsToParse = readFileObject.fromFileToDoc(fileEntry));
+//                DocsThread.add(t);
+//                t.start();
+//                try {
+//                    t.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 for (Doc d : DocumentsToParse) {
                     //System.out.println(d.getPath());
-                    Parser.parsing(d);
+                    Parser.parsing(d, stemm);
                 }
 
-                for (Thread CurrentDoc : DocsThread) {
-                    try {
-                        CurrentDoc.join();
-                    } catch (InterruptedException e) {
-                        //e.printStackTrace();
-                    }
-                }
+//                for (Thread CurrentDoc : DocsThread) {
+//                    try {
+//                        CurrentDoc.join();
+//                    } catch (InterruptedException e) {
+//                        //e.printStackTrace();
+//                    }
+//                }
             }
         }
     }

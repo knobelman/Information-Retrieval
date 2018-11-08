@@ -23,6 +23,8 @@ public class HomeView {
 
     public javafx.scene.control.Button LOAD;
     public javafx.scene.control.TextField path;
+    public javafx.scene.control.CheckBox STEMM;
+
 
     public void load(ActionEvent actionEvent){
         DirectoryChooser fc = new DirectoryChooser();
@@ -31,7 +33,12 @@ public class HomeView {
         if (file != null) {
             String path = file.getAbsolutePath();
             double before = System.currentTimeMillis();
-            Indexer indexer = new Indexer(path);
+            if(STEMM.isSelected()){
+                Indexer indexer = new Indexer(path,true);
+
+            }else {
+                Indexer indexer = new Indexer(path,false);
+            }
             System.out.println((System.currentTimeMillis()-before)/1000/60 +" Minutes");
         }
 

@@ -7,7 +7,7 @@ import java.util.HashMap;
 /**
  * Created by Maor on 11/2/2018.
  */
-public class Term implements Serializable{
+public class Term implements Serializable,Comparable<Term>{
     private String term;
     private int df;
     private HashMap<String,Integer> amountInDoc; //String=Doc name, Integer = tf
@@ -63,6 +63,11 @@ public class Term implements Serializable{
     //override tostring
     public String toString() {
         return term;
+    }
+
+    @Override
+    public int compareTo(Term o) {
+        return 0;
     }
 
 //    public String getPosition() {

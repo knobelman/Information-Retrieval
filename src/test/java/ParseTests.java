@@ -119,6 +119,7 @@ public class ParseTests {
         count +=1;
         pass += test("6","Xinhua--","Xinhua");
         count +=1;
+
         System.out.println("~*~ SUMMERY: PASS " + pass + "/" + count +" ~*~");
     }
 
@@ -126,7 +127,7 @@ public class ParseTests {
         Parse p = new Parse();
         Doc doc1 = new Doc();
         doc1.setDoc_content(input);
-        p.parsing(doc1);
+        p.parsing(doc1, false);
         HashMap<String,Term> termsReturn = doc1.getTermsInDoc();
         Map.Entry<String, Term> entry = termsReturn.entrySet().iterator().next();
         String result = entry.getKey();

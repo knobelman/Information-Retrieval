@@ -37,6 +37,7 @@ public class Parse {
         hmDate.put("Nov","11"); hmDate.put("NOV","11"); hmDate.put("November","11"); hmDate.put("NOVEMBER","11");
         hmDate.put("Dec","12"); hmDate.put("DEC","12"); hmDate.put("December","12"); hmDate.put("DECEMBER","12");
         hsDot.add(','); hsDot.add('.'); hsDot.add(':'); hsDot.add(';'); hsDot.add('|'); hsDot.add(' '); hsDot.add('"');
+        hsDot.add('['); hsDot.add(']');
         //initialize stop_words
         readStopWords("C:/Users/Maor/Desktop/corpus/STOPWORDS");
     }
@@ -63,7 +64,7 @@ public class Parse {
         }
     }
 
-    public Doc parsing(Doc document) {
+    public Doc parsing(Doc document, boolean stemm) {
         String text = document.getDoc_content();//("[: () -- ]");
         String[]tokenz = text.split("[: ()]");
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
@@ -73,7 +74,7 @@ public class Parse {
             if(hsDot.contains(current) || stop_words.contains(current) || current.equals("")){
                 continue;
             }
-            else if(hsDot.contains(current.charAt(current.length()-1))){
+            if(hsDot.contains(current.charAt(current.length()-1))){
                 do {
                     tokenz[i] = current.substring(0, current.length() - 1);
                     current = tokenz[i];
@@ -81,7 +82,7 @@ public class Parse {
                 if(current.length()==0)
                     continue;
             }
-            else if(hsDot.contains(current.charAt(0))){
+            if(hsDot.contains(current.charAt(0))){
                 do {
                     tokenz[i] = current.substring(1, current.length());
                     current = tokenz[i];
@@ -128,26 +129,31 @@ public class Parse {
             else{
                 currValue = tokenz[i];
             }
-            if(currValue.length() > 1 && currValue.charAt(0)=='[' && currValue.charAt(currValue.length()-1) == ']'){
-                currValue = currValue.substring(1,currValue.length()-1);
+
+            if(stemm) {
+                Stemmer stemmer = new Stemmer();
+                stemmer.add(currValue.toCharArray(), currValue.length());
+                stemmer.stem();
+                currValue = stemmer.toString();
             }
-            document.addTermToDoc(currValue);
+                document.addTermToDoc(currValue);
         }
         return document;
     }
 
     private boolean isValidNum(String current){
-        if(current.matches("-?(0|[1-9]\\d*)"))//regular number
+        if(isNumeric(current))
             return true;
         else if(current.contains(".") && current.charAt(current.length()-1)!='.') {//number with .
             String[] currSplit = current.split("\\.");
-            if (currSplit[0].matches("-?(0|[1-9]\\d*)") && currSplit[1].matches("-?(0|[1-9]\\d*)"))
+            if(isNumeric(currSplit[0]) && isNumeric(currSplit[1]))
                 return true;
         }
         else if(current.contains(",")){//number with ,
             String[] currSplit = current.split(",");
             for(String s : currSplit){
-                if(!s.matches("-?(0|[0-9]\\d*)"))
+                //if(!s.matches("-?(0|[0-9]\\d*)"))
+                if(!isNumeric(s))
                     return false;
             }
             if(currSplit[currSplit.length-1].length()<3)//if after ',' there are less then 3 digits
@@ -155,6 +161,18 @@ public class Parse {
             return true;
         }
         return false;
+    }
+
+    public static boolean isNumeric(String str)
+    {
+        if(str.length()==0)
+            return false;
+        for (char c : str.toCharArray())
+        {
+            if (!Character.isDigit(c))
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -231,7 +249,7 @@ public class Parse {
      */
     private String dateFirst(String s1, String s2) {
         String result = "";
-        if(s2.matches("-?(0|[1-9]\\d*)")) {
+        if(isNumeric(s2)){
             result = wordAndNumNumeric(s1 + " " + s2);
         }
         else{
