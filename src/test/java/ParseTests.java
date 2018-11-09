@@ -17,6 +17,8 @@ public class ParseTests {
          * NUMBERS
          */
         System.out.println("~*~ Numbers Tests ~*~");
+        pass += test("0","\"Hello","Hello");
+        count +=1;
         pass += test("1","10,123","10.123K");
         count +=1;
         pass += test("2", "123 Thousand","123K");
@@ -123,6 +125,7 @@ public class ParseTests {
         count +=1;
         pass += test("7","the yaniv","yaniv");
         count +=1;
+
 
         System.out.println("~*~ SUMMERY: PASS " + pass + "/" + count +" ~*~");
     }

@@ -37,7 +37,8 @@ public class Parse {
         hmDate.put("Nov","11"); hmDate.put("NOV","11"); hmDate.put("November","11"); hmDate.put("NOVEMBER","11");
         hmDate.put("Dec","12"); hmDate.put("DEC","12"); hmDate.put("December","12"); hmDate.put("DECEMBER","12");
         hsDot.add(','); hsDot.add('.'); hsDot.add(':'); hsDot.add(';'); hsDot.add('|'); hsDot.add(' '); hsDot.add('"');
-        hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add('+');
+        hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add('+'); hsDot.add('"');
+        hsDot.add('?'); hsDot.add('-'); hsDot.add('&'); hsDot.add('`');
         //initialize stop_words
         readStopWords(path+"\\STOPWORDS");
     }
@@ -70,7 +71,7 @@ public class Parse {
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
             String currValue = "";
-            if(current.equals("") || current.equals(" "))//if empty token
+            if(current.equals("") || current.equals(" ") || current.equals("$") || current.equals("-"))//if empty token
                 continue;
             if(current.contains("--")){//todo ask yaniv
                 current = current.replaceAll("--","");
@@ -88,6 +89,8 @@ public class Parse {
             }
             if(hsDot.contains(current.charAt(0))){//if there is a sign in the beginning
                 do {
+                    if((current.charAt(0) == '-' & isValidNum(current.substring(1, current.length()))) || current.substring(1, current.length()).length()==0)
+                        break;
                     tokenz[i] = current.substring(1, current.length());
                     current = tokenz[i];
                 }while(current.length()>0 && hsDot.contains(current.charAt(0)));
