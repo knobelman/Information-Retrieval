@@ -40,7 +40,7 @@ public class Parse {
         hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add('+'); hsDot.add('"');
         hsDot.add('?'); hsDot.add('-'); hsDot.add('&'); hsDot.add('`');
         //initialize stop_words
-        readStopWords(path+"\\STOPWORDS");//
+        readStopWords(path+"\\STOPWORDS");//todo take care of "WORD
     }
 
     public void readStopWords(String fileName) {
