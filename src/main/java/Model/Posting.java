@@ -16,13 +16,6 @@ public class Posting {
         this.rootPath = "C:\\Users\\Maor\\Desktop\\PostingFile";
     }
 
-//    public void posting(LinkedHashMap<String, HashMap<String, Term>> termsInDoc) {
-//        for (Term term : termsInDoc.values()) {
-//            this.Dictionary.add(term);
-//        }
-//        sort();
-//    }
-
     public void createPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap) {
         try {
             Iterator it = linkedHashMap.entrySet().iterator();
@@ -52,6 +45,10 @@ public class Posting {
         });
     }
 
+    public void clearDic() {
+        this.allLines =new ArrayList<>();
+    }
+
 //    private ArrayList readDictionary(){
 //        try {
 //            FileInputStream fis = new FileInputStream(this.rootPath + "\\" + postingFilecounter);
@@ -71,8 +68,5 @@ public class Posting {
 //        }
 //    }
 
-    public void clearDic() {
-        this.allLines =new ArrayList<>();
-    }
 }
 

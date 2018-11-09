@@ -18,7 +18,7 @@ public class Parse {
     private HashSet stop_words = new HashSet<String>();
     int i;
 
-    public Parse() {
+    public Parse(String path) {
         //initialize hm
         hmNum.put("Thousand","K"); hmNum.put("Million","M"); hmNum.put("Billion","B"); hmNum.put("Trillion","000B");
         hmNum.put("thousand","K"); hmNum.put("million","M"); hmNum.put("billion","B"); hmNum.put("trillion","000B");
@@ -37,9 +37,9 @@ public class Parse {
         hmDate.put("Nov","11"); hmDate.put("NOV","11"); hmDate.put("November","11"); hmDate.put("NOVEMBER","11");
         hmDate.put("Dec","12"); hmDate.put("DEC","12"); hmDate.put("December","12"); hmDate.put("DECEMBER","12");
         hsDot.add(','); hsDot.add('.'); hsDot.add(':'); hsDot.add(';'); hsDot.add('|'); hsDot.add(' '); hsDot.add('"');
-        hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add("--");
+        hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add('+');
         //initialize stop_words
-        readStopWords("C:\\Users\\Maor\\Desktop\\corpus\\STOPWORDS");
+        readStopWords(path+"\\STOPWORDS");
     }
 
     public void readStopWords(String fileName) {
@@ -70,9 +70,9 @@ public class Parse {
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
             String currValue = "";
-            if(current.equals(""))//if empty token
+            if(current.equals("") || current.equals(" "))//if empty token
                 continue;
-            if(current.contains("--")){ //todo ask yaniv
+            if(current.contains("--")){//todo ask yaniv
                 current = current.replaceAll("--","");
                 document.addTermToDoc(current);
                 continue;
@@ -146,7 +146,6 @@ public class Parse {
             }
 
             document.addTermToDoc(currValue);
-            //System.out.println(currValue);
         }
         return document;
     }

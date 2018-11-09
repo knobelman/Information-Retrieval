@@ -39,6 +39,8 @@ public class ParseTests {
         count +=1;
         pass += test("12","-500","-500");
         count +=1;
+        pass += test("13","1,993","1.993K");
+        count +=1;
 
         /**
          * Percentage
@@ -126,7 +128,7 @@ public class ParseTests {
     }
 
     public static int test(String number, String input,String output) {
-        Parse p = new Parse();
+        Parse p = new Parse("C:\\Users\\Maor\\Desktop\\corpus");
         Doc doc1 = new Doc();
         doc1.setDoc_content(input);
         p.parsing(doc1, false);
