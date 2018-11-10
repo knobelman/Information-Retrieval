@@ -17,6 +17,8 @@ public class ParseTests {
          * NUMBERS
          */
         System.out.println("~*~ Numbers Tests ~*~");
+        pass += test("0","/Egypt","Egypt");
+        count +=1;
         pass += test("0","\"Hello","Hello");
         count +=1;
         pass += test("1","10,123","10.123K");
@@ -125,9 +127,50 @@ public class ParseTests {
         count +=1;
         pass += test("7","the yaniv","yaniv");
         count +=1;
+        pass += test("8","Value-added","Value-added");
+        count +=1;
+        pass += test("9","10-part","10-part");
+        count +=1;
+        pass += test("10","6-7","6-7");
+        count +=1;
+        pass += test("11","between 18 and 24","between 18 and 24");
+        count +=1;
+
+        /**
+         * More
+         */
+        System.out.println("~*~ More ~*~");
+        pass += test("0","Europe's","Europe");
+        count +=1;
+        pass += test("1","\"Europe's","Europe");
+        count +=1;
+        pass += test("2","...and",""); //retun null
+        count +=1;
+        pass += test("3","-","");
+        count +=1;
+        pass += test("4","DASA'","DASA");
+        count +=1;
+        pass += test("5","\"\"","");
+        count +=1;
+        pass += test("6","Bosnia-Herzegovina'","Bosnia-Herzegovina");
+        count +=1;
+        pass += test("7","Coalition!","Coalition");
+        count +=1;
+        pass += test("8","+14","14");
+        count +=1;
+        pass += test("9","\"2020,\"","2020");
+        count +=1;
+        pass += test("10","/[Gao","Gao");
+        count +=1;
+        pass += test("11","year./","year");
+        count +=1;
+        pass += test("12","|1-12/93","1-12/93");
+        count +=1;
+        pass += test("13","%\\","");
+        count +=1;
+        System.out.println("~*~ SUMMERY: PASS " + pass + "/" + (count-1) +" ~*~");
 
 
-        System.out.println("~*~ SUMMERY: PASS " + pass + "/" + count +" ~*~");
     }
 
     public static int test(String number, String input,String output) {
@@ -136,6 +179,15 @@ public class ParseTests {
         doc1.setDoc_content(input);
         p.parsing(doc1, false);
         HashMap<String,Term> termsReturn = doc1.getTermsInDoc();
+        if(termsReturn.size() == 0 && output.length() !=0){
+            System.out.println("TEST " + number + " FAILED| INPUT: " + input + "| OUTPUT: " + "| EXCEPTED: " + output);
+            return 0;
+        }
+        else if(termsReturn.size() == 0 && output.length() ==0){
+            System.out.println("TEST " + number + " PASS");
+            return 1;
+        }
+
         Map.Entry<String, Term> entry = termsReturn.entrySet().iterator().next();
         String result = entry.getKey();
         if (result.equals(output)) {

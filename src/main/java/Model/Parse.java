@@ -16,6 +16,8 @@ public class Parse {
     private HashMap hmDate = new HashMap<String, String>();
     private HashSet hsDot = new HashSet<String>();
     private HashSet stop_words = new HashSet<String>();
+
+    private HashSet allTerms = new HashSet <String>();
     int i;
 
     public Parse(String path) {
@@ -71,13 +73,17 @@ public class Parse {
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
             String currValue = "";
-            if(current.equals("") || current.equals(" ") || current.equals("$") || current.equals("-"))//if empty token
+            if(current.equals("") || current.equals(" ") || current.equals("$") || current.equals("-") || current.equals(",")
+                    || current.equals("."))//if empty token
                 continue;
-            if(current.contains("--")){//todo ask yaniv
+
+            if(current.contains("--") || current.contains("/")){//todo ask yaniv
                 current = current.replaceAll("--","");
+                //current = current.replaceAll("/","");
                 document.addTermToDoc(current);
                 continue;
             }
+
             if(hsDot.contains(current.charAt(current.length()-1))){//if there is a sign at the end
                 do {
                     tokenz[i] = current.substring(0, current.length() - 1);
@@ -149,9 +155,13 @@ public class Parse {
             }
 
             document.addTermToDoc(currValue);
+            allTerms.add(currValue);
         }
+
+        System.out.println(allTerms.size());
         return document;
     }
+
 
     private boolean isValidNum(String current){
         if(isNumeric(current))
