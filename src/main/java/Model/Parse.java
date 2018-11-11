@@ -39,8 +39,8 @@ public class Parse {
         hmDate.put("Nov","11"); hmDate.put("NOV","11"); hmDate.put("November","11"); hmDate.put("NOVEMBER","11");
         hmDate.put("Dec","12"); hmDate.put("DEC","12"); hmDate.put("December","12"); hmDate.put("DECEMBER","12");
         hsDot.add(','); hsDot.add('.'); hsDot.add(':'); hsDot.add(';'); hsDot.add('|'); hsDot.add(' '); hsDot.add('"');
-        hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add('+'); hsDot.add('"');
-        hsDot.add('?'); hsDot.add('-'); hsDot.add('&'); hsDot.add('`');
+        hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add('+'); hsDot.add('"'); hsDot.add('\\');
+        hsDot.add('?'); hsDot.add('-'); hsDot.add('&'); hsDot.add('`'); hsDot.add('!'); hsDot.add('/');
         //initialize stop_words
         readStopWords(path+"\\STOPWORDS");//todo take care of "WORD
     }
@@ -77,12 +77,12 @@ public class Parse {
                     || current.equals("."))//if empty token
                 continue;
 
-            if(current.contains("--") || current.contains("/")){//todo ask yaniv
-                current = current.replaceAll("--","");
-                //current = current.replaceAll("/","");
-                document.addTermToDoc(current);
-                continue;
-            }
+//            if(current.contains("--") || current.contains("/")){//todo ask yaniv
+//                current = current.replaceAll("--","");
+//                //current = current.replaceAll("/","");
+//                document.addTermToDoc(current);
+//                continue;
+//            }
 
             if(hsDot.contains(current.charAt(current.length()-1))){//if there is a sign at the end
                 do {
