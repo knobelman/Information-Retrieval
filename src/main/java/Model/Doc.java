@@ -13,6 +13,7 @@ public class Doc implements Serializable {
     private String doc_content;
     private String path;
     private int max_tf;
+    //private String max_tf_String;
     private int specialWordCount;
     private String city;
     private HashMap<String,Term> termsInDoc;
@@ -33,6 +34,9 @@ public class Doc implements Serializable {
         this.city = city;
         this.path = path;
         this.termsInDoc = new HashMap<>();
+        this.max_tf = 0;
+        this.specialWordCount = 0;
+        //this.max_tf_String = "";
     }
 
     public String getDoc_num() {
@@ -96,13 +100,19 @@ public class Doc implements Serializable {
     }
 
     public void addTermToDoc(String term){//todo
-        if(termsInDoc.containsKey(term)){
+        if(termsInDoc.containsKey(term)){//term already exists in this doc
             termsInDoc.get(term).incAmounts(this.doc_num);
         }
-        else {
+        else {//new term for the doc
+            specialWordCount++;
             Term nTerm = new Term(term);
             nTerm.incAmounts(this.doc_num);
             this.termsInDoc.put(term, nTerm);
+        }
+        int currTF = termsInDoc.get(term).getTf(doc_num);//set maxTF for DOC
+        if(currTF>max_tf) {
+            max_tf = currTF;
+            //max_tf_String = term;
         }
     }
 

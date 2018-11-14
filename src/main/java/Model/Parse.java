@@ -136,20 +136,16 @@ public class Parse {
                     stemmer.stem();
                     currValue = stemmer.toString();
                 }
-
-                //System.out.println(currValue);
                 addToDoc(currValue,document);
-                //document.addTermToDoc(currValue);
             }while(!moreThenOneWord.empty());
         }
-
-        System.out.println(allTermsInCorpus.size());
+        //System.out.println(allTermsInCorpus.size());
         return document;
     }
 
     /**
-     *
-     * @param currValue - value to add to terms
+     *  Adds the words Upper\Lower like needed
+     * @param currValue - Value to add to terms
      */
     private void addToDoc(String currValue,Doc document) {
         if(stop_words.contains(currValue.toLowerCase()))
@@ -182,6 +178,11 @@ public class Parse {
         }
     }
 
+    /**
+     * Return a token without "'s"
+     * @param current - the current token to check
+     * @return
+     */
     private String apostropheS(String current) {
         if(current.length()<2)
             return current;

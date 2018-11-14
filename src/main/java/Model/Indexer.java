@@ -52,7 +52,7 @@ public class Indexer {
                         }
                         if(TermAndDocumentsData.containsKey(termname)){
                             Integer newint =  new Integer(d.getTermsInDoc().get(termname).getTf(doc_name));
-                            int df = d.getTermsInDoc().get(termname).getDf();
+                            //int df = d.getTermsInDoc().get(termname).getDf();
                             Dictionary.replace(termname,value); //todo - new line to check
                             TermAndDocumentsData.get(termname).put(d.getDoc_num(),newint);
                         }else {
