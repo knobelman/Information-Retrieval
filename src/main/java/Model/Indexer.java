@@ -74,6 +74,11 @@ public class Indexer {
         this.postingObject = new Posting(path);
     }
 
+    public String getPostingFilePath() {
+        return this.postingObject.getRootPath();
+    }
+
+
     public void setCorpusFilePath(String path){
         this.rootPath = path;
         this.Parser = new Parse(rootPath);

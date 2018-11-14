@@ -70,11 +70,31 @@ public class Posting {
      * @param firstFile - the first file
      * @param secondFile - the second file
      */
-    public void mergeBetweenPostFiles(String firstFile, String secondFile){
 
+    //todo - to continue
+    public void mergeBetweenPostFiles(String firstFile, String secondFile) {
+        try {
+            BufferedReader first;
+            BufferedReader second;
+            String firstCurrentLine = null;
+            String secondCurrentLine = null;
+            first = new BufferedReader(new FileReader(firstFile));
+            second = new BufferedReader(new FileReader(secondFile));
+            while(firstCurrentLine!=null && secondCurrentLine!=null) {
+                firstCurrentLine = first.readLine();
+                secondCurrentLine = second.readLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-//    private ArrayList readDictionary(){
+
+    public String getRootPath() {
+        return rootPath;
+    }
+
+    //    private ArrayList readDictionary(){
 //        try {
 //            FileInputStream fis = new FileInputStream(this.rootPath + "\\" + postingFilecounter);
 //            ByteArrayInputStream in = new ByteArrayInputStream(this.objectToByteArray);
