@@ -1,9 +1,6 @@
 package View;
 
-import Model.Doc;
-import Model.Indexer;
-import Model.Parse;
-import Model.ReadFile;
+import Model.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.stage.DirectoryChooser;
@@ -22,30 +19,59 @@ public class HomeView {
     @FXML
 
     public javafx.scene.control.Button LOAD;
-    public javafx.scene.control.TextField path;
+    public javafx.scene.control.Button POSTING;
+    public javafx.scene.control.Button START;
     public javafx.scene.control.CheckBox STEMM;
 
+    /**
+     * Fields
+     */
 
-    public void load(ActionEvent actionEvent){
+    Indexer indexer = new Indexer();
+    Posting postingObject;
+
+
+    public void loadCorpus(ActionEvent actionEvent){
         DirectoryChooser fc = new DirectoryChooser();
         fc.setTitle("Load");
         File file = fc.showDialog(null);
         if (file != null) {
             String path = file.getAbsolutePath();
-            double before = System.currentTimeMillis();
-            if(STEMM.isSelected()){
-                Indexer indexer = new Indexer(path,true);
+            indexer.setCorpusFilePath(path);
+//            if(STEMM.isSelected()){
+//                indexer.setStemming(true);
+//            }else {
+//                indexer.setStemming(false);
+//            }
+        }
+    }
 
-            }else {
-                Indexer indexer = new Indexer(path,false);
+    public void loadPosting(ActionEvent actionEvent) {
+        DirectoryChooser fc = new DirectoryChooser();
+        fc.setTitle("Set Posting file Directory");
+        File file = fc.showDialog(null);
+        if (file != null) {
+            String path = file.getAbsolutePath();
+            postingObject = new Posting(path);
+            indexer.setPostingObject(postingObject);
             }
-            System.out.println((System.currentTimeMillis()-before)/1000/60 +" Minutes");
         }
 
-//        while (documentCollection.hasNext()) {
-//            System.out.println(documentCollection.next().getDoc_num());
-//            System.out.println(documentCollection.next().getDoc_content());
-            //Parse Parse_doc = new Parse(documentCollection.next());
-
+    public void startIndexing(ActionEvent actionEvent) {
+        double before = System.currentTimeMillis();
+        ReadFile readFileObject = new ReadFile(indexer.getRootPath());
+        indexer.setReadFileObject(readFileObject);
+        if(STEMM.isSelected()){
+            indexer.setStemming(true);
+        }else {
+            indexer.setStemming(false);
+        }
+        boolean toStemm = indexer.getToStemm();
+        try {
+            indexer.init(indexer.getReadFileObject(),toStemm);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println((System.currentTimeMillis()-before)/1000/60 +" Minutes");
     }
 }

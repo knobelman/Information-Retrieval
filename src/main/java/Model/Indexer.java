@@ -2,35 +2,38 @@ package Model;
 import java.io.*;
 import java.util.*;
 
-//external sort - אלגוריתם לאינקדסינג
-
+/**
+ * Indexer class which create index for all the files
+ */
 public class Indexer {
     private String rootPath;
     private static ReadFile readFileObject;
     private HashSet<Doc> DocumentsToParse;
     private ArrayList<Thread> DocsThread;
     private Posting postingObject;
-    private HashMap<String,HashMap<String,Integer>> dictionary = new LinkedHashMap<>();
+    private HashMap<String,HashMap<String,Integer>> TermAndDocumentsData = new LinkedHashMap<>();
+    private HashMap<String,Term> Dictionary;
+    private Boolean toStemm;
     private Parse Parser;
 
-
-    public Indexer(String rootPath, boolean stemm) {
-        this.rootPath = rootPath;
-        this.Parser = new Parse(rootPath);
-        this.readFileObject = new ReadFile(rootPath);
+    public Indexer() {
         this.DocumentsToParse = new HashSet<>();
         this.DocsThread = new ArrayList<>();
-        this.postingObject = new Posting(this.rootPath);
-        try {
-            init(readFileObject.getRoot(),stemm);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.Dictionary = new HashMap<>();
+//        try {
+//            init(readFileObject.getRoot(),stemm);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
-     * @param file
-     * @param stemm
+     * this function initialize index
+     * send all the docs to parsing
+     * insert to TermAndDocumentsData structure and to the dictionary if need to update
+     * @param file - entry file
+     * @param stemm - boolean field indicates stemm or not
+     * this function send date to posting class which create the posting files
      */
     public void init(final File file, boolean stemm) throws IOException {
         for (final File fileEntry : file.listFiles()) {
@@ -47,37 +50,56 @@ public class Indexer {
                         if(termname.equals("")){
                             continue;
                         }
-                        if(dictionary.containsKey(termname)){
+                        if(TermAndDocumentsData.containsKey(termname)){
                             Integer newint =  new Integer(d.getTermsInDoc().get(termname).getTf(doc_name));
-                            dictionary.get(termname).put(d.getDoc_num(),newint);
+                            int df = d.getTermsInDoc().get(termname).getDf();
+                            Dictionary.replace(termname,value); //todo - new line to check
+                            TermAndDocumentsData.get(termname).put(d.getDoc_num(),newint);
                         }else {
+                            Dictionary.put(termname,value); //todo - new line to check
                             HashMap<String, Integer> current = new HashMap();
                             current.put(doc_name, new Integer(value.getTf(doc_name)));
-                            dictionary.put(termname, current);
+                            TermAndDocumentsData.put(termname, current);
                         }
                     }
                 }
-                postingObject.createPostingFile(this.dictionary);
-                dictionary = new LinkedHashMap<>();
-
-//                Thread t = new Thread(() -> DocumentsToParse = readFileObject.fromFileToDoc(fileEntry));
-//                DocsThread.add(t);
-//                t.start();
-//                try {
-//                    t.join();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-
-//                for (Thread CurrentDoc : DocsThread) {
-//                    try {
-//                        CurrentDoc.join();
-//                    } catch (InterruptedException e) {
-//                        //e.printStackTrace();
-//                    }
-//                }
+                postingObject.createPostingFile(this.TermAndDocumentsData,this.Dictionary);
+                TermAndDocumentsData = new LinkedHashMap<>();
             }
         }
+    }
+
+
+    public void setPostingFilePath(String path){
+        this.postingObject = new Posting(path);
+    }
+
+    public void setCorpusFilePath(String path){
+        this.rootPath = path;
+        this.Parser = new Parse(rootPath);
+    }
+
+    public void setStemming(boolean flag){
+        this.toStemm = flag;
+    }
+
+    public File getReadFileObject() {
+        return readFileObject.getRoot();
+    }
+
+    public Boolean getToStemm() {
+        return toStemm;
+    }
+
+    public static void setReadFileObject(ReadFile readFileObject) {
+        Indexer.readFileObject = readFileObject;
+}
+    public String getRootPath() {
+        return rootPath;
+    }
+
+    public void setPostingObject(Posting postingObject) {
+        this.postingObject = postingObject;
     }
 }
 

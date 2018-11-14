@@ -4,24 +4,28 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Created by Maor on 11/8/2018.
+ * This class create the posting file
  */
 public class Posting {
     ArrayList<String> allLines;
     private String rootPath;
     private static int postingFilecounter;
 
+    /**
+     * C'tor
+     * @param rootPath
+     */
     public Posting(String rootPath) {
         allLines = new ArrayList<>();
-        this.rootPath = "C:\\Users\\Maor\\Desktop\\PostingFile";
+        this.rootPath = rootPath;
     }
 
-    public void createPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap) {
+    public void createPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap, HashMap<String, Term> dictionary) {
         try {
             Iterator it = linkedHashMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry)it.next();
-                allLines.add(pair.getKey() + "|" + pair.getValue()+"\n");
+                allLines.add(pair.getKey() + "| DF: " + (dictionary.get(pair.getKey()).getDf()+ " |" + pair.getValue()+"\n"));
                 it.remove();
             }
             sort();
@@ -37,6 +41,9 @@ public class Posting {
         }
     }
 
+    /**
+     * this function sort the lines in a posting file before writing to disk
+     */
     private void sort(){
         allLines.sort((o1, o2) -> {
             String s1 = o1.substring(0, o1.indexOf('|'));
@@ -45,8 +52,20 @@ public class Posting {
         });
     }
 
+    /**
+     * this function clear the current posting file content for the next one
+     */
     public void clearDic() {
-        this.allLines =new ArrayList<>();
+        this.allLines = new ArrayList<>();
+    }
+
+    /**
+     * this function merge between two posting files
+     * @param firstFile - the first file
+     * @param secondFile - the second file
+     */
+    public void mergeBetweenPostFiles(String firstFile, String secondFile){
+
     }
 
 //    private ArrayList readDictionary(){

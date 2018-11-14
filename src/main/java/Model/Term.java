@@ -11,7 +11,7 @@ public class Term implements Serializable,Comparable<Term>{
     private String term;
     private int df;
     private HashMap<String,Integer> amountInDoc; //String=Doc name, Integer = tf
-    private String position;
+    //private String position;
 
     public Term(String term) {
         this.term = term;
@@ -25,12 +25,12 @@ public class Term implements Serializable,Comparable<Term>{
     }
 
     public int getDf() {
-        return df;
+        return this.df;
     }
 
     private void incDf(String docName) {
         if(!amountInDoc.containsKey(docName))
-            this.df++;
+            this.df+=1;
     }
 
     public int getTf(String docName) {

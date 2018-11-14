@@ -95,14 +95,22 @@ public class Doc implements Serializable {
         return termsInDoc;
     }
 
-    public void addTermToDoc(String term){
+    public void addTermToDoc(String term){//todo
         if(termsInDoc.containsKey(term)){
             termsInDoc.get(term).incAmounts(this.doc_num);
         }
         else {
             Term nTerm = new Term(term);
-            this.termsInDoc.put(term, nTerm);
             nTerm.incAmounts(this.doc_num);
+            this.termsInDoc.put(term, nTerm);
         }
+    }
+
+    public boolean contains(String term){
+        return termsInDoc.containsKey(term);
+    }
+
+    public void removeFromDoc(String term){
+        termsInDoc.remove(term);
     }
 }

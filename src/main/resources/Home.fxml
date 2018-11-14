@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane alignment="center" hgap="10" style="-fx-background-color: orange;" vgap="10" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.HomeView">
+<GridPane alignment="center" hgap="10" style="-fx-background-color: orange;" vgap="10" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.HomeView">
    <children>
       <GridPane prefHeight="219.0" prefWidth="338.0">
         <columnConstraints>
@@ -22,16 +22,16 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="LOAD" mnemonicParsing="false" onAction="#load" prefHeight="25.0" prefWidth="119.0" text="BROWSE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <Button fx:id="LOAD" mnemonicParsing="false" onAction="#loadCorpus" prefHeight="25.0" prefWidth="119.0" text="BROWSE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets bottom="40.0" />
                </GridPane.margin></Button>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Corpus Path" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Corpus Path" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                <font>
                   <Font size="16.0" />
                </font>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Positng Path" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Positng Path" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                <font>
                   <Font size="16.0" />
                </font>
@@ -41,7 +41,8 @@
                   <Insets left="40.0" top="30.0" />
                </GridPane.margin>
             </CheckBox>
-            <Button fx:id="LOAD1" mnemonicParsing="false" prefHeight="31.0" prefWidth="119.0" text="BROWSE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <Button fx:id="POSTING" mnemonicParsing="false" onAction="#loadPosting" prefHeight="31.0" prefWidth="119.0" text="BROWSE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <Button fx:id="START" mnemonicParsing="false" onAction="#startIndexing" prefHeight="31.0" prefWidth="119.0" text="START" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
          </children>
       </GridPane>
    </children>

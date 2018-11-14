@@ -17,6 +17,8 @@ public class ParseTests {
          * NUMBERS
          */
         System.out.println("~*~ Numbers Tests ~*~");
+        pass += test("0","Country's","Country");
+        count +=1;
         pass += test("0","/Egypt","Egypt");
         count +=1;
         pass += test("0","\"Hello","Hello");
@@ -168,7 +170,7 @@ public class ParseTests {
         count +=1;
         pass += test("13","%\\","");
         count +=1;
-        System.out.println("~*~ SUMMERY: PASS " + pass + "/" + (count-1) +" ~*~");
+        System.out.println("~*~ SUMMERY: PASS " + pass + "/" + (count) +" ~*~");
 
 
     }

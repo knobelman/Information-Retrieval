@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Stack;
 
 /**
  * Created by Maor on 10/30/2018.
@@ -16,8 +17,8 @@ public class Parse {
     private HashMap hmDate = new HashMap<String, String>();
     private HashSet hsDot = new HashSet<String>();
     private HashSet stop_words = new HashSet<String>();
-
-    private HashSet allTerms = new HashSet <String>();
+    private Stack moreThenOneWord = new Stack<String>();
+    private HashSet allTermsInCorpus = new HashSet <String>();
     int i;
 
     public Parse(String path) {
@@ -39,8 +40,8 @@ public class Parse {
         hmDate.put("Nov","11"); hmDate.put("NOV","11"); hmDate.put("November","11"); hmDate.put("NOVEMBER","11");
         hmDate.put("Dec","12"); hmDate.put("DEC","12"); hmDate.put("December","12"); hmDate.put("DECEMBER","12");
         hsDot.add(','); hsDot.add('.'); hsDot.add(':'); hsDot.add(';'); hsDot.add('|'); hsDot.add(' '); hsDot.add('"');
-        hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add('+'); hsDot.add('"');
-        hsDot.add('?'); hsDot.add('-'); hsDot.add('&'); hsDot.add('`');
+        hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add('+'); hsDot.add('"'); hsDot.add('\\');
+        hsDot.add('?'); hsDot.add('-'); hsDot.add('&'); hsDot.add('`'); hsDot.add('!'); hsDot.add('/');
         //initialize stop_words
         readStopWords(path+"\\STOPWORDS");//todo take care of "WORD
     }
@@ -73,93 +74,151 @@ public class Parse {
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
             String currValue = "";
-            if(current.equals("") || current.equals(" ") || current.equals("$") || current.equals("-") || current.equals(",")
-                    || current.equals("."))//if empty token
-                continue;
-
-            if(current.contains("--") || current.contains("/")){//todo ask yaniv
-                current = current.replaceAll("--","");
-                //current = current.replaceAll("/","");
-                document.addTermToDoc(current);
-                continue;
-            }
-
-            if(hsDot.contains(current.charAt(current.length()-1))){//if there is a sign at the end
-                do {
-                    tokenz[i] = current.substring(0, current.length() - 1);
-                    current = tokenz[i];
-                }while(current.length()>0 && hsDot.contains(current.charAt(current.length()-1)));
-                if(current.length()==0) {
-                    continue;
+            //System.out.println(current);//*********************************************
+            if(current.contains("--")){//fill stack with all words to work on
+                for(String curr : current.split("--")){
+                    moreThenOneWord.push(curr);
                 }
-            }
-            if(hsDot.contains(current.charAt(0))){//if there is a sign in the beginning
-                do {
-                    if((current.charAt(0) == '-' & isValidNum(current.substring(1, current.length()))) || current.substring(1, current.length()).length()==0)
-                        break;
-                    tokenz[i] = current.substring(1, current.length());
-                    current = tokenz[i];
-                }while(current.length()>0 && hsDot.contains(current.charAt(0)));
-                if(current.length()==0) {
-                    continue;
-                }
-            }
-            if(hsDot.contains(current) || stop_words.contains(current)){//if the raw token is a stop word
-                continue;
-            }
-            if(current.contains("-") || current.equals("Between") || current.equals("between")){//10-part,6-7 etc'
-                if(current.contains("-"))
-                    currValue = current;
-                else if(i + 1 < tokenz.length && isValidNum(tokenz[i+1])){
-                    if(i + 2 < tokenz.length && tokenz[i+2].equals("and"))
-                        if(i + 3 < tokenz.length && isValidNum(tokenz[i+3]))
-                            currValue = tokenz[i] +" "+ tokenz[i+1] +" "+ tokenz[i+2] +" "+ tokenz[i+3];
-                }
-            }
-            else if(current.charAt(0) == '$'){//if first char is '$' V
-                if(i + 1 >= tokenz.length)
-                    currValue = dollarFirst(tokenz[i], "");
-                else
-                    currValue = dollarFirst(tokenz[i], tokenz[i + 1]);
-            }
-            else if(isValidNum(current)) {//check if token is a valid number
-                if(i + 1 >= tokenz.length)
-                    currValue = numberFirst(tokenz[i], "", "", "");
-                else if(i + 2 >= tokenz.length)
-                    currValue = numberFirst(tokenz[i], tokenz[i + 1], "", "");
-                else if(i + 3 >= tokenz.length)
-                    currValue = numberFirst(tokenz[i], tokenz[i + 1], tokenz[i + 2], "");
-                else
-                    currValue = numberFirst(tokenz[i], tokenz[i + 1], tokenz[i + 2], tokenz[i + 3]);
-            }
-            else if(current.contains("%")){//%6 etc'
-                currValue = current;
-            }
-            else if(hmDate.containsKey(current)){//if first token is month
-                if(i + 1 >= tokenz.length)//if month comes alone
-                    currValue = tokenz[i];
-                else
-                    currValue = dateFirst(tokenz[i], tokenz[i + 1]);
-                if(currValue.contains("-"))//if is a date- ignore next token alone
-                    i++;
             }
             else{
-                currValue = tokenz[i];
+                moreThenOneWord.push(current);
             }
+            if(moreThenOneWord.empty())
+                continue;
+            do {
+                current = (String)moreThenOneWord.pop();
+                current = trimming(current);
+                if(current.equals(""))
+                    continue;
+                if (hsDot.contains(current) || stop_words.contains(current) || current.equals("%")) {//if the raw token is a stop word
+                    continue;
+                }
+                if (current.contains("-") || current.equals("Between") || current.equals("between")) {//10-part,6-7 etc'
+                    if (current.contains("-"))
+                        currValue = current;
+                    else if (i + 1 < tokenz.length && isValidNum(tokenz[i + 1])) {
+                        if (i + 2 < tokenz.length && tokenz[i + 2].equals("and"))
+                            if (i + 3 < tokenz.length && isValidNum(tokenz[i + 3])) {
+                                currValue = tokenz[i] + " " + tokenz[i + 1] + " " + tokenz[i + 2] + " " + tokenz[i + 3];
+                                i += 3;
+                            }
+                    }
+                } else if (current.charAt(0) == '$') {//if first char is '$' V
+                    if (i + 1 >= tokenz.length)
+                        currValue = dollarFirst(current, "");
+                    else
+                        currValue = dollarFirst(tokenz[i], tokenz[i + 1]);
+                } else if (isValidNum(current)) {//check if token is a valid number
+                    if (i + 1 >= tokenz.length)
+                        currValue = numberFirst(current, "", "", "");
+                    else if (i + 2 >= tokenz.length)
+                        currValue = numberFirst(current, tokenz[i + 1], "", "");
+                    else if (i + 3 >= tokenz.length)
+                        currValue = numberFirst(current, tokenz[i + 1], tokenz[i + 2], "");
+                    else
+                        currValue = numberFirst(current, tokenz[i + 1], tokenz[i + 2], tokenz[i + 3]);
+                } else if (current.contains("%")) {//%6 etc'
+                    currValue = current;
+                } else if (hmDate.containsKey(current)) {//if first token is month
+                    if (i + 1 >= tokenz.length)//if month comes alone
+                        currValue = current;
+                    else
+                        currValue = dateFirst(current, trimming(tokenz[i + 1]));
+                    if (currValue.contains("-"))//if is a date- ignore next token alone
+                        i++;
+                } else {
+                    current = apostropheS(current);
+                    currValue = current;
+                }
 
-            if(stemm) {
-                Stemmer stemmer = new Stemmer();
-                stemmer.add(currValue.toCharArray(), currValue.length());
-                stemmer.stem();
-                currValue = stemmer.toString();
-            }
+                if (stemm) {
+                    Stemmer stemmer = new Stemmer();
+                    stemmer.add(currValue.toCharArray(), currValue.length());
+                    stemmer.stem();
+                    currValue = stemmer.toString();
+                }
 
-            document.addTermToDoc(currValue);
-            allTerms.add(currValue);
+                //System.out.println(currValue);
+                addToDoc(currValue,document);
+                //document.addTermToDoc(currValue);
+            }while(!moreThenOneWord.empty());
         }
 
-        System.out.println(allTerms.size());
+        System.out.println(allTermsInCorpus.size());
         return document;
+    }
+
+    /**
+     *
+     * @param currValue - value to add to terms
+     */
+    private void addToDoc(String currValue,Doc document) {
+        if(stop_words.contains(currValue.toLowerCase()))
+            return;
+        if(currValue.toLowerCase().equals(currValue)) {//if is Lower case "yaniv"
+            if(allTermsInCorpus.contains(currValue.toUpperCase())) {//if allTerm contains Upper case of current word and current word is lower case
+                document.removeFromDoc(currValue.toUpperCase());
+                allTermsInCorpus.remove(currValue.toUpperCase());
+            }
+            document.addTermToDoc(currValue);
+            allTermsInCorpus.add(currValue);
+        }
+        else if(currValue.toUpperCase().equals(currValue)){//if is Upper case "YANIV"
+            if(allTermsInCorpus.contains(currValue.toLowerCase())) {//if allTerm contains Lower case of current word and current word is Upper case
+                return;
+            }
+            document.addTermToDoc(currValue);
+            allTermsInCorpus.add(currValue);
+        }
+        else if(Character.isUpperCase(currValue.charAt(0))) {//if first char is upper "Yaniv"
+            if(allTermsInCorpus.contains(currValue.toLowerCase())) {//if allTerm contains Lower case of current
+                return;
+            }
+            document.addTermToDoc(currValue.toUpperCase());
+            allTermsInCorpus.add(currValue.toUpperCase());
+        }
+        else {
+            document.addTermToDoc(currValue);
+            allTermsInCorpus.add(currValue);
+        }
+    }
+
+    private String apostropheS(String current) {
+        if(current.length()<2)
+            return current;
+        if(current.charAt(current.length()-1)=='s' && current.charAt(current.length()-2)=='\'')
+            current = current.substring(0,current.length()-2);
+        return current;
+    }
+
+    /**
+     *
+     * @param current - the current token to deal with
+     * @return - the current token without clutter
+     */
+    private String trimming(String current) {
+        if (current.equals("") || current.equals(" ") || current.equals("$") || current.equals("-") || current.equals(",")
+                || current.equals(".") || current.equals("%"))//if empty token
+            return "";
+        if (hsDot.contains(current.charAt(current.length() - 1))) {//if there is a sign at the end
+            do {
+                current = current.substring(0, current.length() - 1);
+            } while (current.length() > 0 && hsDot.contains(current.charAt(current.length() - 1)));
+            if (current.length() == 0) {
+                return "";
+            }
+        }
+        if (hsDot.contains(current.charAt(0))) {//if there is a sign in the beginning
+            do {
+                if ((current.charAt(0) == '-' & isValidNum(current.substring(1, current.length()))) || current.substring(1, current.length()).length() == 0)
+                    break;
+                current = current.substring(1, current.length());
+            } while (current.length() > 0 && hsDot.contains(current.charAt(0)));
+            if (current.length() == 0) {
+                return "";
+            }
+        }
+        return current;
     }
 
 
@@ -387,11 +446,13 @@ public class Parse {
             return current;
         String result = "";
         boolean done = false;
-        for (int j = num[1].length() - 1; j >= 0; j--) { //for after the dot
-            if (num[1].charAt(j) != '0' && !done)
-                done = true;
-            if (done) {
-                result = num[1].charAt(j) + result;
+        if(num.length>1) {//check that there is something after the dot
+            for (int j = num[1].length() - 1; j >= 0; j--) { //for after the dot
+                if (num[1].charAt(j) != '0' && !done)
+                    done = true;
+                if (done) {
+                    result = num[1].charAt(j) + result;
+                }
             }
         }
 

@@ -13,23 +13,28 @@ import java.util.HashSet;
 public class ReadFile {
     private String path;
     private File root;
-    static int N = 472574;
 
+    /**
+     * C'tor
+     * @param path - path of corpus
+     */
     public ReadFile(String path) {
         this.path = path;
         this.root = new File(path);
     }
 
     /**
-     * parsing documents
-     * @param file - file to parse
+     * this function take a file and separate each document to doc number, doc content, doc city.
+     * after that, create a document object
+     * @param file - file to separate to documents
+     * return hash set of documents for the next station - parsing
      */
     public HashSet<Doc> fromFileToDoc(File file) {
         String path = file.toString();
         Document doc = Jsoup.parse(readFile(path));
         Elements docs = doc.select("DOC");
-        Doc document = null;
-        HashSet<Doc> documents = new HashSet<Doc>();
+        Doc document;
+        HashSet<Doc> documents = new HashSet<>();
         //loop throughout all the documents
         for (Element d: docs){
             String doc_num = d.select("DOCNO").text();
@@ -81,19 +86,8 @@ public class ReadFile {
         }
         return sb.toString();
     }
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 
     public File getRoot() {
         return root;
-    }
-
-    public void setRoot(File root) {
-        this.root = root;
     }
 }
