@@ -13,7 +13,7 @@ public class Posting {
 
     public Posting(String rootPath) {
         allLines = new ArrayList<>();
-        this.rootPath = "C:\\Users\\Maor\\Desktop\\PostingFile";
+        this.rootPath = "C:\\Users\\Yaniv\\Desktop\\PostingFile";
     }
 
     public void createPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap) {

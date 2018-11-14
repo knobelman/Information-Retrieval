@@ -105,4 +105,12 @@ public class Doc implements Serializable {
             nTerm.incAmounts(this.doc_num);
         }
     }
+
+    public boolean contains(String term){
+        return termsInDoc.containsKey(term);
+    }
+
+    public void removeFromDoc(String term){
+        termsInDoc.remove(term);
+    }
 }
