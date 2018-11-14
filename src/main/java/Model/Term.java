@@ -9,29 +9,29 @@ import java.util.HashMap;
  */
 public class Term implements Serializable,Comparable<Term>{
     private String term;
-    private int df;
+    //private int df;
     private HashMap<String,Integer> amountInDoc; //String=Doc name, Integer = tf
     //private String position;
 
     public Term(String term) {
         this.term = term;
-        df = 0;
+        //df = 0;
         amountInDoc = new HashMap<>();
     }
 
     public void incAmounts(String docName){
-        incDf(docName);
+        //incDf(docName);
         incTf(docName);
     }
 
-    public int getDf() {
-        return this.df;
-    }
+//    public int getDf() {
+//        return this.df;
+//    }
 
-    private void incDf(String docName) {
-        if(!amountInDoc.containsKey(docName))
-            this.df+=1;
-    }
+//    private void incDf(String docName) {
+//        if(!amountInDoc.containsKey(docName))
+//            this.df+=1;
+//    }
 
     public int getTf(String docName) {
         return this.amountInDoc.get(docName);
@@ -43,14 +43,6 @@ public class Term implements Serializable,Comparable<Term>{
         else
             this.amountInDoc.put(docName,1);
     }
-
-//    public ArrayList<String> getDocuments() {
-//        return documents;
-//    }
-
-//    public void setDocuments(ArrayList<String> documents) {
-//        this.documents = documents;
-//    }
 
     public String getTerm() {
         return term;
@@ -68,7 +60,6 @@ public class Term implements Serializable,Comparable<Term>{
     @Override
     public String toString() {
         return  "'" + term + '\'' +
-                ", df=" + df +
                 ", amountInDoc=" + amountInDoc;
     }
 }

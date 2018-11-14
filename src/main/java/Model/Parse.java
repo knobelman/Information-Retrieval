@@ -74,7 +74,6 @@ public class Parse {
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
             String currValue = "";
-            //System.out.println(current);//*********************************************
             if(current.contains("--")){//fill stack with all words to work on
                 for(String curr : current.split("--")){
                     moreThenOneWord.push(curr);

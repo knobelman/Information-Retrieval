@@ -20,12 +20,18 @@ public class Posting {
         this.rootPath = rootPath;
     }
 
+    /**
+     *
+     * @param linkedHashMap String - term, String - doc, Integer - tf
+     * @param dictionary
+     */
     public void createPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap, HashMap<String, Term> dictionary) {
         try {
             Iterator it = linkedHashMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry)it.next();
-                allLines.add(pair.getKey() + "| DF: " + (dictionary.get(pair.getKey()).getDf()+ " |" + pair.getValue()+"\n"));
+                int size = ((HashMap<String, Integer>)pair.getValue()).size();
+                allLines.add(pair.getKey() + "| DF: " + size + " |" + pair.getValue()+"\n");
                 it.remove();
             }
             sort();

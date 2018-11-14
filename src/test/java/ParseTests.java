@@ -16,51 +16,51 @@ public class ParseTests {
         /**
          * NUMBERS
          */
-//        System.out.println("~*~ Numbers Tests ~*~");
-//        pass += test("0","/Egypt","Egypt");
-//        count +=1;
-//        pass += test("0","\"Hello","Hello");
-//        count +=1;
-//        pass += test("1","10,123","10.123K");
-//        count +=1;
-//        pass += test("2", "123 Thousand","123K");
-//        count +=1;
-//        pass += test("3","1010.56","1.01056K");
-//        count +=1;
-//        pass += test("4","10,123,000","10.123M");
-//        count +=1;
-//        pass += test("6","55 Million","55M");
-//        count +=1;
-//        pass += test("7","1010.56","1.01056K");
-//        count +=1;
-//        pass += test("8","10,123,000,000","10.123B");
-//        count +=1;
-//        pass += test("9","55 Billion","55B");
-//        count +=1;
-//        pass += test("10","7 Trillion","7000B");
-//        count +=1;
-//        pass += test("11","204","204");
-//        count +=1;
-//        pass += test("12","-500","-500");
-//        count +=1;
-//        pass += test("13","1,993","1.993K");
-//        count +=1;
-//
-//        /**
-//         * Percentage
-//         */
-//        System.out.println("~*~ Percentage Tests ~*~");
-//        pass += test("1","6%","6%");
-//        count +=1;
-//        pass += test("2","10.6 percent","10.6%");
-//        count +=1;
-//        pass += test("3","6%","6%");
-//        count +=1;
-//        pass += test("4","10.6 percentage","10.6%");
-//        count +=1;
-//        pass += test("5","1000%","1000%");
-//        count +=1;
-//
+        System.out.println("~*~ Numbers Tests ~*~");
+        pass += test("0","/Egypt","EGYPT");
+        count +=1;
+        pass += test("0","\"Hello","HELLO");
+        count +=1;
+        pass += test("1","10,123","10.123K");
+        count +=1;
+        pass += test("2", "123 Thousand","123K");
+        count +=1;
+        pass += test("3","1010.56","1.01056K");
+        count +=1;
+        pass += test("4","10,123,000","10.123M");
+        count +=1;
+        pass += test("6","55 Million","55M");
+        count +=1;
+        pass += test("7","1010.56","1.01056K");
+        count +=1;
+        pass += test("8","10,123,000,000","10.123B");
+        count +=1;
+        pass += test("9","55 Billion","55B");
+        count +=1;
+        pass += test("10","7 Trillion","7000B");
+        count +=1;
+        pass += test("11","204","204");
+        count +=1;
+        pass += test("12","-500","-500");
+        count +=1;
+        pass += test("13","1,993","1.993K");
+        count +=1;
+
+        /**
+         * Percentage
+         */
+        System.out.println("~*~ Percentage Tests ~*~");
+        pass += test("1","6%","6%");
+        count +=1;
+        pass += test("2","10.6 percent","10.6%");
+        count +=1;
+        pass += test("3","6%","6%");
+        count +=1;
+        pass += test("4","10.6 percentage","10.6%");
+        count +=1;
+        pass += test("5","1000%","1000%");
+        count +=1;
+
         /**
          * Prices
          */
