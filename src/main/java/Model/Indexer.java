@@ -69,7 +69,28 @@ public class Indexer {
         }
     }
 
+    /**
+     * create the final posting file
+     */
+    public void createFinalPosting(){
+        for(int i=postingObject.getPostingFilecounter()-2;i>=2;i=i-4){
+            postingObject.mergeBetweenPostFiles(""+ (i),""+(i-2),postingObject.getFirstHalfWriter());
+        }
+        try {
+            postingObject.getFirstHalfWriter().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        for(int i=postingObject.getPostingFilecounter()-3;i>=2;i = i-2){
+            postingObject.mergeBetweenPostFiles(""+ (i),""+(i-2),postingObject.getSecondHalfWriter());
+        }
+        try {
+            postingObject.getSecondHalfWriter().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public void setPostingFilePath(String path){
         this.postingObject = new Posting(path);
     }

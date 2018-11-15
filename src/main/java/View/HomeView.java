@@ -102,6 +102,7 @@ public class HomeView {
             boolean toStemm = indexer.getToStemm();
             try {
                 indexer.init(indexer.getReadFileObject(), toStemm);
+                indexer.createFinalPosting();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -10,6 +10,10 @@ public class Posting {
     ArrayList<String> allLines;
     private String rootPath;
     private static int postingFilecounter;
+    private BufferedWriter firstHalfWriter;
+    private BufferedWriter secondHalfWriter;
+
+
 
     /**
      * C'tor
@@ -18,6 +22,12 @@ public class Posting {
     public Posting(String rootPath) {
         allLines = new ArrayList<>();
         this.rootPath = rootPath;
+        try {
+            firstHalfWriter = new BufferedWriter(new FileWriter(this.rootPath+"\\"+"FirstHalf"));
+            secondHalfWriter = new BufferedWriter(new FileWriter(this.rootPath+"\\"+"SecondHalf"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -69,29 +79,85 @@ public class Posting {
      * this function merge between two posting files
      * @param firstFile - the first file
      * @param secondFile - the second file
+     * @param choosen
      */
 
-    //todo - to continue
-    public void mergeBetweenPostFiles(String firstFile, String secondFile) {
+    /**
+     * This function merge between all the temp posting files
+     * @param firstFile - the first file
+     * @param secondFile - the second file
+     * @param choosen - file writer
+     */
+    public void mergeBetweenPostFiles(String firstFile, String secondFile, BufferedWriter choosen) {
         try {
             BufferedReader first;
             BufferedReader second;
-            String firstCurrentLine = null;
-            String secondCurrentLine = null;
-            first = new BufferedReader(new FileReader(firstFile));
-            second = new BufferedReader(new FileReader(secondFile));
+            String firstCurrentLine;
+            String secondCurrentLine;
+            File fFILE = new File(firstFile);
+            File sFILE = new File(secondFile);
+            first = new BufferedReader(new FileReader(this.rootPath+"\\"+fFILE));
+            second = new BufferedReader(new FileReader(this.rootPath +"\\"+sFILE));
+            firstCurrentLine = first.readLine();
+            secondCurrentLine = second.readLine();
+
             while(firstCurrentLine!=null && secondCurrentLine!=null) {
-                firstCurrentLine = first.readLine();
-                secondCurrentLine = second.readLine();
+                String t1 = firstCurrentLine.substring(0, firstCurrentLine.indexOf('|'));
+                String t2 = secondCurrentLine.substring(0, secondCurrentLine.indexOf('|'));
+
+                //t1 < t2
+                if(t1.compareTo(t2)<0){
+                    choosen.write(firstCurrentLine);
+                    firstCurrentLine = first.readLine();
+                    // t1 > t2
+                }else if(t1.compareTo(t2)>0){
+                    choosen.write(secondCurrentLine);
+                    secondCurrentLine = second.readLine();
+                    //t1 = t2
+                }else {
+                    firstCurrentLine = firstCurrentLine.substring(firstCurrentLine.indexOf('|') + 1, firstCurrentLine.length());
+                    secondCurrentLine = secondCurrentLine.concat(firstCurrentLine + "\n");
+                    choosen.write(secondCurrentLine);
+                    firstCurrentLine = first.readLine();
+                    secondCurrentLine = second.readLine();
+                }
             }
+
+            if(firstCurrentLine == null){
+                while (secondCurrentLine != null){
+                    choosen.write(secondCurrentLine+"\n");
+                    secondCurrentLine = second.readLine();
+                }
+            }
+
+            if(secondCurrentLine == null){
+                while(firstCurrentLine != null){
+                    choosen.write(firstCurrentLine+"\n");
+                    firstCurrentLine = first.readLine();
+                }
+            }
+
+            first.close();
+            second.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public BufferedWriter getFirstHalfWriter() {
+        return firstHalfWriter;
+    }
+
+    public BufferedWriter getSecondHalfWriter() {
+        return secondHalfWriter;
+    }
 
     public String getRootPath() {
         return rootPath;
+    }
+
+    public static int getPostingFilecounter() {
+        return postingFilecounter;
     }
 
     //    private ArrayList readDictionary(){
