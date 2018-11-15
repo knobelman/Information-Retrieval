@@ -8,7 +8,14 @@ import java.util.HashSet;
 import java.util.Stack;
 
 /**
- * Created by Maor on 10/30/2018.
+ * This class represents the parser object
+ * hmNum -
+ * hmSign -
+ * hmDate -
+ * hsDot -
+ * stop_words -
+ * moreThenOneWord -
+ * allTermsInCorpus -
  */
 public class Parse {
 
@@ -21,6 +28,10 @@ public class Parse {
     private HashSet allTermsInCorpus = new HashSet <String>();
     int i;
 
+    /**
+     * C'tor
+     * @param path - path of the corpus
+     */
     public Parse(String path) {
         //initialize hm
         hmNum.put("Thousand","K"); hmNum.put("Million","M"); hmNum.put("Billion","B"); hmNum.put("Trillion","000B");
@@ -46,6 +57,10 @@ public class Parse {
         readStopWords(path+"\\STOPWORDS");//todo take care of "WORD
     }
 
+    /**
+     * this method read all the stop words from a given file
+     * @param fileName
+     */
     public void readStopWords(String fileName) {
         BufferedReader br = null;
         StringBuilder sb = new StringBuilder();
@@ -68,7 +83,13 @@ public class Parse {
         }
     }
 
-    public Doc parsing(Doc document, boolean stemm) {
+    /**
+     * this method parsing the document
+     * @param document - to parse
+     * @param stem - if stem or not
+     * @return - document with parsed tokens
+     */
+    public Doc parsing(Doc document, boolean stem) {
         String text = document.getDoc_content();//("[: () -- ]");
         String[]tokenz = text.split("[: ()]");
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
@@ -130,7 +151,7 @@ public class Parse {
                     currValue = current;
                 }
 
-                if (stemm) {
+                if (stem) {
                     Stemmer stemmer = new Stemmer();
                     stemmer.add(currValue.toCharArray(), currValue.length());
                     stemmer.stem();
@@ -144,7 +165,7 @@ public class Parse {
     }
 
     /**
-     *  Adds the words Upper\Lower like needed
+     *  this method adds the words Upper\Lower like needed
      * @param currValue - Value to add to terms
      */
     private void addToDoc(String currValue,Doc document) {

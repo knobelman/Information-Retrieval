@@ -9,6 +9,8 @@ import java.util.HashSet;
 
 /**
  * This class read all files in a given path
+ * path - the path of the corpus
+ * root - root object
  */
 public class ReadFile {
     private String path;
@@ -24,7 +26,7 @@ public class ReadFile {
     }
 
     /**
-     * this function take a file and separate each document to doc number, doc content, doc city.
+     * this method take a file and separate each document to doc number, doc content, doc city.
      * after that, create a document object
      * @param file - file to separate to documents
      * return hash set of documents for the next station - parsing
@@ -57,6 +59,7 @@ public class ReadFile {
     }
 
     /**
+     * C'tor
      * read file using bufferedReader
      * @param fileName - file to read
      * @return the content of the file
@@ -87,6 +90,10 @@ public class ReadFile {
         return sb.toString();
     }
 
+    /**
+     * Getter
+     * @return the root file object
+     */
     public File getRoot() {
         return root;
     }

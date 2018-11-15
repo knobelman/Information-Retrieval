@@ -4,7 +4,13 @@ import java.io.*;
 import java.util.*;
 
 /**
- * This class create the posting file
+ * This class represents the Posting class
+ * creates the posting files
+ * allLines -
+ * rootPath -
+ * postingFilecounter -
+ * firstHalfWriter -
+ * secondHalfWriter -
  */
 public class Posting {
     ArrayList<String> allLines;
@@ -14,10 +20,9 @@ public class Posting {
     private BufferedWriter secondHalfWriter;
 
 
-
     /**
      * C'tor
-     * @param rootPath
+     * @param rootPath - tje path of the posting files
      */
     public Posting(String rootPath) {
         allLines = new ArrayList<>();
@@ -31,7 +36,7 @@ public class Posting {
     }
 
     /**
-     *
+     * this method create the posting files
      * @param linkedHashMap String - term, String - doc, Integer - tf
      * @param dictionary
      */
@@ -58,7 +63,7 @@ public class Posting {
     }
 
     /**
-     * this function sort the lines in a posting file before writing to disk
+     * this method sort the lines in a posting file before writing to disk
      */
     private void sort(){
         allLines.sort((o1, o2) -> {
@@ -74,13 +79,6 @@ public class Posting {
     public void clearDic() {
         this.allLines = new ArrayList<>();
     }
-
-    /**
-     * this function merge between two posting files
-     * @param firstFile - the first file
-     * @param secondFile - the second file
-     * @param choosen
-     */
 
     /**
      * This function merge between all the temp posting files
@@ -144,18 +142,34 @@ public class Posting {
         }
     }
 
+    /**
+     * Getter
+     * @return BufferedWriter object of the first Half Writer
+     */
     public BufferedWriter getFirstHalfWriter() {
         return firstHalfWriter;
     }
 
+    /**
+     * Getter
+     * @return BufferedWriter object of the second Half Writer
+     */
     public BufferedWriter getSecondHalfWriter() {
         return secondHalfWriter;
     }
 
+    /**
+     * Getter
+     * @return the path of the posting files
+     */
     public String getRootPath() {
         return rootPath;
     }
 
+    /**
+     * Getter
+     * @return the posting file counter
+     */
     public static int getPostingFilecounter() {
         return postingFilecounter;
     }

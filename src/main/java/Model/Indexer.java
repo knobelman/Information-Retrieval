@@ -3,28 +3,34 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Indexer class which create index for all the files
+ * This class represents the Indexer class
+ * Indexer class create index for all the files
+ * rootPath - path of the corpus
+ * readFileObject - read document content using ReadFile class
+ * DocumentsToParse - save a list of document to parse
+ * postingObject - a posting class object
+ * TermAndDocumentsData - save date in the given format <<String,HashMap<String,Integer>> "moshe | FBIS-3 - 5"
+ * Dictionary
+ * toStem - boolean field indicates stemming or not
+ * parser - parser class object which parsing the document content
  */
 public class Indexer {
     private String rootPath;
     private static ReadFile readFileObject;
     private HashSet<Doc> DocumentsToParse;
-    private ArrayList<Thread> DocsThread;
     private Posting postingObject;
     private HashMap<String,HashMap<String,Integer>> TermAndDocumentsData = new LinkedHashMap<>();
     private HashMap<String,Term> Dictionary;
-    private Boolean toStemm;
+    private Boolean toStem;
     private Parse Parser;
 
+    /**
+     * C'tor
+     * initialize DocumentsToParse HashSet and Dictionary HashMap
+     */
     public Indexer() {
         this.DocumentsToParse = new HashSet<>();
-        this.DocsThread = new ArrayList<>();
         this.Dictionary = new HashMap<>();
-//        try {
-//            init(readFileObject.getRoot(),stemm);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
     /**
@@ -44,22 +50,22 @@ public class Indexer {
                 for (Doc d : DocumentsToParse) {
                     Parser.parsing(d,stemm);
                     for(Map.Entry<String,Term> entry : d.getTermsInDoc().entrySet()) {
-                        String termname = entry.getKey();
+                        String termName = entry.getKey();
                         Term value = entry.getValue();
                         String doc_name = d.getDoc_num();
-                        if(termname.equals("")){
+                        if(termName.equals("")){
                             continue;
                         }
-                        if(TermAndDocumentsData.containsKey(termname)){
-                            Integer newint =  new Integer(d.getTermsInDoc().get(termname).getTf(doc_name));
+                        if(TermAndDocumentsData.containsKey(termName)){
+                            Integer newint =  new Integer(d.getTermsInDoc().get(termName).getTf(doc_name));
                             //int df = d.getTermsInDoc().get(termname).getDf();
-                            Dictionary.replace(termname,value); //todo - new line to check
-                            TermAndDocumentsData.get(termname).put(d.getDoc_num(),newint);
+                            Dictionary.replace(termName,value); //todo - new line to check
+                            TermAndDocumentsData.get(termName).put(d.getDoc_num(),newint);
                         }else {
-                            Dictionary.put(termname,value); //todo - new line to check
+                            Dictionary.put(termName,value); //todo - new line to check
                             HashMap<String, Integer> current = new HashMap();
                             current.put(doc_name, new Integer(value.getTf(doc_name)));
-                            TermAndDocumentsData.put(termname, current);
+                            TermAndDocumentsData.put(termName, current);
                         }
                     }
                 }
@@ -71,6 +77,8 @@ public class Indexer {
 
     /**
      * create the final posting file
+     * merge all the even files
+     * merge all the odd files
      */
     public void createFinalPosting(){
         for(int i=postingObject.getPostingFilecounter()-2;i>=2;i=i-4){
@@ -91,39 +99,77 @@ public class Indexer {
             e.printStackTrace();
         }
     }
+
+    /**
+     * this method set posting file path
+     * @param path - to set
+     */
     public void setPostingFilePath(String path){
         this.postingObject = new Posting(path);
     }
 
+    /**
+     * this method get posting file path
+     * @return
+     */
     public String getPostingFilePath() {
         return this.postingObject.getRootPath();
     }
 
 
+    /**
+     * this method set corpus file path
+     * @param path - to set
+     */
     public void setCorpusFilePath(String path){
         this.rootPath = path;
         this.Parser = new Parse(rootPath);
     }
 
+    /**
+     * Setter
+     * @param flag - set stemming to false or true
+     */
     public void setStemming(boolean flag){
-        this.toStemm = flag;
+        this.toStem = flag;
     }
 
+    /**
+     * Getter
+     * @return read file object
+     */
     public File getReadFileObject() {
         return readFileObject.getRoot();
     }
 
+    /**
+     * Getter
+     * @return - if stem required ot not
+     */
     public Boolean getToStemm() {
-        return toStemm;
+        return toStem;
     }
 
+    /**
+     * Setter
+     * @param readFileObject - set read file object
+     */
     public static void setReadFileObject(ReadFile readFileObject) {
         Indexer.readFileObject = readFileObject;
 }
+
+    /**
+     * Getter
+     * @return the root path
+     */
     public String getRootPath() {
         return rootPath;
     }
 
+    /**
+     * Setter
+     * @param postingObject - to set
+     */
     public void setPostingObject(Posting postingObject) {
         this.postingObject = postingObject;
     }

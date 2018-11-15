@@ -7,18 +7,29 @@ import java.util.HashSet;
 
 /**
  * This class represents a document
+ * doc_num - for example "FBSI-3"
+ * doc_content - the the inside <text> </text>
+ * path - the path of file the document exists in
+ * max_tf - the tf of the most frequent term in the document
+ * specialWordCount - number of special words
+ * city - city the doc come from
+ * termsInDoc - all the terms exists in current document
  */
 public class Doc implements Serializable {
     private String doc_num;
     private String doc_content;
     private String path;
     private int max_tf;
-    //private String max_tf_String;
     private int specialWordCount;
     private String city;
     private HashMap<String,Term> termsInDoc;
     private String mostFrequentTerm; //extra
 
+
+    /**
+     * C'tor
+     * initialize termsInDoc data structure
+     */
     public Doc(){
         this.termsInDoc = new HashMap<>();
     }
@@ -27,6 +38,11 @@ public class Doc implements Serializable {
      * @param path
      * @param doc_num
      * @param doc_content
+     */
+
+
+    /**
+     * C'tor with arguments
      */
     public Doc(String path, String doc_num, String doc_content, String city) {
         this.doc_num = doc_num;
@@ -39,66 +55,45 @@ public class Doc implements Serializable {
         //this.max_tf_String = "";
     }
 
+    /**
+     * Getter
+     * @return - doc_num
+     */
     public String getDoc_num() {
         return doc_num;
     }
 
-    public void setDoc_num(String doc_num) {
-        this.doc_num = doc_num;
-    }
 
+    /**
+     * Getter
+     * @return - doc content
+     */
     public String getDoc_content() {
         return doc_content;
     }
 
+
+    /**
+     * Setter
+     * @param doc_content - set doc content
+     */
     public void setDoc_content(String doc_content) {
         this.doc_content = doc_content;
     }
 
-    public int getMax_tf() {
-        return max_tf;
-    }
-
-    public void setMax_tf(int max_tf) {
-        this.max_tf = max_tf;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public int getSpecialWordCount() {
-        return specialWordCount;
-    }
-
-    public void setSpecialWordCount(int specialWordCount) {
-        this.specialWordCount = specialWordCount;
-    }
-
-    public String getMostFrequentTerm() {
-        return mostFrequentTerm;
-    }
-
-    public void setMostFrequentTerm(String mostFrequentTerm) {
-        this.mostFrequentTerm = mostFrequentTerm;
-    }
-
-    public String getPath() {
-        return path;
-    }
-//
-    public void setPath(String path) {
-        this.path = path;
-    }
-
+    /**
+     * Getter
+     * @return - all terms in doc
+     */
     public HashMap<String, Term> getTermsInDoc() {
         return termsInDoc;
     }
 
+
+    /**
+     * this method add term to doc
+     * @param term - to add
+     */
     public void addTermToDoc(String term){//todo
         if(termsInDoc.containsKey(term)){//term already exists in this doc
             termsInDoc.get(term).incAmounts(this.doc_num);
@@ -116,10 +111,20 @@ public class Doc implements Serializable {
         }
     }
 
+    /**
+     * this method check if terms in doc contains a term
+     * @param term
+     * @return
+     */
     public boolean contains(String term){
         return termsInDoc.containsKey(term);
     }
 
+
+    /**
+     * this method remove term from doc
+     * @param term
+     */
     public void removeFromDoc(String term){
         termsInDoc.remove(term);
     }
