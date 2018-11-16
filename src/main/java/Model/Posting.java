@@ -46,7 +46,7 @@ public class Posting {
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry)it.next();
                 int size = ((HashMap<String, Integer>)pair.getValue()).size();
-                allLines.add(pair.getKey() + "| DF: " + size + " |" + pair.getValue()+"\n");
+                allLines.add(pair.getKey() + "| DF: " + size + " >" + pair.getValue()+"\n");
                 it.remove();
             }
             sort();
@@ -67,8 +67,8 @@ public class Posting {
      */
     private void sort(){
         allLines.sort((o1, o2) -> {
-            String s1 = o1.substring(0, o1.indexOf('|'));
-            String s2 = o2.substring(0, o2.indexOf('|'));
+            String s1 = o1.substring(0, o1.indexOf('>'));
+            String s2 = o2.substring(0, o2.indexOf('>'));
             return s1.compareTo(s2);
         });
     }
@@ -82,6 +82,7 @@ public class Posting {
 
     /**
      * This function merge between all the temp posting files
+     *
      * @param firstFile - the first file
      * @param secondFile - the second file
      * @param choosen - file writer
@@ -105,16 +106,16 @@ public class Posting {
 
                 //t1 < t2
                 if(t1.compareTo(t2)<0){
-                    choosen.write(firstCurrentLine);
+                    choosen.write(firstCurrentLine + "\n");
                     firstCurrentLine = first.readLine();
                     // t1 > t2
                 }else if(t1.compareTo(t2)>0){
-                    choosen.write(secondCurrentLine);
+                    choosen.write(secondCurrentLine + "\n");
                     secondCurrentLine = second.readLine();
                     //t1 = t2
                 }else {
-                    firstCurrentLine = firstCurrentLine.substring(firstCurrentLine.indexOf('|') + 1, firstCurrentLine.length());
-                    secondCurrentLine = secondCurrentLine.concat(firstCurrentLine + "\n");
+                    //firstCurrentLine = firstCurrentLine.substring(firstCurrentLine.indexOf('|') + 1, firstCurrentLine.length());
+                    secondCurrentLine = createLine(firstCurrentLine,secondCurrentLine);//secondCurrentLine.concat(firstCurrentLine + "\n");
                     choosen.write(secondCurrentLine);
                     firstCurrentLine = first.readLine();
                     secondCurrentLine = second.readLine();
@@ -140,6 +141,20 @@ public class Posting {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Example for a line: 0.256K| DF: 2 >{FBIS3-2314=1, FBIS3-2531=1}
+     * @param firstCurrentLine
+     * @param secondCurrentLine
+     * @return - concat lines as needed
+     */
+    private String createLine(String firstCurrentLine, String secondCurrentLine) {
+        String[] cut1 = firstCurrentLine.split(">"); // [ 0.256K| DF: 2 , {FBIS3-2314=1, FBIS3-2531=1} ]
+        String[] cut2 = secondCurrentLine.split(">");
+        cut2[1].replaceFirst("}",", "); //{FBIS3-2314=1, FBIS3-2531=1,
+        cut2[1].concat(cut1[1].substring(1));//{FBIS3-2314=1, FBIS3-2531=1, FBIS2-2531=1}
+        return "";
     }
 
     /**

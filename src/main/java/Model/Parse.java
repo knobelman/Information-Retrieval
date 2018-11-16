@@ -129,6 +129,8 @@ public class Parse {
                     else
                         currValue = dollarFirst(tokenz[i], tokenz[i + 1]);
                 } else if (isValidNum(current)) {//check if token is a valid number
+                    if(!current.contains(",") && !current.contains(".") && current.length()>=4)
+                        current = toCome(current);
                     if (i + 1 >= tokenz.length)
                         currValue = numberFirst(current, "", "", "");
                     else if (i + 2 >= tokenz.length)
@@ -408,7 +410,7 @@ public class Parse {
                 return wordAndNumNumeric(s1 + " " + s2);
             }
         }
-        else if(s1.contains(",")){//450,000
+        else if(s1.contains(",")){// || s1.length()>=4){//450,000
             i++;
             return comaToWord(s1);
         }
@@ -425,7 +427,10 @@ public class Parse {
      * @return The correct representative of the number (1,234 -> 1.234K, 10,340 -> 10.34K)
      */
     private String comaToWord(String current) {
-        String[] num = current.split(",");
+//
+//        if(!current.contains(","))
+//            current = toCome(current);
+        String[]num = current.split(",");
         String result = "";
         boolean done = false;
         for (int i = num.length - 1; i > 0; i--) {
@@ -454,6 +459,25 @@ public class Parse {
             result = num[0] + result + letter;
         }
         return result;
+    }
+
+    /**
+     *
+     * @param current - number without coma
+     * @return - array as if the number was with coma
+     */
+    private String toCome(String current) {
+        String temp = "";
+        int count = 0;
+        for(int i =current.length()-1; i>=0; i--){
+            if(count==3) {
+                temp = ',' + temp;
+                count=0;
+            }
+            temp = current.charAt(i) + temp;
+            count++;
+        }
+        return temp;
     }
 
     /**

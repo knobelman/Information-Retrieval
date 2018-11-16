@@ -16,32 +16,32 @@ public class ParseTests {
         /**
          * NUMBERS
          */
-//        System.out.println("~*~ Numbers Tests ~*~");
+        System.out.println("~*~ Numbers Tests ~*~");
 //        pass += test("0","/Egypt","EGYPT");
 //        count +=1;
-//        pass += test("0","\"Hello","HELLO");
-//        count +=1;
+        pass += test("0","\"Man","MAN");
+        count +=1;
 //        pass += test("1","10,123","10.123K");
 //        count +=1;
 //        pass += test("2", "123 Thousand","123K");
 //        count +=1;
 //        pass += test("3","1010.56","1.01056K");
 //        count +=1;
-        pass += test("4","10,123,000","10.123M");
-        count +=1;
+//        pass += test("4","10,123,000","10.123M");
+//        count +=1;
 //        pass += test("6","55 Million","55M");
 //        count +=1;
-        pass += test("7","1010.56","1.01056K");
-        count +=1;
-        pass += test("8","10,123,000,000","10.123B");
-        count +=1;
+//        pass += test("7","1010.56","1.01056K");
+//        count +=1;
+//        pass += test("8","10,123,000,000","10.123B");
+//        count +=1;
 //        pass += test("9","55 Billion","55B");
 //        count +=1;
 //        pass += test("10","7 Trillion","7000B");
 //        count +=1;
 //        pass += test("11","204","204");
 //        count +=1;
-//        pass += test("12","-500","-500");
+//        pass += test("12","1000000","1M");
 //        count +=1;
 //        pass += test("13","1,993","1.993K");
 //        count +=1;
