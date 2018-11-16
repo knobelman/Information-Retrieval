@@ -164,8 +164,8 @@ public class Posting {
         String[] cut222 = cut22[1].split(":");
 
         //Create the number
-        int DF1 = Integer.parseInt(cut111[1]);
-        int DF2 = Integer.parseInt(cut222[1]);
+        int DF1 = 0;//Integer.parseInt(cut111[1]);
+        int DF2 = 0;//Integer.parseInt(cut222[1]);
         int newDF = DF1 + DF2;
 
         //Create the correct string

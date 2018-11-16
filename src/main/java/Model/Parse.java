@@ -63,7 +63,6 @@ public class Parse {
      */
     public void readStopWords(String fileName) {
         BufferedReader br = null;
-        StringBuilder sb = new StringBuilder();
         try {
             br = new BufferedReader(new FileReader(fileName));
         } catch (FileNotFoundException e) {

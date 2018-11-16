@@ -69,35 +69,65 @@ public class Indexer {
                         }
                     }
                 }
-                postingObject.createPostingFile(this.TermAndDocumentsData,this.Dictionary);
+                if(!this.TermAndDocumentsData.isEmpty())
+                    postingObject.createPostingFile(this.TermAndDocumentsData,this.Dictionary);
                 TermAndDocumentsData = new LinkedHashMap<>();
             }
         }
     }
 
-    /**
-     * create the final posting file
-     * merge all the even files
-     * merge all the odd files
-     */
-    public void createFinalPosting(){
-        for(int i=postingObject.getPostingFilecounter()-2;i>=2;i=i-4){
-            postingObject.mergeBetweenPostFiles(""+ (i),""+(i-2),postingObject.getFirstHalfWriter());
-        }
+    public void createEvenPostingFiles(int currPostingNumber){
+        int lastPosting = currPostingNumber-1;
+        FileWriter mergedWriter;
+        BufferedWriter mergedBuffer;
+        File lFILE = new File(postingObject.getRootPath() + "\\" + lastPosting);
+        File blFILE = new File(postingObject.getRootPath() + "\\" + (lastPosting-1));
         try {
-            postingObject.getFirstHalfWriter().close();
-        } catch (IOException e) {
+            mergedWriter = new FileWriter(postingObject.getRootPath() + "\\" + "merged");
+            mergedBuffer = new BufferedWriter(mergedWriter);
+            postingObject.mergeBetweenPostFiles("" + (lastPosting), "" + (lastPosting-1), mergedBuffer);
+            mergedBuffer.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        lFILE.delete();
+        blFILE.delete();
+        File mergedF = new File(postingObject.getRootPath()+"\\"+"merged");
+        mergedF.renameTo(blFILE);
+    }
 
-        for(int i=postingObject.getPostingFilecounter()-3;i>=2;i = i-2){
-            postingObject.mergeBetweenPostFiles(""+ (i),""+(i-2),postingObject.getSecondHalfWriter());
-        }
-        try {
-            postingObject.getSecondHalfWriter().close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void createFinalPosting(){
+        int postingCounter = this.postingObject.getPostingFilecounter();
+        int newName = 0;
+        while(postingCounter>=2) {
+            if (!(postingCounter % 2 == 0)) {
+                createEvenPostingFiles(postingCounter);
+                postingCounter--;
+            }
+            int cuurPostingCounter = postingCounter;
+            for (int i = 0; i < cuurPostingCounter; i+=2) {
+                FileWriter mergedWriter;
+                BufferedWriter mergedBuffer;
+                File lFILE = new File(postingObject.getRootPath() + "\\" + i);
+                File blFILE = new File(postingObject.getRootPath() + "\\" + (i+1));
+                try {
+                    mergedWriter = new FileWriter(postingObject.getRootPath() + "\\" + "merged");
+                    mergedBuffer = new BufferedWriter(mergedWriter);
+                    postingObject.mergeBetweenPostFiles("" + (i), "" + (i+1), mergedBuffer);
+                    mergedBuffer.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                lFILE.delete();
+                blFILE.delete();
+                postingCounter--;
+                File mergedF = new File(postingObject.getRootPath()+"\\"+"merged");
+                File newFile = new File(postingObject.getRootPath()+"\\"+ newName);
+                mergedF.renameTo(newFile);
+                newName++;
+            }
+            newName = 0;
+       }
     }
 
     /**
