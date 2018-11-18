@@ -16,9 +16,6 @@ public class Posting {
     ArrayList<String> allLines;
     private String rootPath;
     private static int postingFilecounter;
-    private BufferedWriter firstHalfWriter;
-    private BufferedWriter secondHalfWriter;
-
 
     /**
      * C'tor
@@ -27,20 +24,14 @@ public class Posting {
     public Posting(String rootPath) {
         allLines = new ArrayList<>();
         this.rootPath = rootPath;
-        try {
-            firstHalfWriter = new BufferedWriter(new FileWriter(this.rootPath+"\\"+"FirstHalf"));
-            secondHalfWriter = new BufferedWriter(new FileWriter(this.rootPath+"\\"+"SecondHalf"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
      * this method create the posting files
      * @param linkedHashMap String - term, String - doc, Integer - tf
-     * @param dictionary
+     * @param
      */
-    public void createPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap, HashMap<String, Term> dictionary) {
+    public void createPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap) {
         try {
             Iterator it = linkedHashMap.entrySet().iterator();
             while (it.hasNext()) {
@@ -67,8 +58,8 @@ public class Posting {
      */
     private void sort(){
         allLines.sort((o1, o2) -> {
-            String s1 = o1.substring(0, o1.indexOf('>'));
-            String s2 = o2.substring(0, o2.indexOf('>'));
+            String s1 = o1.substring(0, o1.indexOf('|'));
+            String s2 = o2.substring(0, o2.indexOf('|'));
             return s1.compareTo(s2);
         });
     }
@@ -85,38 +76,34 @@ public class Posting {
      *
      * @param firstFile - the first file
      * @param secondFile - the second file
-     * @param choosen - file writer
+     * @param bw - file writer
      */
-    public void mergeBetweenPostFiles(String firstFile, String secondFile, BufferedWriter choosen) {
+
+
+    public void mergeBetweenPostFiles(String firstFile, String secondFile, BufferedWriter bw) {
         try {
-            BufferedReader first;
-            BufferedReader second;
             String firstCurrentLine;
             String secondCurrentLine;
             File fFILE = new File(firstFile);
             File sFILE = new File(secondFile);
-            first = new BufferedReader(new FileReader(this.rootPath+"\\"+fFILE));
-            second = new BufferedReader(new FileReader(this.rootPath +"\\"+sFILE));
+            BufferedReader first = new BufferedReader(new FileReader(this.rootPath+"\\"+fFILE));
+            BufferedReader second = new BufferedReader(new FileReader(this.rootPath +"\\"+sFILE));
             firstCurrentLine = first.readLine();
             secondCurrentLine = second.readLine();
 
             while(firstCurrentLine!=null && secondCurrentLine!=null) {
                 String t1 = firstCurrentLine.substring(0, firstCurrentLine.indexOf('|'));
                 String t2 = secondCurrentLine.substring(0, secondCurrentLine.indexOf('|'));
-
-                //t1 < t2
-                if(t1.compareTo(t2)<0){
-                    choosen.write(firstCurrentLine + "\n");
+                if(t1.compareTo(t2)<0){ //t1 < t2
+                    bw.write(firstCurrentLine + "\n");
                     firstCurrentLine = first.readLine();
-                    // t1 > t2
-                }else if(t1.compareTo(t2)>0){
-                    choosen.write(secondCurrentLine + "\n");
+                }else if(t1.compareTo(t2)>0){ // t1 > t2
+                    bw.write(secondCurrentLine + "\n");
                     secondCurrentLine = second.readLine();
-                    //t1 = t2
-                }else {
-                    //firstCurrentLine = firstCurrentLine.substring(firstCurrentLine.indexOf('|') + 1, firstCurrentLine.length());
-                    secondCurrentLine = createLine(firstCurrentLine,secondCurrentLine);//secondCurrentLine.concat(firstCurrentLine + "\n");
-                    choosen.write(secondCurrentLine + "\n");
+                }else {//t1 = t2
+                    firstCurrentLine = firstCurrentLine.substring(firstCurrentLine.indexOf('|') + 1, firstCurrentLine.length());
+                    secondCurrentLine = secondCurrentLine.concat(firstCurrentLine +"\n");//secondCurrentLine = createLine(firstCurrentLine,secondCurrentLine);
+                    bw.write(secondCurrentLine);
                     firstCurrentLine = first.readLine();
                     secondCurrentLine = second.readLine();
                 }
@@ -124,18 +111,17 @@ public class Posting {
 
             if(firstCurrentLine == null){
                 while (secondCurrentLine != null){
-                    choosen.write(secondCurrentLine+"\n");
+                    bw.write(secondCurrentLine+"\n");
                     secondCurrentLine = second.readLine();
                 }
             }
 
             if(secondCurrentLine == null){
                 while(firstCurrentLine != null){
-                    choosen.write(firstCurrentLine+"\n");
+                    bw.write(firstCurrentLine+"\n");
                     firstCurrentLine = first.readLine();
                 }
             }
-
             first.close();
             second.close();
         } catch (Exception e) {
@@ -175,22 +161,6 @@ public class Posting {
 
     /**
      * Getter
-     * @return BufferedWriter object of the first Half Writer
-     */
-    public BufferedWriter getFirstHalfWriter() {
-        return firstHalfWriter;
-    }
-
-    /**
-     * Getter
-     * @return BufferedWriter object of the second Half Writer
-     */
-    public BufferedWriter getSecondHalfWriter() {
-        return secondHalfWriter;
-    }
-
-    /**
-     * Getter
      * @return the path of the posting files
      */
     public String getRootPath() {
@@ -204,6 +174,7 @@ public class Posting {
     public static int getPostingFilecounter() {
         return postingFilecounter;
     }
+
 
     //    private ArrayList readDictionary(){
 //        try {

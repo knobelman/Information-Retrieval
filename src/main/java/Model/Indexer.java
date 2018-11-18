@@ -19,10 +19,12 @@ public class Indexer {
     private static ReadFile readFileObject;
     private HashSet<Doc> DocumentsToParse;
     private Posting postingObject;
+    private Parse ParserObject;
     private HashMap<String,HashMap<String,Integer>> TermAndDocumentsData = new LinkedHashMap<>();
-    private HashMap<String,Term> Dictionary;
+    private HashMap<String,String> Dictionary; //term and path
+    private List<Thread> threadList;
+    private List<Thread> threadList2;
     private Boolean toStem;
-    private Parse Parser;
 
     /**
      * C'tor
@@ -31,6 +33,7 @@ public class Indexer {
     public Indexer() {
         this.DocumentsToParse = new HashSet<>();
         this.Dictionary = new HashMap<>();
+        this.threadList = new ArrayList<>();
     }
 
     /**
@@ -48,7 +51,7 @@ public class Indexer {
             } else {
                 DocumentsToParse = readFileObject.fromFileToDoc(fileEntry);
                 for (Doc d : DocumentsToParse) {
-                    Parser.parsing(d,stemm);
+                    ParserObject.parsing(d,stemm);
                     for(Map.Entry<String,Term> entry : d.getTermsInDoc().entrySet()) {
                         String termName = entry.getKey();
                         Term value = entry.getValue();
@@ -59,19 +62,31 @@ public class Indexer {
                         if(TermAndDocumentsData.containsKey(termName)){
                             Integer newint =  new Integer(d.getTermsInDoc().get(termName).getTf(doc_name));
                             //int df = d.getTermsInDoc().get(termname).getDf();
-                            Dictionary.replace(termName,value); //todo - new line to check
+                            //Dictionary.replace(termName,value); //todo - new line to check
                             TermAndDocumentsData.get(termName).put(d.getDoc_num(),newint);
                         }else {
-                            Dictionary.put(termName,value); //todo - new line to check
+                            //Dictionary.put(termName,value); //todo - new line to check
                             HashMap<String, Integer> current = new HashMap();
                             current.put(doc_name, new Integer(value.getTf(doc_name)));
                             TermAndDocumentsData.put(termName, current);
                         }
                     }
                 }
-                if(!this.TermAndDocumentsData.isEmpty())
-                    postingObject.createPostingFile(this.TermAndDocumentsData,this.Dictionary);
-                TermAndDocumentsData = new LinkedHashMap<>();
+                if(!this.TermAndDocumentsData.isEmpty()) {
+                    Thread t = new Thread(() -> {
+                        postingObject.createPostingFile(TermAndDocumentsData);
+                        TermAndDocumentsData = new LinkedHashMap<>();
+                    });
+                    t.start();
+                    threadList.add(t);
+                }
+                for(Thread t: threadList){
+                    try {
+                        t.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
@@ -153,7 +168,7 @@ public class Indexer {
      */
     public void setCorpusFilePath(String path){
         this.rootPath = path;
-        this.Parser = new Parse(rootPath);
+        this.ParserObject = new Parse(rootPath);
     }
 
     /**

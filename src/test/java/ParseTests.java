@@ -13,37 +13,37 @@ public class ParseTests {
         int pass = 0;
         int count = 0;
 
-        /**
-         * NUMBERS
-         */
-        System.out.println("~*~ Numbers Tests ~*~");
-//        pass += test("0","/Egypt","EGYPT");
+//        /**
+//         * NUMBERS
+//         */
+//        System.out.println("~*~ Numbers Tests ~*~");
+//        pass += test("1","/Egypt","EGYPT");
 //        count +=1;
-        pass += test("0","\"Man","MAN");
-        count +=1;
-//        pass += test("1","10,123","10.123K");
+//        pass += test("2","\"Man","MAN");
 //        count +=1;
-//        pass += test("2", "123 Thousand","123K");
+//        pass += test("3","10,123","10.123K");
 //        count +=1;
-//        pass += test("3","1010.56","1.01056K");
+//        pass += test("4", "123 Thousand","123K");
 //        count +=1;
-//        pass += test("4","10,123,000","10.123M");
+//        pass += test("5","1010.56","1.01056K");
 //        count +=1;
-//        pass += test("6","55 Million","55M");
+//        pass += test("6","10,123,000","10.123M");
 //        count +=1;
-//        pass += test("7","1010.56","1.01056K");
+//        pass += test("7","55 Million","55M");
 //        count +=1;
-//        pass += test("8","10,123,000,000","10.123B");
+//        pass += test("8","1010.56","1.01056K");
 //        count +=1;
-//        pass += test("9","55 Billion","55B");
+//        pass += test("9","10,123,000,000","10.123B");
 //        count +=1;
-//        pass += test("10","7 Trillion","7000B");
+//        pass += test("10","55 Billion","55B");
 //        count +=1;
-//        pass += test("11","204","204");
+//        pass += test("11","7 Trillion","7000B");
 //        count +=1;
-//        pass += test("12","1000000","1M");
+//        pass += test("12","204","204");
 //        count +=1;
-//        pass += test("13","1,993","1.993K");
+//        pass += test("13","1000000","1M");
+//        count +=1;
+//        pass += test("14","1,993","1.993K");
 //        count +=1;
 //
 //        /**
@@ -108,7 +108,7 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("6","MAY 1994","1994-05");
 //        count +=1;
-//
+////
 //      /**
 //       * Hyphen
 //       */
@@ -117,23 +117,23 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("2","1-1","1-1");
 //        count +=1;
-//        pass += test("3","Xinhua,","Xinhua");
+//        pass += test("3","Xinhua,","XINHUA");
 //        count +=1;
-//        pass += test("4","[Xinhua]","Xinhua");
+//        pass += test("4","[Xinhua]","XINHUA");
 //        count +=1;
-//        pass += test("5","(Xinhua)","Xinhua");
+//        pass += test("5","(Xinhua)","XINHUA");
 //        count +=1;
-//        pass += test("6","Xinhua--","Xinhua");
+//        pass += test("6","Xinhua--","XINHUA");
 //        count +=1;
 //        pass += test("7","the yaniv","yaniv");
 //        count +=1;
-//        pass += test("8","Value-added","Value-added");
+//        pass += test("8","Value-added","VALUE-ADDED");
 //        count +=1;
 //        pass += test("9","10-part","10-part");
 //        count +=1;
 //        pass += test("10","6-7","6-7");
 //        count +=1;
-//        pass += test("11","between 18 and 24","between 18 and 24");
+//        pass += test("11","Between 18 and 24","BETWEEN 18 AND 24");
 //        count +=1;
 //
 //    /**
@@ -154,7 +154,7 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("6","Bosnia-Herzegovina'","Bosnia-Herzegovina");
 //        count +=1;
-//        pass += test("7","Coalition!","Coalition");
+//        pass += test("7","Coalition!","COALITION");
 //        count +=1;
 //        pass += test("8","+14","14");
 //        count +=1;
@@ -172,13 +172,13 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("1","\"January 1994\"","January");
 //        count +=1;
-        System.out.println("~*~ SUMMERY: PASS " + pass + "/" + (count-1) +" ~*~");
+        System.out.println("~*~ SUMMERY: PASS " + pass + "/" + (count) +" ~*~");
 
 
     }
 
     public static int test(String number, String input,String output) {
-        Parse p = new Parse("C:\\Users\\yaniv\\Desktop\\corpus");
+        Parse p = new Parse("C:\\Users\\Maor\\Desktop\\corpus");
         Doc doc1 = new Doc();
         doc1.setDoc_content(input);
         p.parsing(doc1, false);
