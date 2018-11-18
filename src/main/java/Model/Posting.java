@@ -2,6 +2,7 @@ package Model;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class represents the Posting class
@@ -15,7 +16,7 @@ import java.util.*;
 public class Posting {
     ArrayList<String> allLines;
     private String rootPath;
-    private static int postingFilecounter;
+    private static AtomicInteger postingFilecounter;
 
     /**
      * C'tor
@@ -23,6 +24,7 @@ public class Posting {
      */
     public Posting(String rootPath) {
         allLines = new ArrayList<>();
+        postingFilecounter = new AtomicInteger();
         this.rootPath = rootPath;
     }
 
@@ -47,7 +49,7 @@ public class Posting {
             }
             fw.close();
             clearDic();
-            postingFilecounter++;
+            postingFilecounter.incrementAndGet();//postingFilecounter++;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,10 +86,10 @@ public class Posting {
         try {
             String firstCurrentLine;
             String secondCurrentLine;
-            File fFILE = new File(firstFile);
-            File sFILE = new File(secondFile);
-            BufferedReader first = new BufferedReader(new FileReader(this.rootPath+"\\"+fFILE));
-            BufferedReader second = new BufferedReader(new FileReader(this.rootPath +"\\"+sFILE));
+            File fFILE = new File(this.rootPath+"\\"+firstFile);
+            File sFILE = new File(this.rootPath +"\\"+secondFile);
+            BufferedReader first = new BufferedReader(new FileReader(fFILE));
+            BufferedReader second = new BufferedReader(new FileReader(sFILE));
             firstCurrentLine = first.readLine();
             secondCurrentLine = second.readLine();
 
@@ -101,9 +103,9 @@ public class Posting {
                     bw.write(secondCurrentLine + "\n");
                     secondCurrentLine = second.readLine();
                 }else {//t1 = t2
-                    firstCurrentLine = firstCurrentLine.substring(firstCurrentLine.indexOf('|') + 1, firstCurrentLine.length());
-                    secondCurrentLine = secondCurrentLine.concat(firstCurrentLine +"\n");//secondCurrentLine = createLine(firstCurrentLine,secondCurrentLine);
-                    bw.write(secondCurrentLine);
+                    //firstCurrentLine = firstCurrentLine.substring(firstCurrentLine.indexOf('|') + 1, firstCurrentLine.length());
+                    secondCurrentLine = createLine(firstCurrentLine,secondCurrentLine); //secondCurrentLine.concat(firstCurrentLine +"\n");
+                    bw.write(secondCurrentLine + "\n");
                     firstCurrentLine = first.readLine();
                     secondCurrentLine = second.readLine();
                 }
@@ -124,6 +126,8 @@ public class Posting {
             }
             first.close();
             second.close();
+            fFILE.delete();
+            sFILE.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,18 +144,18 @@ public class Posting {
         String[] cut2 = secondCurrentLine.split(">");
 
         //TF
-        cut2[1] = cut2[1].replaceAll("}",", ");
+        cut2[1] = cut2[1].replaceAll("}",", ");// {FBIS3-2314=1, FBIS3-2531=1} -> {FBIS3-2314=1, FBIS3-2531=1,
         cut2[1] = cut2[1].concat(cut1[1].substring(1,cut1[1].length()));// {FBIS3-2314=1, FBIS3-2531=1, FBIS2-2531=1}
 
         //DF
         String[] cut11 = (cut1[0].split("\\|")); //[0.256K,DF:2]
         String[] cut22 = (cut2[0].split("\\|"));
-        String[] cut111 = cut11[1].split(":");//[DF,2]
+        String[] cut111 = cut11[1].split(":"); //[DF,2]
         String[] cut222 = cut22[1].split(":");
 
         //Create the number
-        int DF1 = 0;//Integer.parseInt(cut111[1]);
-        int DF2 = 0;//Integer.parseInt(cut222[1]);
+        int DF1 = Integer.parseInt(cut111[1]);
+        int DF2 = Integer.parseInt(cut222[1]);
         int newDF = DF1 + DF2;
 
         //Create the correct string
@@ -171,7 +175,7 @@ public class Posting {
      * Getter
      * @return the posting file counter
      */
-    public static int getPostingFilecounter() {
+    public static AtomicInteger getPostingFilecounter() {
         return postingFilecounter;
     }
 
