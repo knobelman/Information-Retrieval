@@ -37,7 +37,7 @@ public class Posting {
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry)it.next();
                 int size = ((HashMap<String, Integer>)pair.getValue()).size();
-                allLines.add(pair.getKey() + "|DF:" + size + ">" + pair.getValue()+"\n");
+                allLines.add(pair.getKey() + "|DF:" + size + "|" + pair.getValue()+"\n");
                 it.remove();
             }
             sort();
@@ -136,26 +136,26 @@ public class Posting {
      * @return - concat lines as needed
      */
     private String createLine(String firstCurrentLine, String secondCurrentLine) {
-        String[] cut1 = firstCurrentLine.split(">"); // [0.256K|DF:2,{FBIS3-2314=1, FBIS3-2531=1}]
-        String[] cut2 = secondCurrentLine.split(">");
+        String[] cut1 = firstCurrentLine.split("|"); // [0.256K,DF:2,{FBIS3-2314=1, FBIS3-2531=1}]
+        String[] cut2 = secondCurrentLine.split("|");
 
         //TF
-        cut2[1] = cut2[1].replaceAll("}",", ");// {FBIS3-2314=1, FBIS3-2531=1} -> {FBIS3-2314=1, FBIS3-2531=1,
-        cut2[1] = cut2[1].concat(cut1[1].substring(1,cut1[1].length()));// {FBIS3-2314=1, FBIS3-2531=1, FBIS2-2531=1}
+        cut2[2] = cut2[2].replaceAll("}",", ");// {FBIS3-2314=1, FBIS3-2531=1} -> {FBIS3-2314=1, FBIS3-2531=1,
+        cut2[2] = cut2[2].concat(cut1[2].substring(1,cut1[2].length()));// {FBIS3-2314=1, FBIS3-2531=1, FBIS2-2531=1}
 
         //DF
-        String[] cut11 = (cut1[0].split("\\|")); //[0.256K,DF:2]
-        String[] cut22 = (cut2[0].split("\\|"));
-        String[] cut111 = cut11[1].split(":");//[DF,2]
-        String[] cut222 = cut22[1].split(":");
+        ///String[] cut11 = (cut1[0].split("\\|")); //[0.256K,DF:2]
+        //String[] cut22 = (cut2[0].split("\\|"));
+        String[] cut11 = cut1[1].split(":");//[DF,2]
+        String[] cut22 = cut2[1].split(":");
 
         //Create the number
-        int DF1 = Integer.parseInt(cut111[1]);
-        int DF2 = Integer.parseInt(cut222[1]);
+        int DF1 = Integer.parseInt(cut11[1]);
+        int DF2 = Integer.parseInt(cut22[1]);
         int newDF = DF1 + DF2;
 
         //Create the correct string
-        String secondNewLine = cut11[0] + "|DF:" + newDF + ">" + cut2[1];
+        String secondNewLine = cut11[0] + "|DF:" + newDF + "|" + cut2[2];//term + "\DF" + newDF + "|" + TF
         return secondNewLine;
     }
 

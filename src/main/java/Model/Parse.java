@@ -52,7 +52,7 @@ public class Parse {
         hmDate.put("Dec","12"); hmDate.put("DEC","12"); hmDate.put("December","12"); hmDate.put("DECEMBER","12");
         hsDot.add(','); hsDot.add('.'); hsDot.add(':'); hsDot.add(';'); hsDot.add('|'); hsDot.add(' '); hsDot.add('"');
         hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add('+'); hsDot.add('"'); hsDot.add('\\');
-        hsDot.add('?'); hsDot.add('-'); hsDot.add('&'); hsDot.add('`'); hsDot.add('!'); hsDot.add('/');
+        hsDot.add('?'); hsDot.add('-'); hsDot.add('&'); hsDot.add('`'); hsDot.add('!'); hsDot.add('/'); hsDot.add('#');
         //initialize stop_words
         readStopWords(path+"\\STOPWORDS");//todo take care of "WORD
     }
@@ -90,7 +90,7 @@ public class Parse {
      */
     public Doc parsing(Doc document, boolean stem) {
         String text = document.getDoc_content();//("[: () -- ]");
-        String[]tokenz = text.split("[: () |]");
+        String[]tokenz = text.split("[: ()|]");
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
             String currValue = "";
