@@ -2,7 +2,6 @@ package Model;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class represents the Posting class
@@ -16,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Posting {
     ArrayList<String> allLines;
     private String rootPath;
-    private static AtomicInteger postingFilecounter;
+    private static int postingFilecounter;
 
     /**
      * C'tor
@@ -24,7 +23,6 @@ public class Posting {
      */
     public Posting(String rootPath) {
         allLines = new ArrayList<>();
-        postingFilecounter = new AtomicInteger();
         this.rootPath = rootPath;
     }
 
@@ -49,7 +47,7 @@ public class Posting {
             }
             fw.close();
             clearDic();
-            postingFilecounter.incrementAndGet();//postingFilecounter++;
+            postingFilecounter++;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,10 +84,10 @@ public class Posting {
         try {
             String firstCurrentLine;
             String secondCurrentLine;
-            File fFILE = new File(this.rootPath+"\\"+firstFile);
-            File sFILE = new File(this.rootPath +"\\"+secondFile);
-            BufferedReader first = new BufferedReader(new FileReader(fFILE));
-            BufferedReader second = new BufferedReader(new FileReader(sFILE));
+            File fFILE = new File(firstFile);
+            File sFILE = new File(secondFile);
+            BufferedReader first = new BufferedReader(new FileReader(this.rootPath+"\\"+fFILE));
+            BufferedReader second = new BufferedReader(new FileReader(this.rootPath +"\\"+sFILE));
             firstCurrentLine = first.readLine();
             secondCurrentLine = second.readLine();
 
@@ -105,7 +103,7 @@ public class Posting {
                 }else {//t1 = t2
                     //firstCurrentLine = firstCurrentLine.substring(firstCurrentLine.indexOf('|') + 1, firstCurrentLine.length());
                     secondCurrentLine = createLine(firstCurrentLine,secondCurrentLine); //secondCurrentLine.concat(firstCurrentLine +"\n");
-                    bw.write(secondCurrentLine + "\n");
+                    bw.write(secondCurrentLine);
                     firstCurrentLine = first.readLine();
                     secondCurrentLine = second.readLine();
                 }
@@ -126,8 +124,6 @@ public class Posting {
             }
             first.close();
             second.close();
-            fFILE.delete();
-            sFILE.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -150,7 +146,7 @@ public class Posting {
         //DF
         String[] cut11 = (cut1[0].split("\\|")); //[0.256K,DF:2]
         String[] cut22 = (cut2[0].split("\\|"));
-        String[] cut111 = cut11[1].split(":"); //[DF,2]
+        String[] cut111 = cut11[1].split(":");//[DF,2]
         String[] cut222 = cut22[1].split(":");
 
         //Create the number
@@ -175,7 +171,7 @@ public class Posting {
      * Getter
      * @return the posting file counter
      */
-    public static AtomicInteger getPostingFilecounter() {
+    public static int getPostingFilecounter() {
         return postingFilecounter;
     }
 

@@ -1,9 +1,6 @@
 package Model;
-import sun.awt.Mutex;
-
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class represents the Indexer class
@@ -26,9 +23,7 @@ public class Indexer {
     private HashMap<String,HashMap<String,Integer>> TermAndDocumentsData = new LinkedHashMap<>();
     private HashMap<String,String> Dictionary; //term and path
     private List<Thread> threadList;
-    private Boolean toStem;
-    private Mutex m[];
-    private static AtomicInteger newName;
+   private Boolean toStem;
 
     /**
      * C'tor
@@ -38,8 +33,6 @@ public class Indexer {
         this.DocumentsToParse = new HashSet<>();
         this.Dictionary = new HashMap<>();
         this.threadList = new ArrayList<>();
-        newName = new AtomicInteger();
-        //this.m = new Mutex[];
     }
 
     /**
@@ -118,56 +111,36 @@ public class Indexer {
     }
 
     public void createFinalPosting(){
-        threadList.clear();
-        AtomicInteger postingCounter = this.postingObject.getPostingFilecounter();
-        m = new Mutex[postingCounter.intValue()];
-        for(int i=0; i<m.length; i++){
-            m[i] = new Mutex();
-        }
-        while(postingCounter.intValue()>=2) {
-            if (!(postingCounter.intValue() % 2 == 0)) {
-                createEvenPostingFiles(postingCounter.intValue());
-                postingCounter.decrementAndGet();
+        int postingCounter = this.postingObject.getPostingFilecounter();
+        int newName = 0;
+        while(postingCounter>=2) {
+            if (!(postingCounter % 2 == 0)) {
+                createEvenPostingFiles(postingCounter);
+                postingCounter--;
             }
-            int currPostingCounter = postingCounter.intValue();
+            int currPostingCounter = postingCounter;
             for (int i = 0; i < currPostingCounter; i+=2) {
-                String mergedName = "merged" + i;
-                final FileWriter[] mergedWriter = new FileWriter[ 1 ];
-                final BufferedWriter[] mergedBuffer = new BufferedWriter[ 1 ];
-                    try {
-                        int finalI = i;
-                        m[i].lock();
-                        Thread t = new Thread(() -> {
-                            try {
-                                mergedWriter[ 0 ] = new FileWriter(postingObject.getRootPath() + "\\" + mergedName);
-                                mergedBuffer[ 0 ] = new BufferedWriter(mergedWriter[ 0 ]);
-                                postingObject.mergeBetweenPostFiles("" + (finalI), "" + (finalI +1), mergedBuffer[ 0 ]);
-                                mergedBuffer[ 0 ].close();
-                                postingCounter.decrementAndGet();
-                                File mergedF = new File(postingObject.getRootPath()+"\\"+mergedName);
-                                File newFile = new File(postingObject.getRootPath()+"\\"+ newName);
-                                mergedF.renameTo(newFile);
-                                newName.incrementAndGet();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        });
-                        t.start();
-                        threadList.add(t);
-                        m[i].unlock();
+                FileWriter mergedWriter;
+                BufferedWriter mergedBuffer;
+                File lFILE = new File(postingObject.getRootPath() + "\\" + i);
+                File blFILE = new File(postingObject.getRootPath() + "\\" + (i+1));
+                try {
+                    mergedWriter = new FileWriter(postingObject.getRootPath() + "\\" + "merged");
+                    mergedBuffer = new BufferedWriter(mergedWriter);
+                    postingObject.mergeBetweenPostFiles("" + (i), "" + (i+1), mergedBuffer);
+                    mergedBuffer.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                lFILE.delete();
+                blFILE.delete();
+                postingCounter--;
+                File mergedF = new File(postingObject.getRootPath()+"\\"+"merged");
+                File newFile = new File(postingObject.getRootPath()+"\\"+ newName);
+                mergedF.renameTo(newFile);
+                newName++;
             }
-            for(Thread t: threadList){//threads after an iteration of merges
-                try {
-                    t.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            threadList.clear();
-            newName.set(0);
+            newName = 0;
        }
     }
 
