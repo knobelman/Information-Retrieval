@@ -1,28 +1,19 @@
 package View;
 
 import Model.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.Iterator;
 
 /**
  * Created by Maor on 11/1/2018.
  */
 public class HomeView {
-    @FXML
 
+    @FXML
     public javafx.scene.control.Button LOAD;
     public javafx.scene.control.Button POSTING;
     public javafx.scene.control.Button START;
