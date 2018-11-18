@@ -89,7 +89,7 @@ public class Parse {
      * @return - document with parsed tokens
      */
     public Doc parsing(Doc document, boolean stem) {
-        String text = document.getDoc_content();//("[: () -- ]");
+        String text = document.getDoc_content();
         String[]tokenz = text.split("[: ()|]");
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
@@ -222,22 +222,24 @@ public class Parse {
         if (current.equals("") || current.equals(" ") || current.equals("$") || current.equals("-") || current.equals(",")
                 || current.equals(".") || current.equals("%"))//if empty token
             return "";
-        if (hsDot.contains(current.charAt(current.length() - 1))) {//if there is a sign at the end
-            do {
-                current = current.substring(0, current.length() - 1);
-            } while (current.length() > 0 && hsDot.contains(current.charAt(current.length() - 1)));
-            if (current.length() == 0) {
-                return "";
+        while(hsDot.contains(current.charAt(current.length() - 1)) || hsDot.contains(current.charAt(0)) || current.charAt(0) == '%') {
+            if (hsDot.contains(current.charAt(current.length() - 1))) {//if there is a sign at the end
+                do {
+                    current = current.substring(0, current.length() - 1);
+                } while (current.length() > 0 && hsDot.contains(current.charAt(current.length() - 1)));
+                if (current.length() == 0) {
+                    return "";
+                }
             }
-        }
-        if (hsDot.contains(current.charAt(0))) {//if there is a sign in the beginning
-            do {
-                if ((current.charAt(0) == '-' & isValidNum(current.substring(1, current.length()))) || current.substring(1, current.length()).length() == 0)
-                    break;
-                current = current.substring(1, current.length());
-            } while (current.length() > 0 && hsDot.contains(current.charAt(0)));
-            if (current.length() == 0) {
-                return "";
+            if (hsDot.contains(current.charAt(0))  || current.charAt(0) == '%') {//if there is a sign in the beginning
+                do {
+                    if ((current.charAt(0) == '-' & isValidNum(current.substring(1, current.length()))) || current.substring(1, current.length()).length() == 0)
+                        break;
+                    current = current.substring(1, current.length());
+                } while (current.length() > 0 && hsDot.contains(current.charAt(0)));
+                if (current.length() == 0) {
+                    return "";
+                }
             }
         }
         return current;
