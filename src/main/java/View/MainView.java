@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Created by Maor on 11/1/2018.
  */
-public class HomeView {
+public class MainView {
 
     @FXML
     public javafx.scene.control.Button LOAD;

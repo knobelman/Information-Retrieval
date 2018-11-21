@@ -12,13 +12,13 @@ public class ParseTests {
     public static void main(String[] args){
         int pass = 0;
         int count = 0;
-
+//
 //        /**
 //         * NUMBERS
 //         */
 //        System.out.println("~*~ Numbers Tests ~*~");
-        pass += test("1","Between 70 and 80","between 70 and 80");
-        count +=1;
+//        pass += test("1","Between 70 and 80","BETWEEN 70 AND 80");
+//        count +=1;
 //        pass += test("2","\"Man","MAN");
 //        count +=1;
 //        pass += test("3","10,123","10.123K");
@@ -108,7 +108,7 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("6","MAY 1994","1994-05");
 //        count +=1;
-////
+//////
 //      /**
 //       * Hyphen
 //       */
@@ -133,8 +133,18 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("10","6-7","6-7");
 //        count +=1;
-//        pass += test("11","Between 18 and 24","BETWEEN 18 AND 24");
+//        pass += test("10","and","");
 //        count +=1;
+//        pass += test("11","between moshe and dana","moshe"); //todo not working
+//        count +=1;
+        pass += test("12","between 30 and 40","between 30 and 40");
+        count +=1;
+        pass += test("13","between 18 and 24","between 18 and 24");
+        count +=1;
+        pass += test("14","between","");
+        count +=1;
+
+
 //
 //    /**
 //     * More
@@ -178,7 +188,7 @@ public class ParseTests {
     }
 
     public static int test(String number, String input,String output) {
-        Parse p = new Parse("D:\\corpus");
+        Parse p = new Parse("C:\\Users\\Maor\\Desktop\\corpus");
         Doc doc1 = new Doc();
         doc1.setDoc_content(input);
         p.parsing(doc1, false);

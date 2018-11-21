@@ -17,6 +17,7 @@ public class Posting {
     private String rootPath;
     private static int postingFilecounter;
 
+
     /**
      * C'tor
      * @param rootPath - tje path of the posting files

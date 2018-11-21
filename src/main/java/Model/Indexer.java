@@ -21,7 +21,7 @@ public class Indexer {
     private Posting postingObject;
     private Parse ParserObject;
     private HashMap<String,HashMap<String,Integer>> TermAndDocumentsData = new LinkedHashMap<>();
-    private HashMap<String,String> Dictionary; //term and path
+    private HashMap<String,String> Dictionary; //term and paths to posting files
     private List<Thread> threadList;
    private Boolean toStem;
 
@@ -54,6 +54,9 @@ public class Indexer {
                     for(Map.Entry<String,Term> entry : d.getTermsInDoc().entrySet()) {
                         String termName = entry.getKey();
                         Term value = entry.getValue();
+                        if(!Dictionary.containsKey(termName) && !termName.equals("")){
+                            Dictionary.put(termName,Character.toUpperCase(termName.charAt(0)) +""); //todo - continue
+                        }
                         String doc_name = d.getDoc_num();
                         if(termName.equals("")){
                             continue;
@@ -61,10 +64,8 @@ public class Indexer {
                         if(TermAndDocumentsData.containsKey(termName)){
                             Integer newint =  new Integer(d.getTermsInDoc().get(termName).getTf(doc_name));
                             //int df = d.getTermsInDoc().get(termname).getDf();
-                            //Dictionary.replace(termName,value); //todo - new line to check
                             TermAndDocumentsData.get(termName).put(d.getDoc_num(),newint);
                         }else {
-                            //Dictionary.put(termName,value); //todo - new line to check
                             HashMap<String, Integer> current = new HashMap();
                             current.put(doc_name, new Integer(value.getTf(doc_name)));
                             TermAndDocumentsData.put(termName, current);

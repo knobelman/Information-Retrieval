@@ -109,10 +109,11 @@ public class Parse {
                 current = trimming(current);
                 if(current.equals(""))
                     continue;
-                if (hsDot.contains(current) || stop_words.contains(current) || current.equals("%")) {//if the raw token is a stop word
+                if (hsDot.contains(current) || current.equals("%")) {//if the raw token is a stop word //todo - (stop_words.contains(current)
                     continue;
                 }
-                if (current.contains("-") || current.equals("Between") || current.equals("between")) {//10-part,6-7 etc'
+                //todo - ask yaniv
+                if (current.contains("-") || current.equals("BETWEEN") || current.equals("Between") || current.equals("between")) {//10-part,6-7 etc'
                     if (current.contains("-"))
                         currValue = current;
                     else if (i + 1 < tokenz.length && isValidNum(tokenz[i + 1])) {
