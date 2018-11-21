@@ -21,7 +21,9 @@ public class Indexer {
     private Posting postingObject;
     private Parse ParserObject;
     private HashMap<String,HashMap<String,Integer>> TermAndDocumentsData = new LinkedHashMap<>();
-    private HashMap<String,String> Dictionary; //term and paths to posting files
+    private HashMap<String,Integer> Dictionary; //term and position in posting file
+    private HashMap<Character,String> letters; // every letter and the name of the file
+    private HashSet<String> filesExist;
     private List<Thread> threadList;
    private Boolean toStem;
 
@@ -33,6 +35,17 @@ public class Indexer {
         this.DocumentsToParse = new HashSet<>();
         this.Dictionary = new HashMap<>();
         this.threadList = new ArrayList<>();
+        this.letters = new HashMap<>();
+        this.filesExist = new HashSet<>();
+        letters.put('a',"ABCD"); letters.put('b',"ABCD"); letters.put('c',"ABCD"); letters.put('d',"ABCD");
+        letters.put('e',"EFGH"); letters.put('f',"EFGH"); letters.put('g',"EFGH"); letters.put('h',"EFGH");
+        letters.put('i',"IJKL"); letters.put('j',"IJKL"); letters.put('k',"IJKL"); letters.put('l',"IJKL");
+        letters.put('m',"MNOP"); letters.put('n',"MNOP"); letters.put('o',"MNOP"); letters.put('p',"MNOP");
+        letters.put('q',"QRST"); letters.put('r',"QRST"); letters.put('s',"QRST"); letters.put('t',"QRST");
+        letters.put('u',"UVWXYZ"); letters.put('v',"UVWXYZ"); letters.put('w',"UVWXYZ"); letters.put('x',"UVWXYZ");
+        letters.put('y',"UVWXYZ"); letters.put('z',"UVWXYZ");
+
+
     }
 
     /**
@@ -54,13 +67,10 @@ public class Indexer {
                     for(Map.Entry<String,Term> entry : d.getTermsInDoc().entrySet()) {
                         String termName = entry.getKey();
                         Term value = entry.getValue();
-                        if(!Dictionary.containsKey(termName) && !termName.equals("")){
-                            Dictionary.put(termName,Character.toUpperCase(termName.charAt(0)) +""); //todo - continue
+                        if(!Dictionary.containsKey(termName)){
+                            Dictionary.put(termName,0); //term name, file name, position
                         }
                         String doc_name = d.getDoc_num();
-                        if(termName.equals("")){
-                            continue;
-                        }
                         if(TermAndDocumentsData.containsKey(termName)){
                             Integer newint =  new Integer(d.getTermsInDoc().get(termName).getTf(doc_name));
                             //int df = d.getTermsInDoc().get(termname).getDf();
@@ -81,13 +91,50 @@ public class Indexer {
                     threadList.add(t);
                 }
                 for(Thread t: threadList){
-                    try {
-                        t.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                            try {
+                                t.join();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                     }
                 }
             }
+        }
+    }
+
+    public void splitFinalPosting(){
+        HashMap<String,FileWriter> fileWriters = new HashMap<>();//hashmap for Filewriters
+        try {
+            fileWriters.put("ABCD",new FileWriter(postingObject.getRootPath() + "\\ABCD",true));
+            fileWriters.put("EFGH",new FileWriter(postingObject.getRootPath() + "\\EFGH",true));
+            fileWriters.put("IJKL",new FileWriter(postingObject.getRootPath() + "\\IJKL",true));
+            fileWriters.put("MNOP",new FileWriter(postingObject.getRootPath() + "\\MNOP",true));
+            fileWriters.put("QRST",new FileWriter(postingObject.getRootPath() + "\\QRST",true));
+            fileWriters.put("UVWXYZ",new FileWriter(postingObject.getRootPath() + "\\UVWXYZ",true));
+            fileWriters.put("OTHER",new FileWriter(postingObject.getRootPath() + "\\OTHER",true));
+        }catch(Exception e){
+        }
+        BufferedReader postingFile;
+        BufferedWriter fileBuffer=null;
+        String line;
+        boolean newLetter = true;//if true- new buffer is needed
+        try {
+            postingFile = new BufferedReader(new FileReader(postingObject.getRootPath()+"\\0"));//read posting
+            line = postingFile.readLine();
+            do{
+                if(!letters.containsKey(line.charAt(0))) {//if first char isn't a known letter
+                    fileBuffer = new BufferedWriter(fileWriters.get("OTHER"));
+                    //newLetter = false;
+                }
+                else{// if(newLetter){
+                    fileBuffer = new BufferedWriter(fileWriters.get(letters.get(line.charAt(0))));
+                }
+                fileBuffer.write(line);
+                fileBuffer.write("\n");
+                line = postingFile.readLine();
+            }while(line!=null);
+            fileBuffer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -94,6 +94,7 @@ public class MainView {
             try {
                 indexer.init(indexer.getReadFileObject(), toStemm);
                 indexer.createFinalPosting();
+                indexer.splitFinalPosting();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -107,15 +107,18 @@ public class Parse {
             do {
                 current = (String)moreThenOneWord.pop();
                 current = trimming(current);
-                if(current.equals(""))
+                if(current.length() == 0 || current.equals("")) {
                     continue;
-                if (hsDot.contains(current) || current.equals("%")) {//if the raw token is a stop word //todo - (stop_words.contains(current)
+                }
+                if ((stop_words.contains(current) && (!current.equals("between") || current.equals("BETWEEN") || current.equals("Between"))) || hsDot.contains(current) || current.equals("%")) {//if the raw token is a stop word //todo - (stop_words.contains(current)
                     continue;
                 }//
-                //todo - ask yaniv
                 if (current.contains("-") || current.equals("BETWEEN") || current.equals("Between") || current.equals("between")) {//10-part,6-7 etc'
                     if (current.contains("-"))
                         currValue = current;
+                    else if(i + 1 < tokenz.length && !isValidNum(tokenz[i + 1])) {
+                        continue;
+                    }
                     else if (i + 1 < tokenz.length && isValidNum(tokenz[i + 1])) {
                         if (i + 2 < tokenz.length && tokenz[i + 2].equals("and"))
                             if (i + 3 < tokenz.length && isValidNum(tokenz[i + 3])) {
@@ -159,6 +162,8 @@ public class Parse {
                     stemmer.stem();
                     currValue = stemmer.toString();
                 }
+                if(currValue.equals(""))
+                    continue;
                 addToDoc(currValue,document);
             }while(!moreThenOneWord.empty());
         }
@@ -231,7 +236,7 @@ public class Parse {
                 return "";
             }
         }
-        if (hsDot.contains(current.charAt(0)) || current.charAt(0)=='%') {//if there is a sign in the beginning
+        if ((hsDot.contains(current.charAt(0)) && current.charAt(0)!='-') || current.charAt(0)=='%') {//if there is a sign in the beginning
             do {
                 current = current.substring(1, current.length());
             } while (current.length() > 0 && hsDot.contains(current.charAt(0)));
