@@ -167,6 +167,7 @@ public class Parse {
                 addToDoc(currValue,document);
             }while(!moreThenOneWord.empty());
         }
+        document.setSpecialWordCount();
         //System.out.println(allTermsInCorpus.size());
         return document;
     }

@@ -128,4 +128,10 @@ public class Doc implements Serializable {
     public void removeFromDoc(String term){
         termsInDoc.remove(term);
     }
+
+    public void setSpecialWordCount() {
+        specialWordCount = termsInDoc.size();
+        //System.out.println(specialWordCount + " : " + doc_num);
+        System.out.println(city);
+    }
 }
