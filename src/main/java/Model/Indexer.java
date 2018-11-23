@@ -102,15 +102,15 @@ public class Indexer {
     }
 
     public void splitFinalPosting(){
-        HashMap<String,FileWriter> fileWriters = new HashMap<>();//hashmap for Filewriters
+        HashMap<String,BufferedWriter> fileWriters = new HashMap<>();//hashmap for Filewriters
         try {
-            fileWriters.put("ABCD",new FileWriter(postingObject.getRootPath() + "\\ABCD",true));
-            fileWriters.put("EFGH",new FileWriter(postingObject.getRootPath() + "\\EFGH",true));
-            fileWriters.put("IJKL",new FileWriter(postingObject.getRootPath() + "\\IJKL",true));
-            fileWriters.put("MNOP",new FileWriter(postingObject.getRootPath() + "\\MNOP",true));
-            fileWriters.put("QRST",new FileWriter(postingObject.getRootPath() + "\\QRST",true));
-            fileWriters.put("UVWXYZ",new FileWriter(postingObject.getRootPath() + "\\UVWXYZ",true));
-            fileWriters.put("OTHER",new FileWriter(postingObject.getRootPath() + "\\OTHER",true));
+            fileWriters.put("ABCD",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\ABCD",true)));
+            fileWriters.put("EFGH",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\EFGH",true)));
+            fileWriters.put("IJKL",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\IJKL",true)));
+            fileWriters.put("MNOP",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\MNOP",true)));
+            fileWriters.put("QRST",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\QRST",true)));
+            fileWriters.put("UVWXYZ",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\UVWXYZ",true)));
+            fileWriters.put("OTHER",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\OTHER",true)));
         }catch(Exception e){
         }
         BufferedReader postingFile;
@@ -122,14 +122,13 @@ public class Indexer {
             line = postingFile.readLine();
             do{
                 if(!letters.containsKey(line.charAt(0))) {//if first char isn't a known letter
-                    fileBuffer = new BufferedWriter(fileWriters.get("OTHER"));
+                    fileBuffer = fileWriters.get("OTHER");
                     //newLetter = false;
                 }
                 else{// if(newLetter){
-                    fileBuffer = new BufferedWriter(fileWriters.get(letters.get(line.charAt(0))));
+                    fileBuffer = fileWriters.get(letters.get(line.charAt(0)));
                 }
-                fileBuffer.write(line);
-                fileBuffer.write("\n");
+                fileBuffer.write(line+"\n");
                 line = postingFile.readLine();
             }while(line!=null);
             fileBuffer.close();
