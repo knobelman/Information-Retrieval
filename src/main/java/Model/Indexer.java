@@ -146,8 +146,6 @@ public class Indexer {
                 position += line.length() + 1;//increase the position for next line
                 filePosition.replace(fileName,position);//insert new position for next line
                 line = postingFile.readLine();
-                //if(line!=null && !newFileNeeded(line.substring(0, line.indexOf('|')),currTerm))//check if file is changing
-                    //position = 0;
             }while(line!=null);
             File pFile = new File(postingObject.getRootPath()+"\\0");
             pFile.delete();
@@ -161,31 +159,6 @@ public class Indexer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     *
-     * @param newTerm - the term from the new line
-     * @param oldTerm - the term from the old line
-     * @return - true if they use the same file, false other wise
-     */
-    private boolean newFileNeeded(String newTerm, String oldTerm) {
-        String oldFile, newFile;
-        if(!letters.containsKey(oldTerm.charAt(0)) && !Character.isUpperCase(oldTerm.charAt(0))) {//if first char isn't a known letter
-            oldFile = "OTHER";
-        }
-        else{
-            char tmp = Character.toLowerCase(oldTerm.charAt(0));
-            oldFile = letters.get(tmp);
-        }
-        if(!letters.containsKey(newTerm.charAt(0)) && !Character.isUpperCase(newTerm.charAt(0))) {//if first char isn't a known letter
-            newFile = "OTHER";
-        }
-        else{
-            char tmp = Character.toLowerCase(newTerm.charAt(0));
-            newFile = letters.get(tmp);
-        }
-        return oldFile.equals(newFile);
     }
 
     public void createEvenPostingFiles(int currPostingNumber){
