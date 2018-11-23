@@ -121,7 +121,7 @@ public class Indexer {
             postingFile = new BufferedReader(new FileReader(postingObject.getRootPath()+"\\0"));//read posting
             line = postingFile.readLine();
             do{
-                if(!letters.containsKey(line.charAt(0))) {//if first char isn't a known letter
+                if(!letters.containsKey(line.toLowerCase().charAt(0))) {//if first char isn't a known letter
                     fileBuffer = fileWriters.get("OTHER");
                     //newLetter = false;
                 }
@@ -131,7 +131,13 @@ public class Indexer {
                 fileBuffer.write(line+"\n");
                 line = postingFile.readLine();
             }while(line!=null);
-            fileBuffer.close();
+            fileWriters.get("ABCD").close();
+            fileWriters.get("EFGH").close();
+            fileWriters.get("IJKL").close();
+            fileWriters.get("MNOP").close();
+            fileWriters.get("QRST").close();
+            fileWriters.get("UVWXYZ").close();
+            fileWriters.get("OTHER").close();
         } catch (Exception e) {
             e.printStackTrace();
         }
