@@ -116,21 +116,22 @@ public class Indexer {
         BufferedReader postingFile;
         BufferedWriter fileBuffer=null;
         String line;
-        boolean newLetter = true;//if true- new buffer is needed
         try {
             postingFile = new BufferedReader(new FileReader(postingObject.getRootPath()+"\\0"));//read posting
             line = postingFile.readLine();
             do{
-                if(!letters.containsKey(line.toLowerCase().charAt(0))) {//if first char isn't a known letter
+                if(!letters.containsKey(line.charAt(0)) && !Character.isUpperCase(line.charAt(0))) {//if first char isn't a known letter
                     fileBuffer = fileWriters.get("OTHER");
-                    //newLetter = false;
                 }
-                else{// if(newLetter){
-                    fileBuffer = fileWriters.get(letters.get(line.charAt(0)));
+                else{
+                    char tmp = Character.toLowerCase(line.charAt(0));
+                    fileBuffer = fileWriters.get(letters.get(tmp));
                 }
                 fileBuffer.write(line+"\n");
                 line = postingFile.readLine();
             }while(line!=null);
+            File pFile = new File(postingObject.getRootPath()+"\\0");
+            pFile.delete();
             fileWriters.get("ABCD").close();
             fileWriters.get("EFGH").close();
             fileWriters.get("IJKL").close();
