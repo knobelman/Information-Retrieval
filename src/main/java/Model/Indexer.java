@@ -103,32 +103,51 @@ public class Indexer {
 
     public void splitFinalPosting(){
         HashMap<String,BufferedWriter> fileWriters = new HashMap<>();//hashmap for Filewriters
+        HashMap<String,Integer> filePosition = new HashMap<>();//hashmap for Filewriters
         try {
-            fileWriters.put("ABCD",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\ABCD",true)));
-            fileWriters.put("EFGH",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\EFGH",true)));
-            fileWriters.put("IJKL",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\IJKL",true)));
-            fileWriters.put("MNOP",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\MNOP",true)));
-            fileWriters.put("QRST",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\QRST",true)));
-            fileWriters.put("UVWXYZ",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\UVWXYZ",true)));
-            fileWriters.put("OTHER",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\OTHER",true)));
+            fileWriters.put("ABCD",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\ABCD")));
+            fileWriters.put("EFGH",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\EFGH")));
+            fileWriters.put("IJKL",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\IJKL")));
+            fileWriters.put("MNOP",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\MNOP")));
+            fileWriters.put("QRST",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\QRST")));
+            fileWriters.put("UVWXYZ",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\UVWXYZ")));
+            fileWriters.put("OTHER",new BufferedWriter(new FileWriter(postingObject.getRootPath() + "\\OTHER")));
+            filePosition.put("ABCD",new Integer(0));
+            filePosition.put("EFGH",new Integer(0));
+            filePosition.put("IJKL",new Integer(0));
+            filePosition.put("MNOP",new Integer(0));
+            filePosition.put("QRST",new Integer(0));
+            filePosition.put("UVWXYZ",new Integer(0));
+            filePosition.put("OTHER",new Integer(0));
         }catch(Exception e){
         }
         BufferedReader postingFile;
-        BufferedWriter fileBuffer=null;
-        String line;
+        BufferedWriter fileBuffer;
+        String currTerm, line, fileName;
+        int position;
         try {
             postingFile = new BufferedReader(new FileReader(postingObject.getRootPath()+"\\0"));//read posting
             line = postingFile.readLine();
             do{
                 if(!letters.containsKey(line.charAt(0)) && !Character.isUpperCase(line.charAt(0))) {//if first char isn't a known letter
-                    fileBuffer = fileWriters.get("OTHER");
+                    fileBuffer = fileWriters.get("OTHER");//get hte buffer to write
+                    position = filePosition.get("OTHER").intValue();//get position to update Dic
+                    fileName = "OTHER";//get name of file to update Dic
                 }
                 else{
                     char tmp = Character.toLowerCase(line.charAt(0));
                     fileBuffer = fileWriters.get(letters.get(tmp));
+                    position = filePosition.get(letters.get(tmp)).intValue();
+                    fileName = letters.get(tmp);
                 }
+                currTerm = line.substring(0, line.indexOf('|'));//get the term
+                Dictionary.replace(currTerm, position);//change the position for the term in the Dic
                 fileBuffer.write(line+"\n");
+                position += line.length() + 1;//increase the position for next line
+                filePosition.replace(fileName,position);//insert new position for next line
                 line = postingFile.readLine();
+                //if(line!=null && !newFileNeeded(line.substring(0, line.indexOf('|')),currTerm))//check if file is changing
+                    //position = 0;
             }while(line!=null);
             File pFile = new File(postingObject.getRootPath()+"\\0");
             pFile.delete();
@@ -142,6 +161,31 @@ public class Indexer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     *
+     * @param newTerm - the term from the new line
+     * @param oldTerm - the term from the old line
+     * @return - true if they use the same file, false other wise
+     */
+    private boolean newFileNeeded(String newTerm, String oldTerm) {
+        String oldFile, newFile;
+        if(!letters.containsKey(oldTerm.charAt(0)) && !Character.isUpperCase(oldTerm.charAt(0))) {//if first char isn't a known letter
+            oldFile = "OTHER";
+        }
+        else{
+            char tmp = Character.toLowerCase(oldTerm.charAt(0));
+            oldFile = letters.get(tmp);
+        }
+        if(!letters.containsKey(newTerm.charAt(0)) && !Character.isUpperCase(newTerm.charAt(0))) {//if first char isn't a known letter
+            newFile = "OTHER";
+        }
+        else{
+            char tmp = Character.toLowerCase(newTerm.charAt(0));
+            newFile = letters.get(tmp);
+        }
+        return oldFile.equals(newFile);
     }
 
     public void createEvenPostingFiles(int currPostingNumber){
