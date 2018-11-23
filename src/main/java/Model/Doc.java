@@ -24,6 +24,7 @@ public class Doc implements Serializable {
     private String city;
     private HashMap<String,Term> termsInDoc;
     private String mostFrequentTerm; //extra
+    private String max_tf_String;
 
 
     /**
@@ -52,7 +53,7 @@ public class Doc implements Serializable {
         this.termsInDoc = new HashMap<>();
         this.max_tf = 0;
         this.specialWordCount = 0;
-        //this.max_tf_String = "";
+        this.max_tf_String = "";
     }
 
     /**
@@ -107,7 +108,7 @@ public class Doc implements Serializable {
         int currTF = termsInDoc.get(term).getTf(doc_num);//set maxTF for DOC
         if(currTF>max_tf) {
             max_tf = currTF;
-            //max_tf_String = term;
+            max_tf_String = term;
         }
     }
 

@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Created by Maor on 11/1/2018.
  */
-public class MainView {
+public class GUI {
 
     @FXML
     public javafx.scene.control.Button LOAD;
@@ -110,9 +110,18 @@ public class MainView {
     }
 
     public void reset(ActionEvent actionEvent) {
-        File postingDirecory = new File(indexer.getPostingFilePath());
-        for(File file: postingDirecory.listFiles())
-            if (!file.isDirectory())
-                file.delete();
+        if(!postingPathSelected){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Warning");
+            alert.setHeaderText("Posting path is empty");
+            alert.setContentText("Please make sure the field is filled");
+            alert.showAndWait();
+        }
+        else {
+            File postingDirecory = new File(PostingPath.getText());
+            for (File file : postingDirecory.listFiles())
+                if (!file.isDirectory())
+                    file.delete();
+        }
     }
 }

@@ -21,7 +21,7 @@ public class Term implements Serializable{
      */
     public Term(String term) {
         this.term = term;
-        amountInDoc = new HashMap<>();
+        this.amountInDoc = new HashMap<>();
     }
 
     /**

@@ -1,4 +1,6 @@
 package Model;
+import javafx.util.Pair;
+
 import java.io.*;
 import java.util.*;
 
@@ -21,7 +23,7 @@ public class Indexer {
     private Posting postingObject;
     private Parse ParserObject;
     private HashMap<String,HashMap<String,Integer>> TermAndDocumentsData = new LinkedHashMap<>();
-    private HashMap<String,Integer> Dictionary; //term and position in posting file
+    private HashMap<String,Pair<Integer,Integer>> Dictionary; //term,totalTF,position in merged posting file
     private HashMap<Character,String> letters; // every letter and the name of the file
     private HashSet<String> filesExist;
     private List<Thread> threadList;
@@ -68,7 +70,7 @@ public class Indexer {
                         String termName = entry.getKey();
                         Term value = entry.getValue();
                         if(!Dictionary.containsKey(termName)){
-                            Dictionary.put(termName,0); //term name, file name, position
+                            Dictionary.put(termName,new Pair<>(1,0)); //term name, file name, position
                         }
                         String doc_name = d.getDoc_num();
                         if(TermAndDocumentsData.containsKey(termName)){
@@ -141,7 +143,8 @@ public class Indexer {
                     fileName = letters.get(tmp);
                 }
                 currTerm = line.substring(0, line.indexOf('|'));//get the term
-                Dictionary.replace(currTerm, position);//change the position for the term in the Dic
+                Pair tmpPair = new Pair<>(Dictionary.get(currTerm).getKey(),position);//create tmppair to insert into Dic
+                Dictionary.replace(currTerm, tmpPair);//change the position for the term in the Dic
                 fileBuffer.write(line+"\n");
                 position += line.length() + 1;//increase the position for next line
                 filePosition.replace(fileName,position);//insert new position for next line
