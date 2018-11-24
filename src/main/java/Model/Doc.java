@@ -127,9 +127,13 @@ public class Doc implements Serializable {
         }
     }
 
+    public void changeUL(Term term){
+        changeUL(term.getTermName());
+    }
+
     /**
      * Changes terms from Upper case to Lower case
-     * @param term - term name
+     * @param term - term name to change to
      */
     private void changeUL(String term) {
         Term tmpTerm = termsInDoc.get(term.toUpperCase());

@@ -90,9 +90,20 @@ public class Indexer {
                     for (Map.Entry<String, Term> entry : d.getTermsInDoc().entrySet()) {
                         String termName = entry.getKey();
                         Term value = entry.getValue();
-                        if(!Dictionary.containsKey(termName)){
+                        if(Dictionary.containsKey(termName)){//Dic contains the term
+
+                        }
+                        else if(Dictionary.containsKey(termName.toLowerCase())){//if Dic has lowercase of this word
+                            //d.changeUL(value);
+                        }
+                        else if(Dictionary.containsKey(termName.toUpperCase())){
+                            d.changeUL(value);
+                            changeUL(termName);
+                        }
+                        else if(!Dictionary.containsKey(termName)){
                             Dictionary.put(termName,new Pair<>(1,0)); //term name, file name, position
                         }
+
                         //addToDic(termName);
                         String doc_name = d.getDoc_num();
                         if (TermAndDocumentsData.containsKey(termName)) {
@@ -123,6 +134,12 @@ public class Indexer {
                 }
             }
         }
+    }
+
+    private void changeUL(String termName) {
+        Pair<Integer, Integer> tmpPair = Dictionary.get(termName.toUpperCase());
+        Dictionary.remove(termName.toUpperCase());
+        Dictionary.put(termName,tmpPair );
     }
 
     public void splitFinalPosting() {
@@ -164,7 +181,7 @@ public class Indexer {
                     fileName = letters.get(tmp);
                 }
                 currTerm = line.substring(0, line.indexOf('|'));//get the term
-                Pair tmpPair = new Pair<>(Dictionary.get(currTerm).getKey(), position);//create tmppair to insert into Dic
+                Pair tmpPair = new Pair<>(Dictionary.get(currTerm).getKey(), position);//create tmppair to insert into Dic todo - crashes because i fixed the Dic
                 Dictionary.replace(currTerm, tmpPair);//change the position for the term in the Dic
                 fileBuffer.write(line + "\n");
                 position += line.length() + 1;//increase the position for next line
