@@ -179,32 +179,34 @@ public class Parse {
     private void addToDoc(String currValue,Doc document) {
         if(stop_words.contains(currValue.toLowerCase()))
             return;
-        if(currValue.toLowerCase().equals(currValue)) {//if is Lower case "yaniv"
-            if(allTermsInCorpus.contains(currValue.toUpperCase())) {//if allTerm contains Upper case of current word and current word is lower case
-                document.removeFromDoc(currValue.toUpperCase());
-                allTermsInCorpus.remove(currValue.toUpperCase());
-            }
-            document.addTermToDoc(currValue);
-            allTermsInCorpus.add(currValue);
-        }
-        else if(currValue.toUpperCase().equals(currValue)){//if is Upper case "YANIV"
-            if(allTermsInCorpus.contains(currValue.toLowerCase())) {//if allTerm contains Lower case of current word and current word is Upper case
-                return;
-            }
-            document.addTermToDoc(currValue);
-            allTermsInCorpus.add(currValue);
-        }
-        else if(Character.isUpperCase(currValue.charAt(0))) {//if first char is upper "Yaniv"
-            if(allTermsInCorpus.contains(currValue.toLowerCase())) {//if allTerm contains Lower case of current
-                return;
-            }
-            document.addTermToDoc(currValue.toUpperCase());
-            allTermsInCorpus.add(currValue.toUpperCase());
-        }
-        else {
-            document.addTermToDoc(currValue);
-            allTermsInCorpus.add(currValue);
-        }
+        document.addTermToDoc(currValue);
+        allTermsInCorpus.add(currValue);//todo
+//        if(currValue.toLowerCase().equals(currValue)) {//if is Lower case "yaniv"
+//            if(allTermsInCorpus.contains(currValue.toUpperCase())) {//if allTerm contains Upper case of current word and current word is lower case
+//                document.removeFromDoc(currValue.toUpperCase());
+//                allTermsInCorpus.remove(currValue.toUpperCase());
+//            }
+//            document.addTermToDoc(currValue);
+//            allTermsInCorpus.add(currValue);
+//        }
+//        else if(currValue.toUpperCase().equals(currValue)){//if is Upper case "YANIV"
+//            if(allTermsInCorpus.contains(currValue.toLowerCase())) {//if allTerm contains Lower case of current word and current word is Upper case
+//                return;
+//            }
+//            document.addTermToDoc(currValue);
+//            allTermsInCorpus.add(currValue);
+//        }
+//        else if(Character.isUpperCase(currValue.charAt(0))) {//if first char is upper "Yaniv"
+//            if(allTermsInCorpus.contains(currValue.toLowerCase())) {//if allTerm contains Lower case of current
+//                return;
+//            }
+//            document.addTermToDoc(currValue.toUpperCase());
+//            allTermsInCorpus.add(currValue.toUpperCase());
+//        }
+//        else {
+//            document.addTermToDoc(currValue);
+//            allTermsInCorpus.add(currValue);
+//        }
     }
 
     /**
