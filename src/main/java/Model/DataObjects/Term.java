@@ -46,4 +46,12 @@ public class Term implements Serializable{
         return  "'" + term + '\'' +
                 ", amountInDoc=" + amountInDoc;
     }
+
+    public void setTerm(String term){
+        this.term = term;
+    }
+
+    public String getTermName(){
+        return term;
+    }
 }
