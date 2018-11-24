@@ -1,7 +1,5 @@
-package Model;
-
+package Model.DataObjects;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**

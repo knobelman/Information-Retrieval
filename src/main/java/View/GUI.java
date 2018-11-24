@@ -1,18 +1,15 @@
 package View;
-
-import Model.*;
+import Controller.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.stage.DirectoryChooser;
 import java.io.File;
-import java.io.IOException;
 
 /**
- * Created by Maor on 11/1/2018.
+ * This class represents the GUI of the engine
  */
 public class GUI {
-
     @FXML
     public javafx.scene.control.Button LOAD;
     public javafx.scene.control.Button POSTING;
@@ -23,16 +20,22 @@ public class GUI {
 
     /**
      * Fields
+     * @myController - the controller
+     * @corpusePathSelected - boolean flag for indicate if corpus path selected
+     * @postingPathSelected - boolean flag for indicate if posting path selected
+     * @pathOfCorpus - the path of the corpus
+     * @pathOfPosting - the path of the posting
      */
-
-    Indexer indexer = new Indexer();
-    Posting postingObject;
+    Controller myController = new Controller();
     boolean corpusePathSelected = false;
     boolean postingPathSelected = false;
     String pathOfCorpus;
     String pathOfPosting;
 
-    public void loadCorpus(ActionEvent actionEvent){
+    /**
+     * get corpus path from browse button
+     */
+    public void loadCorpus(){
         DirectoryChooser fc = new DirectoryChooser();
         fc.setTitle("Set Corpus file Directory");
         File file = fc.showDialog(null);
@@ -43,7 +46,10 @@ public class GUI {
         }
     }
 
-    public void loadPosting(ActionEvent actionEvent) {
+    /**
+     * get posting path from browse button
+     */
+    public void loadPosting() {
         DirectoryChooser fc = new DirectoryChooser();
         fc.setTitle("Set Posting file Directory");
         File file = fc.showDialog(null);
@@ -54,49 +60,57 @@ public class GUI {
         }
     }
 
-    public void startIndexing(ActionEvent actionEvent) {
+    /**
+     * start indexing
+     */
+    public void startIndexing() {
         double before = System.currentTimeMillis();
+        //if one of the browser buttons not clicked
         if(!corpusePathSelected || !postingPathSelected){
+            //if both of the path text filed we need to start indexing
             if(!PostingPath.getText().equals("") && !CorpusPath.getText().equals("")){
                 corpusePathSelected = true;
                 postingPathSelected = true;
                 pathOfCorpus = CorpusPath.getText();
                 pathOfPosting = PostingPath.getText();
+                //if stemming required
+                if (STEMM.isSelected()) {
+                    File directory = new File(pathOfPosting + "\\withStem");
+                    if (!directory.exists()) {
+                        directory.mkdir();
+                    }
+                    //send to controller with stemming
+                    myController.startIndexing(pathOfCorpus, pathOfPosting + "\\withStem", true);
+                }
+                else{
+                    //send to controller without stemming
+                    myController.startIndexing(pathOfCorpus, pathOfPosting, false);
+                }
             }
-
+            //one of fields is empty
+            else if(PostingPath.getText().equals("") || CorpusPath.getText().equals("")){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Warning");
+                alert.setHeaderText("One of field is empty");
+                alert.setContentText("Please make sure all fields filled");
+                alert.showAndWait();
+            }
         }
-        if(!corpusePathSelected || !postingPathSelected){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Warning");
-            alert.setHeaderText("One of field is empty");
-            alert.setContentText("Please make sure all fields filled");
-            alert.showAndWait();
-        }
+        //if both browser buttons clicked
         else {
-            indexer.setCorpusFilePath(pathOfCorpus);
-            postingObject = new Posting(pathOfPosting);
-            indexer.setPostingObject(postingObject);
-            ReadFile readFileObject = new ReadFile(indexer.getRootPath());
-            indexer.setReadFileObject(readFileObject);
-
+            //if stemming required
             if (STEMM.isSelected()) {
-                indexer.setStemming(true);
-                File directory = new File(pathOfPosting +"\\withStem");
-                if (!directory.exists()){
+                File directory = new File(pathOfPosting + "\\withStem");
+                //if directory of stemming not exists create one
+                if (!directory.exists()) {
                     directory.mkdir();
                 }
-                indexer.setPostingFilePath(pathOfPosting +"\\withStem");
-            } else {
-                indexer.setStemming(false);
-                indexer.setPostingFilePath(pathOfPosting);
+                //send to controller with stemming
+                myController.startIndexing(pathOfCorpus, pathOfPosting + "\\withStem", true);
             }
-            boolean toStemm = indexer.getToStemm();
-            try {
-                indexer.init(indexer.getReadFileObject(), toStemm);
-                indexer.createFinalPosting();
-                indexer.splitFinalPosting();
-            } catch (IOException e) {
-                e.printStackTrace();
+            //if stemming not required
+            else{
+                myController.startIndexing(pathOfCorpus, pathOfPosting, false);
             }
             System.out.println((System.currentTimeMillis() - before) / 1000 / 60 + " Minutes");
         }
@@ -110,14 +124,16 @@ public class GUI {
     }
 
     public void reset(ActionEvent actionEvent) {
-        if(!postingPathSelected){
+        //if posting path not give
+        if(!postingPathSelected && pathOfPosting.equals("")){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Warning");
             alert.setHeaderText("Posting path is empty");
-            alert.setContentText("Please make sure the field is filled");
+            alert.setContentText("Please make sure the field is filled for reset the posting folder");
             alert.showAndWait();
         }
         else {
+            //delete all posting files
             File postingDirecory = new File(PostingPath.getText());
             for (File file : postingDirecory.listFiles())
                 if (!file.isDirectory())

@@ -1,6 +1,6 @@
-import Model.Doc;
-import Model.Parse;
-import Model.Term;
+import Model.DataObjects.ParseableObjects.Doc;
+import Model.Parsers.DocParser;
+import Model.DataObjects.Term;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +17,10 @@ public class ParseTests {
          * NUMBERS
          */
         System.out.println("~*~ Numbers Tests ~*~");
+        pass += test("-1","19,985.67","19.98567K");
+        count +=1;
+        pass += test("0","19985.67","19.98567K");
+        count +=1;
         pass += test("1","Between 70 and 80","BETWEEN 70 AND 80");
         count +=1;
         pass += test("2","\"Man","MAN");
@@ -150,9 +154,9 @@ public class ParseTests {
      * More
        */
       System.out.println("~*~ More ~*~");
-        pass += test("0","Europe's","Europe's");
+        pass += test("0","Europe's","EUROPE");
         count +=1;
-        pass += test("1","\"Europe's","Europe");
+        pass += test("1","\"Europe's","EUROPE");
         count +=1;
         pass += test("2","...and",""); //retun null todo all good!
         count +=1;
@@ -162,15 +166,15 @@ public class ParseTests {
         count +=1;
         pass += test("5","\"\"","");
         count +=1;
-        pass += test("6","Bosnia-Herzegovina'","Bosnia-Herzegovina");
+        pass += test("6","Bosnia-Herzegovina'","BOSNIA-HERZEGOVINA");
         count +=1;
         pass += test("7","Coalition!","COALITION");
         count +=1;
         pass += test("8","+14","14");
         count +=1;
-        pass += test("9","\"2020,\"","2020");
+        pass += test("9","\"2020,\"","2.02K");
         count +=1;
-        pass += test("10","/[Gao","Gao");
+        pass += test("10","/[Gao","GAO");
         count +=1;
         pass += test("11","year./","year");
         count +=1;
@@ -180,7 +184,7 @@ public class ParseTests {
         count +=1;
         pass += test("14","Hello--hell","Hello");
         count +=1;
-        pass += test("1","\"January 1994\"","January");
+        pass += test("1","\"January 1994\"","1994-01");
         count +=1;
         System.out.println("~*~ SUMMERY: PASS " + pass + "/" + (count) +" ~*~");
 
@@ -188,7 +192,7 @@ public class ParseTests {
     }
 
     public static int test(String number, String input,String output) {
-        Parse p = new Parse("C:\\Users\\Yaniv\\Desktop\\corpus");
+        DocParser p = new DocParser("C:\\Users\\Maor\\Desktop\\corpus",false);
         Doc doc1 = new Doc();
         doc1.setDoc_content(input);
         p.parsing(doc1, false);
