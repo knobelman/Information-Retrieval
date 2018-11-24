@@ -1,6 +1,8 @@
-import Model.Doc;
-import Model.Parse;
-import Model.Term;
+import Model.DataObjects.ParseableObjects.Doc;
+import Model.DataObjects.ParseableObjects.ParseableObject;
+import Model.DataObjects.Term;
+import Model.Parsers.DocParser;
+import Model.Parsers.IParser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -188,10 +190,10 @@ public class ParseTests {
     }
 
     public static int test(String number, String input,String output) {
-        Parse p = new Parse("C:\\Users\\Yaniv\\Desktop\\corpus");
+        IParser p = new DocParser("C:\\Users\\Maor\\Desktop\\corpus",false);
         Doc doc1 = new Doc();
         doc1.setDoc_content(input);
-        p.parsing(doc1, false);
+        p.parsing(doc1);
         HashMap<String,Term> termsReturn = doc1.getTermsInDoc();
         if(termsReturn.size() == 0 && output.length() !=0){
             System.out.println("TEST " + number + " FAILED| INPUT: " + input + "| OUTPUT: " + "| EXCEPTED: " + output);
