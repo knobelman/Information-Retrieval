@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
@@ -66,6 +67,7 @@ public class Parse {
         try {
             br = new BufferedReader(new FileReader(fileName));
         } catch (FileNotFoundException e) {
+            System.out.println("Stop Words");
         }
         try {
             String line = br.readLine();
@@ -74,10 +76,12 @@ public class Parse {
                 line = br.readLine();
             }
         } catch (IOException e) {
+            System.out.println("Stop Words");
         } finally {
             try {
                 br.close();
             } catch (IOException e) {
+                System.out.println("Stop Words");
             }
         }
     }
@@ -104,73 +108,72 @@ public class Parse {
             }
             if(moreThenOneWord.empty())
                 continue;
-            do {
-                current = (String)moreThenOneWord.pop();
-                current = trimming(current);
-                if(current.length() == 0 || current.equals("")) {
-                    continue;
-                }
-                if ((stop_words.contains(current) && (!current.equals("between") || current.equals("BETWEEN") || current.equals("Between"))) || hsDot.contains(current) || current.equals("%")) {//if the raw token is a stop word //todo - (stop_words.contains(current)
-                    continue;
-                }//
-                if (current.contains("-") || current.equals("BETWEEN") || current.equals("Between") || current.equals("between")) {//10-part,6-7 etc'
-                    if (current.contains("-"))
-                        currValue = current;
-                    else if(i + 1 < tokenz.length && !isValidNum(tokenz[i + 1])) {
+                do {
+                    current = (String) moreThenOneWord.pop();
+                    current = trimming(current);
+                    if (current.length() == 0 || current.equals("")) {
                         continue;
                     }
-                    else if (i + 1 < tokenz.length && isValidNum(tokenz[i + 1])) {
-                        if (i + 2 < tokenz.length && tokenz[i + 2].equals("and"))
-                            if (i + 3 < tokenz.length && isValidNum(tokenz[i + 3])) {
-                                currValue = current + " " + tokenz[i + 1] + " " + tokenz[i + 2] + " " + tokenz[i + 3];
-                                i += 3;
-                            }
-                    }
-                } else if (current.charAt(0) == '$') {//if first char is '$' V
-                    if (i + 1 >= tokenz.length)
-                        currValue = dollarFirst(current, "");
-                    else
-                        currValue = dollarFirst(current, tokenz[i + 1]);
-                } else if (isValidNum(current)) {//check if token is a valid number
-                    if(!current.contains(",") && !current.contains(".") && current.length()>=4)
-                        current = toComa(current);
-                    if(current.contains(",") && current.contains(".") && current.length()>=4)
-                        current = vanishDot(current);
-                    if (i + 1 >= tokenz.length)
-                        currValue = numberFirst(current, "", "", "");
-                    else if (i + 2 >= tokenz.length)
-                        currValue = numberFirst(current, tokenz[i + 1], "", "");
-                    else if (i + 3 >= tokenz.length)
-                        currValue = numberFirst(current, tokenz[i + 1], tokenz[i + 2], "");
-                    else
-                        currValue = numberFirst(current, tokenz[i + 1], tokenz[i + 2], tokenz[i + 3]);
-                } else if (current.contains("%")) {//%6 etc'
-                    currValue = current;
-                } else if (hmDate.containsKey(current)) {//if first token is month
-                    if (i + 1 >= tokenz.length)//if month comes alone
+                    if ((stop_words.contains(current) && (!current.equals("between") || current.equals("BETWEEN") || current.equals("Between"))) || hsDot.contains(current) || current.equals("%")) {//if the raw token is a stop word //todo - (stop_words.contains(current)
+                        continue;
+                    }//
+                    if (current.contains("-") || current.equals("BETWEEN") || current.equals("Between") || current.equals("between")) {//10-part,6-7 etc'
+                        if (current.contains("-"))
+                            currValue = current;
+                        else if (i + 1 < tokenz.length && !isValidNum(tokenz[ i + 1 ])) {
+                            continue;
+                        } else if (i + 1 < tokenz.length && isValidNum(tokenz[ i + 1 ])) {
+                            if (i + 2 < tokenz.length && tokenz[ i + 2 ].equals("and"))
+                                if (i + 3 < tokenz.length && isValidNum(tokenz[ i + 3 ])) {
+                                    currValue = current + " " + tokenz[ i + 1 ] + " " + tokenz[ i + 2 ] + " " + tokenz[ i + 3 ];
+                                    i += 3;
+                                }
+                        }
+                    } else if (current.charAt(0) == '$') {//if first char is '$' V
+                        if (i + 1 >= tokenz.length)
+                            currValue = dollarFirst(current, "");
+                        else
+                            currValue = dollarFirst(current, tokenz[ i + 1 ]);
+                    } else if (isValidNum(current)) {//check if token is a valid number
+                        if (!current.contains(",") && !current.contains(".") && current.length() >= 4)
+                            current = toComa(current);
+                        if (current.contains(",") && current.contains(".") && current.length() >= 4)
+                            current = vanishDot(current);
+                        if (i + 1 >= tokenz.length)
+                            currValue = numberFirst(current, "", "", "");
+                        else if (i + 2 >= tokenz.length)
+                            currValue = numberFirst(current, tokenz[ i + 1 ], "", "");
+                        else if (i + 3 >= tokenz.length)
+                            currValue = numberFirst(current, tokenz[ i + 1 ], tokenz[ i + 2 ], "");
+                        else
+                            currValue = numberFirst(current, tokenz[ i + 1 ], tokenz[ i + 2 ], tokenz[ i + 3 ]);
+                    } else if (current.contains("%")) {//%6 etc'
                         currValue = current;
-                    else
-                        currValue = dateFirst(current, trimming(tokenz[i + 1]));
-                    if (currValue.contains("-"))//if is a date- ignore next token alone
-                        i++;
-                } else {
-                    current = apostropheS(current);
-                    currValue = current;
-                }
+                    } else if (hmDate.containsKey(current)) {//if first token is month
+                        if (i + 1 >= tokenz.length)//if month comes alone
+                            currValue = current;
+                        else
+                            currValue = dateFirst(current, trimming(tokenz[ i + 1 ]));
+                        if (currValue.contains("-"))//if is a date- ignore next token alone
+                            i++;
+                    } else {
+                        current = apostropheS(current);
+                        currValue = current;
+                    }
 
-                if (stem) {
-                    Stemmer stemmer = new Stemmer();
-                    stemmer.add(currValue.toCharArray(), currValue.length());
-                    stemmer.stem();
-                    currValue = stemmer.toString();
-                }
-                if(currValue.equals(""))
-                    continue;
-                addToDoc(currValue,document);
-            }while(!moreThenOneWord.empty());
+                    if (stem) {
+                        Stemmer stemmer = new Stemmer();
+                        stemmer.add(currValue.toCharArray(), currValue.length());
+                        stemmer.stem();
+                        currValue = stemmer.toString();
+                    }
+                    if (currValue.equals(""))
+                        continue;
+                    addToDoc(currValue, document);
+                } while (!moreThenOneWord.empty());
+
         }
         document.setSpecialWordCount();
-        //System.out.println(allTermsInCorpus.size());
         return document;
     }
 
@@ -274,10 +277,9 @@ public class Parse {
             if(isValidNum(currSplit[0]) && isValidNum(currSplit[1]))
                 return true;
         }
-        else if(current.contains(",")){//number with ,
+        else if(current.contains(",") && !current.equals(",")){//number with ,
             String[] currSplit = current.split(",");
             for(String s : currSplit){
-                //if(!s.matches("-?(0|[0-9]\\d*)"))
                 if(!isNumeric(s))
                     return false;
             }
@@ -428,7 +430,7 @@ public class Parse {
             }
             else{//num fraction
                 String[] tmp = s2.split("/");
-                if(isValidNum(tmp[0]) && isValidNum(tmp[1])) {
+                if(tmp.length >=2 && isValidNum(tmp[0]) && isValidNum(tmp[1])) {
                     i++;
                     return wordAndNumNumeric(s1 + " " + s2);
                 }

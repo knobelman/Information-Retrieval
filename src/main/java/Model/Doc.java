@@ -127,10 +127,6 @@ public class Doc implements Serializable {
         }
     }
 
-//    public void changeUL(Term term){
-//        changeUL(term.getTermName());
-//    }
-//
     /**
      * Changes terms from Upper case to Lower case
      * @param term - term name to change to
@@ -162,7 +158,5 @@ public class Doc implements Serializable {
 
     public void setSpecialWordCount() {
         specialWordCount = termsInDoc.size();
-        //System.out.println(specialWordCount + " : " + doc_num);
-        //System.out.println(city);
     }
 }

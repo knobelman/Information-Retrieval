@@ -106,7 +106,6 @@ public class Indexer {
                         String doc_name = d.getDoc_num();
                         if (TermAndDocumentsData.containsKey(termName)) {
                             Integer newInt = new Integer(d.getTermsInDoc().get(termName).getTf(doc_name));
-                            //int df = d.getTermsInDoc().get(termname).getDf();
                             TermAndDocumentsData.get(termName).put(d.getDoc_num(), newInt);
                         } else {
                             HashMap<String, Integer> current = new HashMap();
