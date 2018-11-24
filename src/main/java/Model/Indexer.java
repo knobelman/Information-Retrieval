@@ -94,22 +94,20 @@ public class Indexer {
 
                         }
                         else if(Dictionary.containsKey(termName.toLowerCase())){//if Dic has lowercase of this word
-                            //d.changeUL(value);
+
                         }
                         else if(Dictionary.containsKey(termName.toUpperCase())){
-                            d.changeUL(value);
-                            changeUL(termName);
+                            //d.changeUL(value);
+                            //changeUL(termName);
                         }
-                        else if(!Dictionary.containsKey(termName)){
+                        if(!Dictionary.containsKey(termName)){
                             Dictionary.put(termName,new Pair<>(1,0)); //term name, file name, position
                         }
-
-                        //addToDic(termName);
                         String doc_name = d.getDoc_num();
                         if (TermAndDocumentsData.containsKey(termName)) {
-                            Integer newint = new Integer(d.getTermsInDoc().get(termName).getTf(doc_name));
+                            Integer newInt = new Integer(d.getTermsInDoc().get(termName).getTf(doc_name));
                             //int df = d.getTermsInDoc().get(termname).getDf();
-                            TermAndDocumentsData.get(termName).put(d.getDoc_num(), newint);
+                            TermAndDocumentsData.get(termName).put(d.getDoc_num(), newInt);
                         } else {
                             HashMap<String, Integer> current = new HashMap();
                             current.put(doc_name, new Integer(value.getTf(doc_name)));

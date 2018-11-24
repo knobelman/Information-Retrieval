@@ -17,9 +17,9 @@ public class ParseTests {
          * NUMBERS
          */
         System.out.println("~*~ Numbers Tests ~*~");
-        pass += test("1","Between 70 and 80","BETWEEN 70 AND 80");
+        pass += test("1","19,986,897.65","19.98689765M");
         count +=1;
-        pass += test("2","\"Man","MAN");
+        pass += test("2","\"Man","Man");
         count +=1;
         pass += test("3","10,123","10.123K");
         count +=1;
@@ -117,17 +117,17 @@ public class ParseTests {
         count +=1;
         pass += test("2","1-1","1-1");
         count +=1;
-        pass += test("3","Xinhua,","XINHUA");
+        pass += test("3","Xinhua,","Xinhua");
         count +=1;
-        pass += test("4","[Xinhua]","XINHUA");
+        pass += test("4","[Xinhua]","Xinhua");
         count +=1;
-        pass += test("5","(Xinhua)","XINHUA");
+        pass += test("5","(Xinhua)","Xinhua");
         count +=1;
-        pass += test("6","Xinhua--","XINHUA");
+        pass += test("6","Xinhua--","Xinhua");
         count +=1;
         pass += test("7","the yaniv","yaniv");
         count +=1;
-        pass += test("8","Value-added","VALUE-ADDED");
+        pass += test("8","Value-added","Value-added");
         count +=1;
         pass += test("9","10-part","10-part");
         count +=1;
@@ -150,7 +150,7 @@ public class ParseTests {
      * More
        */
       System.out.println("~*~ More ~*~");
-        pass += test("0","Europe's","Europe's");
+        pass += test("0","Europe's","Europe");
         count +=1;
         pass += test("1","\"Europe's","Europe");
         count +=1;
@@ -164,11 +164,11 @@ public class ParseTests {
         count +=1;
         pass += test("6","Bosnia-Herzegovina'","Bosnia-Herzegovina");
         count +=1;
-        pass += test("7","Coalition!","COALITION");
+        pass += test("7","Coalition!","Coalition");
         count +=1;
         pass += test("8","+14","14");
         count +=1;
-        pass += test("9","\"2020,\"","2020");
+        pass += test("9","\"2020,\"","2.02K");
         count +=1;
         pass += test("10","/[Gao","Gao");
         count +=1;
@@ -176,11 +176,11 @@ public class ParseTests {
         count +=1;
         pass += test("12","|1-12/93","1-12/93");
         count +=1;
-        pass += test("13","%\\","");
+        pass += test("13","-5","-5");
         count +=1;
-        pass += test("14","Hello--hell","Hello");
+        pass += test("14","-WORD","WORD");
         count +=1;
-        pass += test("1","\"January 1994\"","January");
+        pass += test("1","0.1 percent/second","1994-01");
         count +=1;
         System.out.println("~*~ SUMMERY: PASS " + pass + "/" + (count) +" ~*~");
 

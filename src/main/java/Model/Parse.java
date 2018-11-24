@@ -90,7 +90,7 @@ public class Parse {
      */
     public Doc parsing(Doc document, boolean stem) {
         String text = document.getDoc_content();//("[: () -- ]");
-        String[]tokenz = text.split("[: ()|]");
+        String[]tokenz = text.split("[\\*\\\n\\ \\:\\;\\?\\!\\#\\]\\|\\}\\{\\~\\�\\[\\_\\+\\'\"'\\(\\)]+");//("[: ()|]");
         for(i=0; i < tokenz.length; i++){//for to go over all tokenz
             String current = tokenz[i];
             String currValue = "";
@@ -133,7 +133,9 @@ public class Parse {
                         currValue = dollarFirst(current, tokenz[i + 1]);
                 } else if (isValidNum(current)) {//check if token is a valid number
                     if(!current.contains(",") && !current.contains(".") && current.length()>=4)
-                        current = toCome(current);
+                        current = toComa(current);
+                    if(current.contains(",") && current.contains(".") && current.length()>=4)
+                        current = vanishDot(current);
                     if (i + 1 >= tokenz.length)
                         currValue = numberFirst(current, "", "", "");
                     else if (i + 2 >= tokenz.length)
@@ -170,6 +172,17 @@ public class Parse {
         document.setSpecialWordCount();
         //System.out.println(allTermsInCorpus.size());
         return document;
+    }
+
+    private String vanishDot(String current) {
+        String tmp="";
+        for(int i=0; i<current.length(); i++){
+            if(current.charAt(i)=='.')
+                continue;
+            else
+                tmp += current.charAt(i);
+        }
+        return tmp;
     }
 
     /**
@@ -231,6 +244,8 @@ public class Parse {
         if (current.equals("") || current.equals(" ") || current.equals("$") || current.equals("-") || current.equals(",")
                 || current.equals(".") || current.equals("%"))//if empty token
             return "";
+        if(current.charAt(0)=='-' && !isValidNum(current.substring(1, current.length())))// if -word and not -number
+            return trimming(current.substring(1, current.length()));
         if (hsDot.contains(current.charAt(current.length() - 1))) {//if there is a sign at the end
             do {
                 current = current.substring(0, current.length() - 1);
@@ -256,7 +271,7 @@ public class Parse {
             return true;
         else if(current.contains(".") && current.charAt(current.length()-1)!='.') {//number with .
             String[] currSplit = current.split("\\.");
-            if(isNumeric(currSplit[0]) && isNumeric(currSplit[1]))
+            if(isValidNum(currSplit[0]) && isValidNum(currSplit[1]))
                 return true;
         }
         else if(current.contains(",")){//number with ,
@@ -412,8 +427,13 @@ public class Parse {
                 return wordAndNumNumeric(s1 + " " + s2 + " " + s3);
             }
             else{//num fraction
-                i++;
-                return wordAndNumNumeric(s1 + " " + s2);
+                String[] tmp = s2.split("/");
+                if(isValidNum(tmp[0]) && isValidNum(tmp[1])) {
+                    i++;
+                    return wordAndNumNumeric(s1 + " " + s2);
+                }
+                else
+                    return s1;
             }
         }
         else if(s1.contains(",")){// || s1.length()>=4){//450,000
@@ -472,7 +492,7 @@ public class Parse {
      * @param current - number without coma
      * @return - array as if the number was with coma
      */
-    private String toCome(String current) {
+    private String toComa(String current) {
         String temp = "";
         int count = 0;
         for(int i =current.length()-1; i>=0; i--){
