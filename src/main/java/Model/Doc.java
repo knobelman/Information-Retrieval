@@ -97,6 +97,12 @@ public class Doc implements Serializable {
      */
     public void addTermToDoc(String term){//todo
         Term currentTerm = null;
+        if(Character.isLowerCase(term.charAt(0))) {
+            term = term.toLowerCase();
+        }
+        else{// if(Character.isUpperCase(term.charAt(0))) {
+            term = term.toUpperCase();
+        }
         if(termsInDoc.containsKey(term)){//term already exists in this doc
             currentTerm = termsInDoc.get(term);
             termsInDoc.get(term).incAmounts(this.doc_num);
@@ -115,7 +121,14 @@ public class Doc implements Serializable {
             }
             else {//new term for the doc
                 specialWordCount++;
-                currentTerm = new Term(term);
+                if(Character.isLowerCase(term.charAt(0))) {
+                    currentTerm = new Term(term.toLowerCase());
+                    term = term.toLowerCase();
+                }
+                else {
+                    currentTerm = new Term(term.toUpperCase());
+                    term = term.toUpperCase();
+                }
                 currentTerm.incAmounts(this.doc_num);
                 this.termsInDoc.put(term, currentTerm);
             }

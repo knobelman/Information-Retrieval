@@ -178,10 +178,10 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("13","-5","-5");
 //        count +=1;
-        pass += test("14","-,","WORD");
+        pass += test("14","5,000 DOLLARS","WORD");
         count +=1;
-        pass += test("1",",5","1994-01");
-        count +=1;
+//        pass += test("1",",5","1994-01");
+//        count +=1;
         System.out.println("~*~ SUMMERY: PASS " + pass + "/" + (count) +" ~*~");
 
 
