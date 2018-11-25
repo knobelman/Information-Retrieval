@@ -20,15 +20,20 @@ import java.util.*;
  * @parser - parser class object which parsing the document content
  */
 public class Indexer {
+
     private String rootPath;
+
     private static ReadFile readFileObject;
-    private JasonParser jasonParser;
-    private HashMap <String,Pair<ArrayList<String>,CityData> > cityDictionary;
-    private HashMap<String,Pair<Integer,Integer>> corpusDictionary; //term,totalTF,position in merged posting file
-    private HashSet<Doc> DocumentsToParse;
-    private HashMap<String,Doc> DocumentDicionary;
     private Posting postingObject;
     private DocParser ParserObject;
+    private JasonParser jasonParser;
+
+    private HashMap <String,Pair<ArrayList<String>,CityData> > cityDictionary;
+    private HashMap<String,Pair<Integer,Integer>> corpusDictionary; //term,totalTF,position in merged posting file
+    private HashMap<String,Doc> DocumentDictionary;
+    private HashSet<String> LanguageDictionary;
+
+    private HashSet<Doc> DocumentsToParse;
     private HashMap<String,HashMap<String,Integer>> TermAndDocumentsData = new LinkedHashMap<>();
     private HashMap<Character,String> letters; // every letter and the name of the file
     private List<Thread> threadList;
@@ -41,11 +46,14 @@ public class Indexer {
     public Indexer(String rootPath, boolean toStem) {
         this.rootPath = rootPath;
         this.DocumentsToParse = new HashSet<>();
+
         this.corpusDictionary = new HashMap<>();
-        this.DocumentDicionary = new HashMap<>();
+        this.DocumentDictionary = new HashMap<>();
+        this.cityDictionary = new HashMap<>();
+        this.LanguageDictionary = new HashSet<>();
+
         this.threadList = new ArrayList<>();
         this.letters = new HashMap<>();
-        this.cityDictionary = new HashMap<>();
         this.jasonParser = new JasonParser();
         this.ParserObject = new DocParser(rootPath,toStem);
         letters.put('a',"ABCD"); letters.put('b',"ABCD"); letters.put('c',"ABCD"); letters.put('d',"ABCD");
@@ -73,7 +81,8 @@ public class Indexer {
                 for (Doc d : DocumentsToParse) {
                     //create document dictionary
                     Doc toInsert = new Doc(d.getPath(),d.getCity(),d.getMax_tf(),d.getSpecialWordCount());
-                    DocumentDicionary.put(d.getDoc_num(),toInsert);
+                    DocumentDictionary.put(d.getDoc_num(),toInsert);
+                    LanguageDictionary.add(d.getLanguage());
                     //create city dictionary
                     if(!d.getCity().equals("")){
                         if(!cityDictionary.containsKey(d.getCity())) {

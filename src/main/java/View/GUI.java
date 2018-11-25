@@ -1,10 +1,21 @@
 package View;
 import Controller.Controller;
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
+
 import java.io.File;
+import java.io.IOException;
 
 /**
  * This class represents the GUI of the engine
@@ -117,10 +128,19 @@ public class GUI {
     }
 
     public void openLanguageList(ActionEvent actionEvent) {
-//        ListView<String> list = new ListView<String>();
-//        ObservableList<String> items = FXCollections.observableArrayList (
-//                "Single", "Double", "Suite", "Family App");
-//        list.setItems(items);
+        FXMLLoader fxmlLoader=new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/Language.fxml"));
+        Scene scene=null;
+        try{
+            scene=new Scene(fxmlLoader.load(), 500, 400);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage stage=new Stage();
+        stage.setTitle("Language List");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
     }
 
     public void reset(ActionEvent actionEvent) {

@@ -161,4 +161,8 @@ public class Doc extends ParseableObject implements Serializable {
     public String getCity() {
         return city;
     }
+
+    public String getLanguage() {
+        return language;
+    }
 }
