@@ -2,6 +2,7 @@ package Model.DataObjects.ParseableObjects;
 import Model.DataObjects.Term;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * This class represents a document
@@ -21,9 +22,9 @@ public class Doc extends ParseableObject implements Serializable {
     private int specialWordCount;
     private String city;
     private HashMap<String,Term> termsInDoc;
-    private String mostFrequentTerm; //extra
     private String max_tf_String;
     private String language;
+    private HashSet<Integer> positionOfCity;
 
 
     /**
@@ -44,7 +45,7 @@ public class Doc extends ParseableObject implements Serializable {
     /**
      * C'tor with arguments
      */
-    public Doc(String path, String doc_num, String doc_content, String city,String language) {
+    public Doc(String path, String doc_num, String doc_content, String city, HashSet positionOfCity, String language) {
         this.doc_num = doc_num;
         this.language = language;
         this.doc_content = doc_content;
@@ -53,6 +54,8 @@ public class Doc extends ParseableObject implements Serializable {
         this.termsInDoc = new HashMap<>();
         this.max_tf = 0;
         this.specialWordCount = 0;
+        this.positionOfCity = new HashSet<>();
+        this.positionOfCity = positionOfCity;
         this.max_tf_String = "";
     }
 
@@ -103,26 +106,61 @@ public class Doc extends ParseableObject implements Serializable {
         return termsInDoc;
     }
 
+    public HashSet<Integer> getPositionOfCity() {
+        return positionOfCity;
+    }
 
     /**
      * this method add term to doc
      * @param term - to add
      */
     public void addTermToDoc(String term){//todo
+        Term currentTerm = null;
+        if(Character.isLowerCase(term.charAt(0))) {
+            term = term.toLowerCase();
+        }
+        else{// if(Character.isUpperCase(term.charAt(0))) {
+            term = term.toUpperCase();
+        }
         if(termsInDoc.containsKey(term)){//term already exists in this doc
+            currentTerm = termsInDoc.get(term);
             termsInDoc.get(term).incAmounts(this.doc_num);
         }
-        else {//new term for the doc
-            specialWordCount++;
-            Term nTerm = new Term(term);
-            nTerm.incAmounts(this.doc_num);
-            this.termsInDoc.put(term, nTerm);
+        else {//it's not in the doc in it's form
+            //termsInDoc contains Upper case of current word and current word is lower case
+            if(termsInDoc.containsKey(term.toUpperCase())) {
+                changeUL(term);
+                currentTerm = termsInDoc.get(term);
+                termsInDoc.get(term).incAmounts(this.doc_num);
+            }
+            //termsInDoc contains Lower case of current word and current word is Upper case
+            else if(termsInDoc.containsKey(term.toLowerCase())) {
+                currentTerm = termsInDoc.get(term.toLowerCase());
+                termsInDoc.get(term.toLowerCase()).incAmounts(this.doc_num);
+            }
+            else {//new term for the doc
+                specialWordCount++;
+                currentTerm = new Term(term);
+                currentTerm.incAmounts(this.doc_num);
+                this.termsInDoc.put(term, currentTerm);
+            }
         }
-        int currTF = termsInDoc.get(term).getTf(doc_num);//set maxTF for DOC
+        int currTF = currentTerm.getTf(doc_num);//set maxTF for DOC
         if(currTF>max_tf) {
             max_tf = currTF;
             max_tf_String = term;
         }
+    }
+
+    /**
+     * Changes terms from Upper case to Lower case
+     * @param term - term name to change to
+     */
+    private void changeUL(String term) {
+        Term tmpTerm = termsInDoc.get(term.toUpperCase());
+        termsInDoc.remove(term.toUpperCase());
+        tmpTerm.setTerm(term);
+        termsInDoc.put(term,tmpTerm);
     }
 
     /**
@@ -154,9 +192,15 @@ public class Doc extends ParseableObject implements Serializable {
         return this.getTermsInDoc().size();
     }
 
-    public void setSpecialWordCount() {
-        specialWordCount = termsInDoc.size();
-    }
+//    public void setSpecialWordCount() {
+//        if(specialWordCount == termsInDoc.size()){
+//            System.out.println("TRUE");
+//        }
+//        else{
+//            System.out.println("FALSE");
+//        }
+//        specialWordCount = termsInDoc.size();
+//    }
 
     public String getCity() {
         return city;

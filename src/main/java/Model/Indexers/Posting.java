@@ -227,24 +227,3 @@ public class Posting {
     }
 }
 
-
-
-//    private ArrayList readDictionary(){
-//        try {
-//            FileInputStream fis = new FileInputStream(this.rootPath + "\\" + postingFilecounter);
-//            ByteArrayInputStream in = new ByteArrayInputStream(this.objectToByteArray);
-//            ObjectInputStream is = new ObjectInputStream(in);
-//            return (ArrayList)is.readObject();
-//        } catch (Exception e){
-//
-//        }
-//        return null;
-//    }
-//    private byte[] convertToBytes(Object object) throws IOException {
-//        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//             ObjectOutput out = new ObjectOutputStream(bos)) {
-//            out.writeObject(object);
-//            return bos.toByteArray();
-//        }
-//    }
-

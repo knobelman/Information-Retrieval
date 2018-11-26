@@ -28,10 +28,10 @@ public class Indexer {
     private DocParser ParserObject;
     private JasonParser jasonParser;
 
-    private HashMap <String,Pair<ArrayList<String>,CityData> > cityDictionary;
+    private HashMap<String,Pair<ArrayList<String>,CityData> > cityDictionary;
     private HashMap<String,Pair<Integer,Integer>> corpusDictionary; //term,totalTF,position in merged posting file
     private HashMap<String,Doc> DocumentDictionary;
-    private HashSet<String> LanguageDictionary;
+    private HashSet<String> LanguageCollection;
 
     private HashSet<Doc> DocumentsToParse;
     private HashMap<String,HashMap<String,Integer>> TermAndDocumentsData = new LinkedHashMap<>();
@@ -39,10 +39,15 @@ public class Indexer {
     private List<Thread> threadList;
     private Boolean toStem;
 
+    private int numberofDocs;
+
     /**
      * C'tor
      * initialize DocumentsToParse HashSet and Dictionary HashMap
      */
+    public Indexer(){
+    }
+
     public Indexer(String rootPath, boolean toStem) {
         this.rootPath = rootPath;
         this.DocumentsToParse = new HashSet<>();
@@ -50,12 +55,14 @@ public class Indexer {
         this.corpusDictionary = new HashMap<>();
         this.DocumentDictionary = new HashMap<>();
         this.cityDictionary = new HashMap<>();
-        this.LanguageDictionary = new HashSet<>();
+        this.LanguageCollection = new HashSet<>();
 
         this.threadList = new ArrayList<>();
         this.letters = new HashMap<>();
         this.jasonParser = new JasonParser();
         this.ParserObject = new DocParser(rootPath,toStem);
+
+        this.numberofDocs = 0;
         letters.put('a',"ABCD"); letters.put('b',"ABCD"); letters.put('c',"ABCD"); letters.put('d',"ABCD");
         letters.put('e',"EFGH"); letters.put('f',"EFGH"); letters.put('g',"EFGH"); letters.put('h',"EFGH");
         letters.put('i',"IJKL"); letters.put('j',"IJKL"); letters.put('k',"IJKL"); letters.put('l',"IJKL");
@@ -79,49 +86,48 @@ public class Indexer {
             } else {
                 DocumentsToParse = readFileObject.fromFileToDoc(fileEntry);
                 for (Doc d : DocumentsToParse) {
+                    numberofDocs++;
                     //create document dictionary
-                    Doc toInsert = new Doc(d.getPath(),d.getCity(),d.getMax_tf(),d.getSpecialWordCount());
-                    DocumentDictionary.put(d.getDoc_num(),toInsert);
-                    LanguageDictionary.add(d.getLanguage());
-                    //create city dictionary
+                    LanguageCollection.add(d.getLanguage()); //add language to language collection
+
+                    //add to city dictionary
                     if(!d.getCity().equals("")){
-                        if(!cityDictionary.containsKey(d.getCity())) {
-                            String city = d.getCity();
-                            String doc_num = d.getDoc_num();
-                            CityData cityData = jasonParser.getData(city);
-                            ArrayList<String> list = new ArrayList<>();
-                            list.add(doc_num);
-                            Pair<ArrayList<String>,CityData> pair = new Pair<>(list,cityData);
-                            this.cityDictionary.put(city,pair);
+                        addToCityDictionary(d);
+                    }
+                    //parsing
+                    ParserObject.parsing(d);
+                    Doc toInsert = new Doc(d.getPath(),d.getCity(),d.getMax_tf(),d.getSpecialWordCount()); //doc to insert to the dictionary
+                    DocumentDictionary.put(d.getDoc_num(),toInsert); //insert to dictionary (Doc name | Doc object)
+                    for (Map.Entry<String, Term> entry : d.getTermsInDoc().entrySet()) {
+                        String termName = entry.getKey();
+                        String termNameTmp = termName;
+                        Term value = entry.getValue();
+                        if(corpusDictionary.containsKey(termName)){//Dic contains the term
+                            updateDF(termName);
+                        }
+                        else if(corpusDictionary.containsKey(termName.toLowerCase())){//if Dic has lowercase of this word
+                            termName = termName.toLowerCase();
+                            value.setTerm(termName);
+                            updateDF(termName);
+                        }
+                        else if(corpusDictionary.containsKey(termName.toUpperCase())){
+                            changeUL(termName);
+                            updateDF(termName);
                         }
                         else{
-                            Pair<ArrayList<String>,CityData> tmp = cityDictionary.get(d.getCity());
-                            ArrayList<String> current = tmp.getKey();
-                            CityData city_data = tmp.getValue();
-                            current.add(d.getDoc_num());
-                            Pair<ArrayList<String>,CityData> newPair = new Pair<>(current,city_data);
-                            cityDictionary.replace(d.getCity(),newPair);
-                        }
-                    }
-                    ParserObject.parsing(d);
-                    for(Map.Entry<String,Term> entry : d.getTermsInDoc().entrySet()) {
-                        String termName = entry.getKey();
-                        Term value = entry.getValue();
-                        if(!corpusDictionary.containsKey(termName)){
                             corpusDictionary.put(termName,new Pair<>(1,0)); //term name, file name, position
                         }
                         String doc_name = d.getDoc_num();
-                        if(TermAndDocumentsData.containsKey(termName.toLowerCase())){ //todo - add .toLowerCase
-                            Integer newint =  new Integer(d.getTermsInDoc().get(termName).getTf(doc_name));
-                            //int df = d.getTermsInDoc().get(termname).getDf();
-                            TermAndDocumentsData.get(termName.toLowerCase()).put(d.getDoc_num(),newint);
-                        }else {
+                        if (TermAndDocumentsData.containsKey(termName)) {
+                            Integer newInt = new Integer(d.getTermsInDoc().get(termNameTmp).getTf(doc_name));
+                            TermAndDocumentsData.get(termName).put(d.getDoc_num(), newInt);
+                        } else {
                             HashMap<String, Integer> current = new HashMap();
                             current.put(doc_name, new Integer(value.getTf(doc_name)));
-                            TermAndDocumentsData.put(termName.toLowerCase(), current);
+                            TermAndDocumentsData.put(termName, current);
                         }
                     }
-                }
+                }                }
                 if(!this.TermAndDocumentsData.isEmpty()) {
                     Thread t = new Thread(() -> {
                         postingObject.createTempPostingFile(TermAndDocumentsData);
@@ -139,8 +145,46 @@ public class Indexer {
                 }
             }
         }
+
+    private void updateDF(String termName) {
+        Pair<Integer,Integer>tmp = corpusDictionary.get(termName);
+        tmp = new Pair<>(tmp.getKey().intValue()+1,tmp.getValue());
+        corpusDictionary.replace(termName,tmp);
     }
 
+
+    private void changeUL(String termName) {
+        Pair<Integer, Integer> tmpPair = corpusDictionary.get(termName.toUpperCase());
+        corpusDictionary.remove(termName.toUpperCase());
+        corpusDictionary.put(termName,tmpPair );
+    }
+
+
+    /**
+     * This method add city data from document to the city dictionary
+     * @param document - current document
+     */
+    public void addToCityDictionary(Doc document){
+        if(!cityDictionary.containsKey(document.getCity())) { //if city not in the dictionary
+            String city = document.getCity(); //get city name from the doc
+            String doc_num = document.getDoc_num(); // get doc name from the dock
+            String positions_in_doc = document.getPositionOfCity().toString();
+            CityData cityData = jasonParser.getData(city); //get data about the city
+            ArrayList<String> list = new ArrayList<>();
+            list.add(doc_num+":"+positions_in_doc); //add doc name to array list with positions in doc
+            Pair<ArrayList<String>,CityData> pair = new Pair<>(list,cityData); //insert data into new pair
+            this.cityDictionary.put(city,pair); //insert to dictionary
+        }
+        else{
+            //if city is in the dictionary
+                Pair<ArrayList<String>, CityData> tmp = cityDictionary.get(document.getCity()); //get existing pair
+                ArrayList<String> current = tmp.getKey(); //get array list from the pair
+                CityData city_data = tmp.getValue(); //get city data from the pair
+                current.add(document.getDoc_num() + ":" + document.getPositionOfCity());//add new doc and position in doc to the pair
+                Pair<ArrayList<String>, CityData> newPair = new Pair<>(current, city_data); //create new pair with the additional data
+                cityDictionary.replace(document.getCity(), newPair); //replace the existing data in the dictionary with the new data
+        }
+    }
     public void createFinalPosting() {
         postingObject.createFinalPosting();
         try {
@@ -203,15 +247,16 @@ public class Indexer {
                 else{
                     char tmp = Character.toLowerCase(line.charAt(0));
                     fileBuffer = fileWriters.get(letters.get(tmp));
-                    //position = filePosition.get(letters.get(tmp)).intValue();//todo
+                    position = filePosition.get(letters.get(tmp)).intValue();//todo
                     fileName = letters.get(tmp);
                 }
                 currTerm = line.substring(0, line.indexOf('|'));//get the term
-                //Pair tmpPair = new Pair<>(corpusDictionary.get(currTerm).getKey(),position);//create tmppair to insert into Dic
-                //corpusDictionary.replace(currTerm, tmpPair);//change the position for the term in the Dic
+                //System.out.println(currTerm+" "+corpusDictionary.containsKey(currTerm));
+                Pair tmpPair = new Pair<>(corpusDictionary.get(currTerm).getKey(),position);//create tmppair to insert into Dic
+                corpusDictionary.replace(currTerm, tmpPair);//change the position for the term in the Dic
                 fileBuffer.write(line+"\n");
-                //position += line.length() + 1;//increase the position for next line //todo
-                //filePosition.replace(fileName,position);//insert new position for next line //todo
+                position += line.length() + 1;//increase the position for next line //todo
+                filePosition.replace(fileName,position);//insert new position for next line //todo
                 line = postingFile.readLine();
             }while(line!=null);
             File pFile = new File(postingObject.getRootPath()+"\\"+"0");
@@ -281,8 +326,7 @@ public class Indexer {
         return cityDictionary;
     }
 
-    //todo - just for testing
-    public void writeDictionaryToDisk(){
+    public void writeCityDictionaryToDisk(){
         try {
             ArrayList<String> s = new ArrayList();
             Iterator it = this.cityDictionary.entrySet().iterator();
@@ -292,7 +336,7 @@ public class Indexer {
                 String alist = (((Pair)pair.getValue()).getKey()).toString();
                 CityData c = (CityData)((Pair)pair.getValue()).getValue();
                 try {
-                    String data = c.getCountryName() + ", " + c.getPopulation() + ", " + c.getCurrency();
+                    String data = c.getCountryName() + "|" + c.getPopulation() + "|" + c.getCurrency();
                     s.add(cityName + "|" + alist + "|" + data + "\n");
                 }catch(Exception e){
                 }
@@ -308,8 +352,56 @@ public class Indexer {
             e.printStackTrace();
         }
     }
+
+    /**
+     * This method save the dictionary to the disk
+     * @param stem - if stem or not
+     */
+    public void saveDictionary(boolean stem) {
+        try{
+            File fileOne;
+            //without stemming
+            if(!stem) {
+                fileOne = new File(this.getPostingFilePath() + "\\" + "CorpusDictionaryWithoutStem");
+            }
+            //with stemming
+            else{
+                fileOne = new File(this.getPostingFilePath() + "\\" + "CorpusDictionaryWithStem");
+            }
+            FileOutputStream fos=new FileOutputStream(fileOne);
+            ObjectOutputStream oos=new ObjectOutputStream(fos);
+            oos.writeObject(corpusDictionary);
+            oos.flush();
+            oos.close();
+            fos.close();
+        }catch(Exception e){}
+        corpusDictionary.clear();//todo - delete
+        System.out.println("Dictionary saved and Empty" + corpusDictionary.isEmpty());
+    }
+
+    /**
+     * This method load the dictionary from the disk
+     * @param file - to load
+     */
+    public void loadDictionary(File file) {
+        try{
+            try{
+                FileInputStream fis=new FileInputStream(file);
+                ObjectInputStream ois=new ObjectInputStream(fis);
+                this.corpusDictionary = (HashMap<String,Pair<Integer,Integer>>)ois.readObject();
+                ois.close();
+                fis.close();
+                System.out.println("Dictionary loaded");
+            }catch(Exception e){}
+        }catch (Exception e){
+        }
+    }
+
+    public int getNumberOfDocs() {
+        return numberofDocs;
+    }
+
+    public int getUniqueTermsCount(){
+        return this.corpusDictionary.size();
+    }
 }
-
-
-
-

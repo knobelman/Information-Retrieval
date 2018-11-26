@@ -10,8 +10,7 @@ import java.util.HashMap;
 public class Term implements Serializable{
     private String term;
     private HashMap<String,Integer> amountInDoc; //String=Doc name, Integer = tf
-    //private int df;
-    //private String position;
+    private int df;
 
     /**
      * C'tor
@@ -20,6 +19,7 @@ public class Term implements Serializable{
     public Term(String term) {
         this.term = term;
         this.amountInDoc = new HashMap<>();
+        this.df = 0;
     }
 
     /**
@@ -35,10 +35,12 @@ public class Term implements Serializable{
     }
 
     private void incTf(String docName) {
-        if(amountInDoc.containsKey(docName))
-            this.amountInDoc.replace(docName,this.amountInDoc.get(docName).intValue() + 1);
-        else
-            this.amountInDoc.put(docName,1);
+        if (amountInDoc.containsKey(docName))
+            this.amountInDoc.replace(docName, this.amountInDoc.get(docName).intValue() + 1);
+        else{
+            this.amountInDoc.put(docName, 1);
+            this.df++;
+        }
     }
 
     @Override

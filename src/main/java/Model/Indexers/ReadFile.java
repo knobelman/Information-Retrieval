@@ -44,15 +44,15 @@ public class ReadFile {
             String language = d.select("F[P=105").text();
             String doc_city_to_upper = doc_city.toUpperCase();
             int position;
-            String positions ="";
+            HashSet<Integer> positions = new HashSet<>();
             position = doc_content.indexOf(doc_city);
             if (!(doc_city.equals(""))) {
                 while (position >= 0) {
-                    positions = positions + position +", ";
+                    positions.add(new Integer(position));
                     position = doc_content.indexOf(doc_city, position + 1);
                 }
             }
-            document = new Doc(path,doc_num,doc_content, doc_city_to_upper,language);
+            document = new Doc(path,doc_num,doc_content,doc_city_to_upper,positions,language);
             documents.add(document);
         }
         return documents;

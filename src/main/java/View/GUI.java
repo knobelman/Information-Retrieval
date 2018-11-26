@@ -12,10 +12,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 
 /**
  * This class represents the GUI of the engine
@@ -25,6 +28,8 @@ public class GUI {
     public javafx.scene.control.Button LOAD;
     public javafx.scene.control.Button POSTING;
     public javafx.scene.control.Button START;
+    public javafx.scene.control.Button saveDictionary;
+    public javafx.scene.control.Button RESET;
     public javafx.scene.control.CheckBox STEMM;
     public javafx.scene.control.TextField CorpusPath;
     public javafx.scene.control.TextField PostingPath;
@@ -75,7 +80,6 @@ public class GUI {
      * start indexing
      */
     public void startIndexing() {
-        double before = System.currentTimeMillis();
         //if one of the browser buttons not clicked
         if(!corpusePathSelected || !postingPathSelected){
             //if both of the path text filed we need to start indexing
@@ -92,10 +96,14 @@ public class GUI {
                     }
                     //send to controller with stemming
                     myController.startIndexing(pathOfCorpus, pathOfPosting + "\\withStem", true);
+                    saveDictionary.setDisable(false);
+                    RESET.setDisable(false);
                 }
                 else{
                     //send to controller without stemming
                     myController.startIndexing(pathOfCorpus, pathOfPosting, false);
+                    saveDictionary.setDisable(false);
+                    RESET.setDisable(false);
                 }
             }
             //one of fields is empty
@@ -118,16 +126,20 @@ public class GUI {
                 }
                 //send to controller with stemming
                 myController.startIndexing(pathOfCorpus, pathOfPosting + "\\withStem", true);
+                saveDictionary.setDisable(false);
+                RESET.setDisable(false);
+
             }
             //if stemming not required
             else{
                 myController.startIndexing(pathOfCorpus, pathOfPosting, false);
+                saveDictionary.setDisable(false);
+                RESET.setDisable(false);
             }
-            System.out.println((System.currentTimeMillis() - before) / 1000 / 60 + " Minutes");
         }
     }
 
-    public void openLanguageList(ActionEvent actionEvent) {
+    public void openLanguageList() {
         FXMLLoader fxmlLoader=new FXMLLoader();
         fxmlLoader.setLocation(getClass().getResource("/Language.fxml"));
         Scene scene=null;
@@ -143,7 +155,7 @@ public class GUI {
         stage.show();
     }
 
-    public void reset(ActionEvent actionEvent) {
+    public void reset() {
         //if posting path not give
         if(!postingPathSelected && pathOfPosting.equals("")){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -158,6 +170,29 @@ public class GUI {
             for (File file : postingDirecory.listFiles())
                 if (!file.isDirectory())
                     file.delete();
+        }
+    }
+
+    public void saveDictionary() {
+        if (STEMM.isSelected()) {
+            myController.saveDictionry(true);
+        }else{
+            myController.saveDictionry(false);
+        }
+    }
+
+    public void loadDictionary() {
+//        FileChooser chooser = new FileChooser();
+//        chooser.setTitle("Load Dictionary");
+//        File file = chooser.showOpenDialog(null);
+//        if (file != null) {
+        File file;
+        if(!STEMM.isSelected()){
+            file = new File(PostingPath.getText()+"\\CorpusDictionaryWithoutStem");
+            myController.loadDictionary(file);
+        }else{
+            file = new File(PostingPath.getText()+"\\withStem\\CorpusDictionaryWithStem");
+            myController.loadDictionary(file);
         }
     }
 }
