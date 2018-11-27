@@ -1,7 +1,6 @@
-package Model;
-
+package Model.DataObjects.ParseableObjects;
+import Model.DataObjects.Term;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -15,7 +14,7 @@ import java.util.HashSet;
  * city - city the doc come from
  * termsInDoc - all the terms exists in current document
  */
-public class Doc implements Serializable {
+public class Doc extends ParseableObject implements Serializable {
     private String doc_num;
     private String doc_content;
     private String path;
@@ -23,8 +22,9 @@ public class Doc implements Serializable {
     private int specialWordCount;
     private String city;
     private HashMap<String,Term> termsInDoc;
-    private String mostFrequentTerm; //extra
     private String max_tf_String;
+    private String language;
+    private HashSet<Integer> positionOfCity;
 
 
     /**
@@ -45,17 +45,33 @@ public class Doc implements Serializable {
     /**
      * C'tor with arguments
      */
-    public Doc(String path, String doc_num, String doc_content, String city) {
+    public Doc(String path, String doc_num, String doc_content, String city, HashSet positionOfCity, String language) {
         this.doc_num = doc_num;
+        this.language = language;
         this.doc_content = doc_content;
         this.city = city;
         this.path = path;
         this.termsInDoc = new HashMap<>();
         this.max_tf = 0;
         this.specialWordCount = 0;
+        this.positionOfCity = new HashSet<>();
+        this.positionOfCity = positionOfCity;
         this.max_tf_String = "";
     }
 
+    /**
+     * Copy C'tor
+     * @param path
+     * @param city
+     * @param max_tf
+     * @param SpecialWordCount
+     */
+    public Doc(String path, String city, int max_tf, int SpecialWordCount) {
+        this.city = city;
+        this.path = path;
+        this.max_tf = max_tf;
+        this.specialWordCount = SpecialWordCount;
+    }
     /**
      * Getter
      * @return - doc_num
@@ -86,10 +102,13 @@ public class Doc implements Serializable {
      * Getter
      * @return - all terms in doc
      */
-    public HashMap<String, Term> getTermsInDoc() {
+    public HashMap<String,Term> getTermsInDoc() {
         return termsInDoc;
     }
 
+    public HashSet<Integer> getPositionOfCity() {
+        return positionOfCity;
+    }
 
     /**
      * this method add term to doc
@@ -160,7 +179,6 @@ public class Doc implements Serializable {
         return termsInDoc.containsKey(term);
     }
 
-
     /**
      * this method remove term from doc
      * @param term
@@ -169,7 +187,33 @@ public class Doc implements Serializable {
         termsInDoc.remove(term);
     }
 
-    public void setSpecialWordCount() {
-        specialWordCount = termsInDoc.size();
+    public int getMax_tf() {
+        return max_tf;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public int getSpecialWordCount() {
+        return this.getTermsInDoc().size();
+    }
+
+//    public void setSpecialWordCount() {
+//        if(specialWordCount == termsInDoc.size()){
+//            System.out.println("TRUE");
+//        }
+//        else{
+//            System.out.println("FALSE");
+//        }
+//        specialWordCount = termsInDoc.size();
+//    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getLanguage() {
+        return language;
     }
 }

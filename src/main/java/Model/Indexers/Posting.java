@@ -1,26 +1,22 @@
-package Model;
-
+package Model.Indexers;
 import java.io.*;
 import java.util.*;
 
 /**
  * This class represents the Posting class
  * creates the posting files
- * allLines -
- * rootPath -
- * postingFilecounter -
- * firstHalfWriter -
- * secondHalfWriter -
+ * @allLines - lines in one file
+ * @rootPath - the path of posting file
+ * @postingFilecounter - a counter from 0 to number of files in the corpus
  */
 public class Posting {
     ArrayList<String> allLines;
     private String rootPath;
-    private static int postingFilecounter;
+    private static int postingFileCounter;
 
 
     /**
      * C'tor
-     * @param rootPath - tje path of the posting files
      */
     public Posting(String rootPath) {
         allLines = new ArrayList<>();
@@ -28,43 +24,31 @@ public class Posting {
     }
 
     /**
-     * this method create the posting files
+     * This method create a temporary posting file
+     * for each file will be temp posting file
      * @param linkedHashMap String - term, String - doc, Integer - tf
-     * @param
      */
-    public void createPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap) {
+    public void createTempPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap) {
         try {
             Iterator it = linkedHashMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry)it.next();
                 int size = ((HashMap<String, Integer>)pair.getValue()).size();
-                allLines.add(pair.getKey() + "|DF:" + size + "|" + pair.getValue()+"\n");
+                allLines.add(((String)pair.getKey()).toLowerCase() + "|DF:" + size + "|" + pair.getValue()+"\n");
                 it.remove();
             }
             sort();
-            FileWriter fw = new FileWriter(this.rootPath + "\\" + postingFilecounter);
+            FileWriter fw = new FileWriter(this.rootPath + "\\" + postingFileCounter);
             for(String s: allLines){
                 fw.write(s);
             }
             fw.close();
             clearDic();
-            postingFilecounter++;
+            postingFileCounter++;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    /**
-     * this method sort the lines in a posting file before writing to disk
-     */
-    private void sort(){
-        allLines.sort((o1, o2) -> {
-            String s1 = o1.substring(0, o1.indexOf('|'));
-            String s2 = o2.substring(0, o2.indexOf('|'));
-            return s1.compareTo(s2);
-        });
-    }
-
     /**
      * this function clear the current posting file content for the next one
      */
@@ -72,16 +56,14 @@ public class Posting {
         this.allLines = new ArrayList<>();
     }
 
+
     /**
-     * This function merge between all the temp posting files
-     *
+     * This function merge between all the temp posting files to create a final temp posting file
      * @param firstFile - the first file
      * @param secondFile - the second file
-     * @param bw - file writer
+     * @param bw - bufferedWriter object
      */
-
-
-    public void mergeBetweenPostFiles(String firstFile, String secondFile, BufferedWriter bw) {
+    public void mergeBetweenTempPostingFiles(String firstFile, String secondFile, BufferedWriter bw) {
         try {
             String firstCurrentLine;
             String secondCurrentLine;
@@ -131,7 +113,8 @@ public class Posting {
     }
 
     /**
-     * HEROLD|DF:1|{FBIS3-9996=1}                  HEROLD|DF:1|{FBIS3-10419=1}
+     * This method concat DF's of two lines
+     * HEROLD|DF:1|{FBIS3-9996=1}   HEROLD|DF:1|{FBIS3-10419=1}
      * Example for a line: 0.256K|DF:2|{FBIS3-2314=1, FBIS3-2531=1}
      * @param firstCurrentLine
      * @param secondCurrentLine
@@ -158,10 +141,73 @@ public class Posting {
             String secondNewLine = cut1[0] + "|DF:" + newDF + "|" + cut2[2];//term + "\DF" + newDF + "|" + TF
             return secondNewLine;
         }catch (Exception e){
-            System.out.println(firstCurrentLine+" " + secondCurrentLine);
         }
 
       return "";
+    }
+
+    public void createEvenPostingFiles(int currPostingNumber){
+        int lastPosting = currPostingNumber-1;
+        FileWriter mergedWriter;
+        BufferedWriter mergedBuffer;
+        File lFILE = new File(this.getRootPath() + "\\" + lastPosting);
+        File blFILE = new File(this.getRootPath() + "\\" + (lastPosting-1));
+        try {
+            mergedWriter = new FileWriter(this.getRootPath() + "\\" + "merged");
+            mergedBuffer = new BufferedWriter(mergedWriter);
+            mergeBetweenTempPostingFiles("" + (lastPosting), "" + (lastPosting-1), mergedBuffer);
+            mergedBuffer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        lFILE.delete();
+        blFILE.delete();
+        File mergedF = new File(this.getRootPath()+"\\"+"merged");
+        mergedF.renameTo(blFILE);
+    }
+    public void createFinalPosting(){
+        int postingCounter = postingFileCounter;
+        int newName = 0;
+        while(postingCounter>=2) {
+            if (!(postingCounter % 2 == 0)) {
+                createEvenPostingFiles(postingCounter);
+                postingCounter--;
+            }
+            int currPostingCounter = postingCounter;
+            for (int i = 0; i < currPostingCounter; i+=2) {
+                FileWriter mergedWriter;
+                BufferedWriter mergedBuffer;
+                File lFILE = new File(this.getRootPath() + "\\" + i);
+                File blFILE = new File(this.getRootPath() + "\\" + (i+1));
+                try {
+                    mergedWriter = new FileWriter(this.getRootPath() + "\\" + "merged");
+                    mergedBuffer = new BufferedWriter(mergedWriter);
+                    mergeBetweenTempPostingFiles("" + (i), "" + (i+1), mergedBuffer);
+                    mergedBuffer.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                lFILE.delete();
+                blFILE.delete();
+                postingCounter--;
+                File mergedF = new File(this.getRootPath()+"\\"+"merged");
+                File newFile = new File(this.getRootPath()+"\\"+ newName);
+                mergedF.renameTo(newFile);
+                newName++;
+            }
+            newName = 0;
+        }
+    }
+
+    /**
+     * This method sort the lines in a temp posting file before writing to disk
+     */
+    private void sort(){
+        allLines.sort((o1, o2) -> {
+            String s1 = o1.substring(0, o1.indexOf('|'));
+            String s2 = o2.substring(0, o2.indexOf('|'));
+            return s1.compareTo(s2);
+        });
     }
 
     /**
@@ -177,28 +223,7 @@ public class Posting {
      * @return the posting file counter
      */
     public static int getPostingFilecounter() {
-        return postingFilecounter;
+        return postingFileCounter;
     }
-
-
-    //    private ArrayList readDictionary(){
-//        try {
-//            FileInputStream fis = new FileInputStream(this.rootPath + "\\" + postingFilecounter);
-//            ByteArrayInputStream in = new ByteArrayInputStream(this.objectToByteArray);
-//            ObjectInputStream is = new ObjectInputStream(in);
-//            return (ArrayList)is.readObject();
-//        } catch (Exception e){
-//
-//        }
-//        return null;
-//    }
-//    private byte[] convertToBytes(Object object) throws IOException {
-//        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//             ObjectOutput out = new ObjectOutputStream(bos)) {
-//            out.writeObject(object);
-//            return bos.toByteArray();
-//        }
-//    }
-
 }
 

@@ -1,5 +1,5 @@
-package Model;
-
+package Model.Indexers;
+import Model.DataObjects.ParseableObjects.Doc;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,8 +9,8 @@ import java.util.HashSet;
 
 /**
  * This class read all files in a given path
- * path - the path of the corpus
- * root - root object
+ * @path - the path of the corpus
+ * @root - root object
  */
 public class ReadFile {
     private String path;
@@ -18,7 +18,6 @@ public class ReadFile {
 
     /**
      * C'tor
-     * @param path - path of corpus
      */
     public ReadFile(String path) {
         this.path = path;
@@ -26,7 +25,7 @@ public class ReadFile {
     }
 
     /**
-     * this method take a file and separate each document to doc number, doc content, doc city.
+     * This method take a file and separate each document to doc number, doc content, doc city.
      * after that, create a document object
      * @param file - file to separate to documents
      * return hash set of documents for the next station - parsing
@@ -42,17 +41,18 @@ public class ReadFile {
             String doc_num = d.select("DOCNO").text();
             String doc_content = d.select("TEXT").text();
             String doc_city = d.select("F[P=104]").text().split(" ")[0];
+            String language = d.select("F[P=105").text();
             String doc_city_to_upper = doc_city.toUpperCase();
             int position;
-            String positions ="";
+            HashSet<Integer> positions = new HashSet<>();
             position = doc_content.indexOf(doc_city);
             if (!(doc_city.equals(""))) {
                 while (position >= 0) {
-                    positions = positions + position +", ";
+                    positions.add(new Integer(position));
                     position = doc_content.indexOf(doc_city, position + 1);
                 }
             }
-            document = new Doc(path,doc_num,doc_content, doc_city_to_upper);
+            document = new Doc(path,doc_num,doc_content,doc_city_to_upper,positions,language);
             documents.add(document);
         }
         return documents;
