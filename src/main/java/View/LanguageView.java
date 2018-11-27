@@ -1,14 +1,19 @@
 package View;
 
+import Controller.GUIController;
+import Controller.LanguageController;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.StackPane;
 
+import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 
 /**
@@ -19,12 +24,14 @@ public class LanguageView implements Initializable{
     public javafx.scene.control.ListView langugageView;
 
     //fields
+    LanguageController myLanguageController = new LanguageController();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        langugageView.setEditable(true);
-        ObservableList names = FXCollections.observableArrayList();
-        names.addAll("a", "a", "a","Brenda","a", "a", "a","Brenda","a", "a", "a","Brenda", "Adam", "Williams", "Zach", "Connie", "Donny", "Lynne", "Rose", "Tony", "Derek");
-        SortedList<String> sortedList = new SortedList(names);
-        langugageView.setItems(sortedList);
+        ArrayList<String> languageCollection = myLanguageController.openLanguageList();
+        ObservableList languageObservableList = FXCollections.observableArrayList();
+        languageObservableList.addAll(languageCollection);
+        langugageView.setItems(languageObservableList);
+        langugageView.setOnMouseClicked(event -> System.out.println("clicked on " + langugageView.getSelectionModel().getSelectedItem()));
     }
 }

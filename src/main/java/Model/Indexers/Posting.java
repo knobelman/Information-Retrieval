@@ -107,6 +107,7 @@ public class Posting {
             }
             first.close();
             second.close();
+            bw.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

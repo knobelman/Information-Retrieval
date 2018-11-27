@@ -1,24 +1,14 @@
 package View;
-import Controller.Controller;
-import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
-import javafx.event.ActionEvent;
+import Controller.GUIController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 
 /**
  * This class represents the GUI of the engine
@@ -42,7 +32,7 @@ public class GUI {
      * @pathOfCorpus - the path of the corpus
      * @pathOfPosting - the path of the posting
      */
-    Controller myController = new Controller();
+    GUIController myGUIController = new GUIController();
     boolean corpusePathSelected = false;
     boolean postingPathSelected = false;
     String pathOfCorpus;
@@ -95,13 +85,13 @@ public class GUI {
                         directory.mkdir();
                     }
                     //send to controller with stemming
-                    myController.startIndexing(pathOfCorpus, pathOfPosting + "\\withStem", true);
+                    myGUIController.startIndexing(pathOfCorpus, pathOfPosting + "\\withStem", true);
                     saveDictionary.setDisable(false);
                     RESET.setDisable(false);
                 }
                 else{
                     //send to controller without stemming
-                    myController.startIndexing(pathOfCorpus, pathOfPosting, false);
+                    myGUIController.startIndexing(pathOfCorpus, pathOfPosting, false);
                     saveDictionary.setDisable(false);
                     RESET.setDisable(false);
                 }
@@ -125,14 +115,14 @@ public class GUI {
                     directory.mkdir();
                 }
                 //send to controller with stemming
-                myController.startIndexing(pathOfCorpus, pathOfPosting + "\\withStem", true);
+                myGUIController.startIndexing(pathOfCorpus, pathOfPosting + "\\withStem", true);
                 saveDictionary.setDisable(false);
                 RESET.setDisable(false);
 
             }
             //if stemming not required
             else{
-                myController.startIndexing(pathOfCorpus, pathOfPosting, false);
+                myGUIController.startIndexing(pathOfCorpus, pathOfPosting, false);
                 saveDictionary.setDisable(false);
                 RESET.setDisable(false);
             }
@@ -175,9 +165,9 @@ public class GUI {
 
     public void saveDictionary() {
         if (STEMM.isSelected()) {
-            myController.saveDictionry(true);
+            myGUIController.saveDictionry(true);
         }else{
-            myController.saveDictionry(false);
+            myGUIController.saveDictionry(false);
         }
     }
 
@@ -189,10 +179,10 @@ public class GUI {
         File file;
         if(!STEMM.isSelected()){
             file = new File(PostingPath.getText()+"\\CorpusDictionaryWithoutStem");
-            myController.loadDictionary(file);
+            myGUIController.loadDictionary(file);
         }else{
             file = new File(PostingPath.getText()+"\\withStem\\CorpusDictionaryWithStem");
-            myController.loadDictionary(file);
+            myGUIController.loadDictionary(file);
         }
     }
 }

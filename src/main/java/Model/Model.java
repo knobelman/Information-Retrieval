@@ -8,9 +8,13 @@ package Model;
 import Model.Indexers.Indexer;
 import Model.Indexers.Posting;
 import Model.Indexers.ReadFile;
+import Model.Parsers.ParsingProcess.IParsingProcess;
+import Model.Parsers.ParsingProcess.LanguageParsingProcess;
 import javafx.scene.control.Alert;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * @indexr - indexer object
@@ -19,6 +23,7 @@ import java.io.File;
  */
 public class Model {
     Indexer indexer;
+    IParsingProcess languageParsingProcess;
     Posting postingObject;
     ReadFile readFileObject;
 
@@ -57,6 +62,7 @@ public class Model {
             +"Total Run time: " + totalTime +" Minutes");
             alert.showAndWait();
         }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -70,5 +76,10 @@ public class Model {
             indexer.loadDictionary(file);
         }catch (Exception e){
         }
+    }
+
+    public ArrayList<String> openLanguageList(){
+        languageParsingProcess = new LanguageParsingProcess();
+        return ((LanguageParsingProcess)languageParsingProcess).getLanguageCollection();
     }
 }

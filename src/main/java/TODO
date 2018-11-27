@@ -20,5 +20,6 @@ TODO:
         3.7.1 LOAD THE DICTIONARY FROM THE PATH OF POSTING FILES WITH STEM OR WITHOUT (DEPEND ON CHECK BOX SELECTED OR NOT)
 4. WRITE REVIEW (WORD)
 5. PARSER //todo - to do
+6. to add language hash map <String,Doc> // language -> Doc
 
 

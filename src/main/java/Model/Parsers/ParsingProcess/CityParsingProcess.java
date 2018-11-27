@@ -1,7 +1,8 @@
-package Model.Parsers;
+package Model.Parsers.ParsingProcess;
 import Model.DataObjects.CityData;
 import Model.DataObjects.ParseableObjects.JasonObject;
 import Model.DataObjects.ParseableObjects.ParseableObject;
+import Model.Parsers.ParsingProcess.IParsingProcess;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,14 +17,14 @@ import java.util.HashMap;
  * responsible for parsing the json file and save the required data about each city
  * @cityData - contains the required data about each city
  */
-public class JasonParser implements IParser {
+public class CityParsingProcess implements IParsingProcess {
     private HashMap<String, CityData> cityData;
 
     /**
      * C'tor
      * Get json file and call init
      */
-    public JasonParser(){
+    public CityParsingProcess(){
         this.cityData = new HashMap<>();
         JSONParser parser = new JSONParser();
         File directory = new File("./");
