@@ -140,14 +140,7 @@ public class Doc extends ParseableObject implements Serializable {
             }
             else {//new term for the doc
                 specialWordCount++;
-                if(Character.isLowerCase(term.charAt(0))) {
-                    currentTerm = new Term(term.toLowerCase());
-                    term = term.toLowerCase();
-                }
-                else {
-                    currentTerm = new Term(term.toUpperCase());
-                    term = term.toUpperCase();
-                }
+                currentTerm = new Term(term);
                 currentTerm.incAmounts(this.doc_num);
                 this.termsInDoc.put(term, currentTerm);
             }
