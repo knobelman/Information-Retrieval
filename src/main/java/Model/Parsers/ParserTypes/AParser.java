@@ -98,6 +98,8 @@ public abstract class AParser {
      */
     protected boolean isValidFrac(String s1){
         String[]split = s1.split("/");
+        if(split.length<2)
+            return false;
         if(isNumeric(split[0]) && isNumeric(split[0]))
             return true;
         return false;

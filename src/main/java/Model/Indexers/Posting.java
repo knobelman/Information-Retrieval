@@ -1,6 +1,7 @@
 package Model.Indexers;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class represents the Posting class
@@ -28,13 +29,17 @@ public class Posting {
      * for each file will be temp posting file
      * @param linkedHashMap String - term, String - doc, Integer - tf
      */
-    public void createTempPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap) {
+    public void createTempPostingFile(ConcurrentHashMap<String, HashMap<String, Integer>> linkedHashMap) {
         try {
             Iterator it = linkedHashMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry)it.next();
                 int size = ((HashMap<String, Integer>)pair.getValue()).size();
-                allLines.add(((String)pair.getKey()).toLowerCase() + "|DF:" + size + "|" + pair.getValue()+"\n");
+                if((((String)pair.getKey()).contains("-"))){
+                    allLines.add((pair.getKey()) + "|DF:" + size + "|" + pair.getValue()+"\n");
+                }else{
+                    allLines.add(((String)pair.getKey()).toLowerCase() + "|DF:" + size + "|" + pair.getValue()+"\n");
+                }
                 it.remove();
             }
             sort();
@@ -142,6 +147,7 @@ public class Posting {
             String secondNewLine = cut1[0] + "|DF:" + newDF + "|" + cut2[2];//term + "\DF" + newDF + "|" + TF
             return secondNewLine;
         }catch (Exception e){
+            e.printStackTrace();
         }
 
       return "";
@@ -166,6 +172,7 @@ public class Posting {
         File mergedF = new File(this.getRootPath()+"\\"+"merged");
         mergedF.renameTo(blFILE);
     }
+
     public void createFinalPosting(){
         int postingCounter = postingFileCounter;
         int newName = 0;
@@ -207,7 +214,7 @@ public class Posting {
         allLines.sort((o1, o2) -> {
             String s1 = o1.substring(0, o1.indexOf('|'));
             String s2 = o2.substring(0, o2.indexOf('|'));
-            return s1.compareTo(s2);
+            return s1.toLowerCase().compareTo(s2.toLowerCase());
         });
     }
 

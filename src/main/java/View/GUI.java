@@ -151,7 +151,6 @@ public class GUI {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-        stage.close();
     }
 
     public void reset() {

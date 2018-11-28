@@ -7,9 +7,9 @@ import Model.Parsers.ParsingProcess.DocParsingProcess;
 import Model.Parsers.ParsingProcess.CityParsingProcess;
 import Model.Parsers.ParsingProcess.IParsingProcess;
 import javafx.util.Pair;
-
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -39,7 +39,6 @@ public class Indexer {
     private HashSet<String> LanguageCollection;
 
     private HashSet<Doc> DocumentsToParse;
-    private HashMap<String, HashMap<String, Integer>> TermAndDocumentsData = new LinkedHashMap<>();
     private HashMap<Character, String> letters; // every letter and the name of the file
     private List<Thread> threadList;
     private Boolean toStem;
@@ -105,9 +104,11 @@ public class Indexer {
      *             this function send date to posting class which create the posting files
      */
     public void init(final File root) throws IOException {
-        for (final File directory : root.listFiles()) {//for each folder in root
+        ConcurrentHashMap <String, HashMap<String, Integer>> TermAndDocumentsData = new ConcurrentHashMap<>();
+        for (final File directory : root.listFiles()){//for each folder in root
             if (directory.isDirectory())
                 for (File currFile : directory.listFiles()) {//for each file in folder
+                    TermAndDocumentsData.clear();
                     DocumentsToParse = readFileObject.fromFileToDoc(currFile);
                     for (Doc d : DocumentsToParse) {
                         numberofDocs++;
@@ -123,54 +124,66 @@ public class Indexer {
                         Doc toInsert = new Doc(d.getPath(), d.getCity(), d.getMax_tf(), d.getSpecialWordCount()); //doc to insert to the dictionary
                         DocumentDictionary.put(d.getDoc_num(), toInsert); //insert to dictionary (Doc name | Doc object)
                         for (Map.Entry<String, Term> entry : d.getTermsInDoc().entrySet()) {
-                            String termName = entry.getKey();
-                            String termNameTmp = termName;
+                            String termName = entry.getKey();//term from doc
                             Term value = entry.getValue();
                             if (corpusDictionary.containsKey(termName)) {//Dic contains the term
                                 updateDF(termName);
                             } else if (corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
                                 termName = termName.toLowerCase();
-                                value.setTerm(termName);
+                                //value.setTerm(termName.toLowerCase());//change term name in curr doc
                                 updateDF(termName);
                             } else if (corpusDictionary.containsKey(termName.toUpperCase())) {
-                                changeUL(termName);
+                                changeULDic(termName);
                                 updateDF(termName);
                             } else {
                                 corpusDictionary.put(termName, new Pair<>(1, 0)); //term name, file name, position
                             }
                             String doc_name = d.getDoc_num();
-                            if (TermAndDocumentsData.containsKey(termName.toLowerCase())) {
-                                Integer newInt = new Integer(d.getTermsInDoc().get(termNameTmp).getTf(doc_name));
-                                TermAndDocumentsData.get(termName.toLowerCase()).put(d.getDoc_num(), newInt);
-                            } else {
+                            if (TermAndDocumentsData.containsKey(termName)) {//term is in TermAndDocumentsData already
+                                Integer newInt = new Integer(value.getTf(doc_name));
+                                TermAndDocumentsData.get(termName).put(d.getDoc_num(), newInt); //todo - remove to lower
+                            }
+                            else if(TermAndDocumentsData.containsKey(termName.toLowerCase())){//term name is upper, TADD contains lower
+                                Integer newInt = new Integer(value.getTf(doc_name));
+                                TermAndDocumentsData.get(termName.toLowerCase()).put(d.getDoc_num(), newInt); //todo - remove to lower
+                            }
+                            else if(TermAndDocumentsData.containsKey(termName.toUpperCase())){//term is lowercase, TADD contains upper
+                                HashMap<String, Integer> tmpHM = TermAndDocumentsData.get(termName.toUpperCase());
+                                TermAndDocumentsData.remove(termName.toUpperCase());
+                                TermAndDocumentsData.put(termName, tmpHM);
+                            }
+                            else {
                                 HashMap<String, Integer> current = new HashMap();
                                 current.put(doc_name, new Integer(value.getTf(doc_name)));
-                                TermAndDocumentsData.put(termName.toLowerCase(), current);
+                                TermAndDocumentsData.put(termName, current); //todo - remove to lower
                             }
                         }
                     }
-                    if (!this.TermAndDocumentsData.isEmpty()) {//for each file in folder - create posting
-                        Thread t = new Thread(() -> {
-                            postingObject.createTempPostingFile(TermAndDocumentsData);
-                            TermAndDocumentsData = new LinkedHashMap<>();
-                        });
-                        t.start();
-                        threadList.add(t);
-                    }
+//                    if (!TermAndDocumentsData.isEmpty()) {//for each file in folder - create posting
+//                        Thread t = new Thread(() -> postingObject.createTempPostingFile(TermAndDocumentsData));
+//                        t.start();
+//                        threadList.add(t);
+//                        TermAndDocumentsData = new ConcurrentHashMap<>();
+//                    }
+                    postingObject.createTempPostingFile(TermAndDocumentsData);
                 }
         }
-        while (!threadList.isEmpty()) {
-            for (Thread t : threadList) {
-                try {
-                    t.join();
-                    threadList.remove(t);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        while (!threadList.isEmpty()) {
+//            for (Thread t : threadList) {
+//                try {
+//                    t.join();
+//                    threadList.remove(t);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
+    /**
+     *
+     * @param termName - corpusDictionary contains this term
+     */
     private void updateDF(String termName) {
         Pair<Integer, Integer> tmp = corpusDictionary.get(termName);
         tmp = new Pair<>(tmp.getKey().intValue() + 1, tmp.getValue());
@@ -178,12 +191,15 @@ public class Indexer {
     }
 
 
-    private void changeUL(String termName) {
+    /**
+     *
+     * @param termName - lowercase of something in corpusDictionary that is uppercase
+     */
+    private void changeULDic(String termName) {
         Pair<Integer, Integer> tmpPair = corpusDictionary.get(termName.toUpperCase());
         corpusDictionary.remove(termName.toUpperCase());
         corpusDictionary.put(termName, tmpPair);
     }
-
 
     /**
      * This method add city data from document to the city dictionary
@@ -221,13 +237,41 @@ public class Indexer {
             while (current != null) {
                 String t1 = current.substring(0, current.indexOf('|'));
                 String more = current.substring(current.indexOf('|'), current.length());
+//                if((t1.contains("dollars") || t1.contains("yen")) && t1.contains(" ")){
+//                    if(t1.contains("m")){
+//                        //100 m dollars
+//                        String[] splitted = t1.split(" ");
+//                        if(splitted.length == 3){
+//                            String price = splitted[0];
+//                            String m = splitted[1].toUpperCase();
+//                            String dollars = splitted[2];
+//                            dollars = Character.toUpperCase(dollars.charAt(0)) + dollars.substring(1,dollars.length());
+//                            current = price + " " + m + " " + dollars + more;
+//                            fw.write(current + "\n");
+//                        }
+//                    }else{
+//                        //100 dollars
+//                        String[] splitted = t1.split(" ");
+//                        if(splitted.length == 2){
+//                            String price = splitted[0];
+//                            String dollars = splitted[1];
+//                            dollars = Character.toUpperCase(dollars.charAt(0)) + dollars.substring(1,dollars.length());
+//                            current = price + " " + dollars + more;
+//                            fw.write(current + "\n");
+//                        }
+//                    }
+//                }
                 if (corpusDictionary.containsKey(t1.toLowerCase())) {
                     current = t1.toLowerCase() + more;
                     fw.write(current + "\n");
-                } else {
+                }
+                else if(corpusDictionary.containsKey(t1.toUpperCase())) {
                     current = t1.toUpperCase() + more;
                     fw.write(current + "\n");
                 }
+//                else{
+//                    fw.write(t1 + more + "\n");
+//                }
                 current = last.readLine();
             }
             fw.close();
@@ -274,15 +318,19 @@ public class Indexer {
                     position = filePosition.get(letters.get(tmp)).intValue();//todo
                     fileName = letters.get(tmp);
                 }
+//                if(!line.contains("|"))
+//                    System.out.println(line + " - The line!!!");
                 currTerm = line.substring(0, line.indexOf('|'));//get the term
                 //System.out.println(currTerm+" "+corpusDictionary.containsKey(currTerm));
+                if(!corpusDictionary.containsKey(currTerm))
+                    System.out.println(currTerm);
                 Pair tmpPair = new Pair<>(corpusDictionary.get(currTerm).getKey(), position);//create tmppair to insert into Dic
                 corpusDictionary.replace(currTerm, tmpPair);//change the position for the term in the Dic
                 fileBuffer.write(line + "\n");
                 position += line.length() + 1;//increase the position for next line //todo
                 filePosition.replace(fileName, position);//insert new position for next line //todo
                 line = postingFile.readLine();
-            } while (line != null);
+            } while (line != null && !line.equals(""));
             File pFile = new File(postingObject.getRootPath() + "\\" + "0");
             fileWriters.get("ABCD").close();
             fileWriters.get("EFGH").close();
@@ -293,7 +341,7 @@ public class Indexer {
             fileWriters.get("OTHER").close();
             pFile.delete();
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -332,6 +380,10 @@ public class Indexer {
      */
     public static void setReadFileObject(ReadFile readFileObject) {
         Indexer.readFileObject = readFileObject;
+    }
+
+    public HashMap<String, Pair<Integer, Integer>> getCorpusDictionary() {
+        return corpusDictionary;
     }
 
     /**

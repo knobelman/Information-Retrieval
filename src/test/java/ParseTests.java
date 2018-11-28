@@ -2,6 +2,7 @@ import Model.DataObjects.ParseableObjects.Doc;
 import Model.DataObjects.Term;
 import Model.Parsers.ParsingProcess.DocParsingProcess;
 import Model.Parsers.ParsingProcess.IParsingProcess;
+import javafx.util.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -106,8 +107,8 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("7","$450000","1,856 ");
 //        count +=1;
-        pass += test("7","¥450000.6","1,856 ");
-        count +=1;
+//        pass += test("7","¥450000.6","1,856 ");
+//        count +=1;
 //
         //Price fraction Dollars
 //        System.out.println("~*~*~* Price fraction Dollars ~*~*~*");
@@ -126,7 +127,7 @@ public class ParseTests {
 //        pass += test("7","1/8 Dollars","1/8 "); //todo - fail
 //        count +=1;
 
-        System.out.println("~*~*~* $price ~*~*~*");
+//        System.out.println("~*~*~* $price ~*~*~*");
 //        pass += test("1","1000000 Dollars","450,000 ");
 //        count +=1;
 //        pass += test("2","1,000,000 Dollars","780,000 ");
@@ -249,13 +250,24 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("13","-5","-5");
 //        count +=1;
-//        pass += test("14","$10000","");
+//        pass += test("14","Mr Tomiichi Murayama, Japan's new Socialist prime minister, yesterday\n" +
+//                "attempted to win confidence in his much-criticised government by pledging to\n" +
+//                "pursue moderate conservative policies.\n" +
+//                "He acknowledged that there was anxiety over his appointment and pledged to\n" +
+//                "'make further efforts to make my cabinet more trustworthy and reliable'.\n" +
+//                "The three-party alliance of the conservative Liberal Democratic party with\n" +
+//                "its traditional enemy the Social Democratic party, plus the New Harbinger\n" +
+//                "party, an LDP splinter group, has achieved instant unpopularity after\n" +
+//                "seizing power in a parliamentary coup on Wednesday.\n" +
+//                "Only 33 per cent of the electorate supports the new government, according to\n" +
+//                "a poll yesterday by the Mainichi Shimbun newspaper. The figure rose to 40\n" +
+//                "per cent in a survey conducted by Television Tokyo.","");
 //        count +=1;
         System.out.println("~*~ SUMMERY: PASS " + pass + "/" + (count) +" ~*~");
     }
 
     public static int test(String number, String input,String output) {
-        IParsingProcess p = new DocParsingProcess("C:\\Users\\Yaniv\\Desktop\\corpus",false);
+        IParsingProcess p = new DocParsingProcess("C:\\Users\\Maor\\Desktop\\corpus",false);
         Doc doc1 = new Doc();
         doc1.setDoc_content(input);
         p.parsing(doc1);
