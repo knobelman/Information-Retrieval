@@ -85,13 +85,17 @@ public class GUI {
                         directory.mkdir();
                     }
                     //send to controller with stemming
+                    Alert alert = showWindow();
                     myGUIController.startIndexing(pathOfCorpus, pathOfPosting + "\\withStem", true);
+                    alert.close();
                     saveDictionary.setDisable(false);
                     RESET.setDisable(false);
                 }
                 else{
                     //send to controller without stemming
+                    Alert alert = showWindow();
                     myGUIController.startIndexing(pathOfCorpus, pathOfPosting, false);
+                    alert.close();
                     saveDictionary.setDisable(false);
                     RESET.setDisable(false);
                 }
@@ -115,14 +119,18 @@ public class GUI {
                     directory.mkdir();
                 }
                 //send to controller with stemming
+                Alert alert = showWindow();
                 myGUIController.startIndexing(pathOfCorpus, pathOfPosting + "\\withStem", true);
+                alert.close();
                 saveDictionary.setDisable(false);
                 RESET.setDisable(false);
 
             }
             //if stemming not required
             else{
+                Alert alert = showWindow();
                 myGUIController.startIndexing(pathOfCorpus, pathOfPosting, false);
+                alert.close();
                 saveDictionary.setDisable(false);
                 RESET.setDisable(false);
             }
@@ -136,13 +144,14 @@ public class GUI {
         try{
             scene=new Scene(fxmlLoader.load(), 500, 400);
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         Stage stage=new Stage();
         stage.setTitle("Language List");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+        stage.close();
     }
 
     public void reset() {
@@ -184,5 +193,21 @@ public class GUI {
             file = new File(PostingPath.getText()+"\\withStem\\CorpusDictionaryWithStem");
             myGUIController.loadDictionary(file);
         }
+    }
+
+    private Alert showWindow(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Indexing start...");
+        alert.setHeaderText("Indexing start...");
+        alert.setContentText("Indexing process start...");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        alert.setContentText("Indexing process start...\n"+"" +
+                "Start indexing...");
+        alert.show();
+        return alert;
     }
 }
