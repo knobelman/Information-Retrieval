@@ -49,7 +49,7 @@ public class ParserClassifier extends AParser {
             i += 3;
         }
         //$
-        else if (current.charAt(0) == '$') {//if first char is '$' VVV
+        else if (current.charAt(0) == '$' || current.charAt(0) == '¥') {//if first char is '$' or '¥'
             if (s2.equals(""))//$price
                 currValue = dollarParser.parsing(current, "","","");
             else//$price million\billion\trillion

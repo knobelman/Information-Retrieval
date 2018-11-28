@@ -32,40 +32,37 @@ public class ParseTests {
 //                "per cent in a survey conducted by Television Tokyo.\n" +
 //                "In his first public address since taking office, Mr Murayama outlined","");
 //        count +=1;
-//        pass += test("1","1,009.5 m Dollars","1.0095K");
+//        pass += test("1","10,123","1.0095K");
 //        count +=1;
-
-//        pass += test("0","7.5 Trillion","7500B");
+//        pass += test("0","10123","7500B");
 //        count +=1;
-//        pass += test("1","55 Million","55M");
+//        pass += test("1","10,123.56","");
 //        count +=1;
-//        pass += test("2", "23 3/4","23 3/4");
+//        pass += test("0","10123.56","");
 //        count +=1;
-//        pass += test("3", "123 Thousand","123K");
+//        pass += test("0","10123 1/4","");
 //        count +=1;
-//        pass += test("4","10,123,000,000","10.123B");
+//        pass += test("1","123 Thousand","");
 //        count +=1;
-//        pass += test("5","19,986,897.65","19.98689765M");
+//        pass += test("1","123.5 Thousand","");
 //        count +=1;
-//        pass += test("6","\"Man","MAN");
+//        pass += test("2", "23 3/4","");
 //        count +=1;
-//        pass += test("7","10,123","10.123K");
+//        pass += test("3", "10,123,000,000.5","");
 //        count +=1;
-//        pass += test("8","1010.56","1.01056K");
+//        pass += test("3", "10123000000.5 ","");
 //        count +=1;
-//        pass += test("9","10,123,000","10.123M");
+//        pass += test("4","10123000000","13B");
 //        count +=1;
-//        pass += test("10","1010.56","1.01056K");
+//        pass += test("5","55 Million","19.");
 //        count +=1;
-//        pass += test("11","55 Billion","55B");
+//        pass += test("5","55.6 Million","19.");
 //        count +=1;
-//        pass += test("12","7 Trillion","7000B");
+//        pass += test("6","55.6 Billion","");
 //        count +=1;
-//        pass += test("13","204","204");
+//        pass += test("7","55.6 Trillion","10.");
 //        count +=1;
-//        pass += test("14","1000000","1M");
-//        count +=1;
-//        pass += test("15","1,993","1.993K");
+//        pass += test("8","1010.56","1.");
 //        count +=1;
 
 //        /**
@@ -76,99 +73,114 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("2","10.6 percent","10.6%");
 //        count +=1;
-//        pass += test("3","6%","6%");
+//        pass += test("3","6.5%","6.5%");
 //        count +=1;
 //        pass += test("4","10.6 percentage","10.6%");
 //        count +=1;
 //        pass += test("5","1000%","1000%");
+//        count +=1;
+//        pass += test("5","1,000.7%","1000%");
+//        count +=1;
+//        pass += test("5","1000.6%","1000.6%");
 //        count +=1;
 
 //        /**
 //         * Prices
 //         */
 //        System.out.println("~*~ Price Dollars ~*~");
-//        pass += test("1","1.7320 Dollars","1.7320 Dollars");
+//        pass += test("1","1.7320 Dollars","1.7320 ");
 //        count +=1;
-//        pass += test("2","22.26 Dollars","22.26 Dollars");
+//        pass += test("2","22 3/4 Dollars","22.26 ");
 //        count +=1;
-//        pass += test("3","395.7 Dollars","395.7 Dollars");
+//        pass += test("3","395.7 Dollars","395.7 ");
 //        count +=1;
-//        pass += test("4","10,100 Dollars","10,100 Dollars"); //todo - fail
+//        pass += test("4","10,100 Dollars","10,100 ");
 //        count +=1;
-//        pass += test("5","10,100.2 Dollars","10,100.2 Dollars"); //todo - fail
+//        pass += test("5","10,100.2 Dollars","10,100.2 ");
 //        count +=1;
-//        pass += test("6","250,100 Dollars","250,100 Dollars"); //todo - fail
+//        pass += test("6","250,100 Dollars","250,100 ");
 //        count +=1;
-//        pass += test("7","$1,856","1,856 Dollars");
+//        pass += test("7","$450,000","1,856 ");
 //        count +=1;
+//        pass += test("7","$450,000.6","1,856 ");
+//        count +=1;
+//        pass += test("7","$450000","1,856 ");
+//        count +=1;
+        pass += test("7","¥450000.6","1,856 ");
+        count +=1;
 //
         //Price fraction Dollars
 //        System.out.println("~*~*~* Price fraction Dollars ~*~*~*");
-//        pass += test("1","22 3/4 Dollars","22 3/4 Dollars");
+//        pass += test("1","22 3/4 Dollars","22 3/4 ");
 //        count +=1;
-//        pass += test("2","252 3/4 Dollars","252 3/4 Dollars");
+//        pass += test("2","252 3/4 Dollars","252 3/4 ");
 //        count +=1;
-//        pass += test("3","2,520 3/4 Dollars","2,520 3/4 Dollars");
+//        pass += test("3","2,520 3/4 Dollars","2,520 3/4 ");
 //        count +=1;
-//        pass += test("4","122,520 3/4 Dollars","122,520 3/4 Dollars");
+//        pass += test("4","122,520 3/4 Dollars","122,520 3/4 ");
 //        count +=1;
-//        pass += test("5","999999 1/8 Dollars","999999 1/8 Dollars"); //todo -fail
+//        pass += test("5","999999 1/8 Dollars","999999 1/8 "); //todo -fail
 //        count +=1;
-//        pass += test("6","999,999 1/8 Dollars","999,999 1/8 Dollars");
+//        pass += test("6","999,999 1/8 Dollars","999,999 1/8 ");
 //        count +=1;
-//        pass += test("7","1/8 Dollars","1/8 Dollars"); //todo - fail
+//        pass += test("7","1/8 Dollars","1/8 "); //todo - fail
 //        count +=1;
-//
-//        System.out.println("~*~*~* $price ~*~*~*");
-//        pass += test("1","$450,000","450,000 Dollars");
+
+        System.out.println("~*~*~* $price ~*~*~*");
+//        pass += test("1","1000000 Dollars","450,000 ");
 //        count +=1;
-//        pass += test("2","$780,000","780,000 Dollars");
+//        pass += test("2","1,000,000 Dollars","780,000 ");
 //        count +=1;
-//        pass += test("3","$780000","780000 Dollars");
+//        pass += test("3","$780,000,000.7","780000 ");
 //        count +=1;
-//        pass += test("4","$10.5","10.5 Dollars");
+//        pass += test("4","$10.5","10.5 ");
 //        count +=1;
-//        pass += test("5","$1","1 Dollars");
+//        pass += test("5","$1","1 ");
 //        count +=1;
-//
+
 //        System.out.println("~*~*~* $above million price ~*~*~*");
-//        pass += test("1","1,000,000 Dollars","1 M Dollars");
+//        pass += test("1","100,000,999 Dollars","1 M ");
 //        count +=1;
-//        pass += test("2","$450,000,000","450 M Dollars");
+//        pass += test("2","$450,000,000","450 M ");
 //        count +=1;
-//        pass += test("3","$100 million","100 M Dollars");
+//        pass += test("3","$100 million","100 M ");
 //        count +=1;
-//        pass += test("4","20.6 m Dollars","20.6 M Dollars");
+//        pass += test("4","200.6 m Dollars","20.6 M ");
 //        count +=1;
-//        pass += test("5","$200 billion","200000 M Dollars");
+//        pass += test("5","$200.8 billion","200000 M ");
 //        count +=1;
-//        pass += test("6","100 bn Dollars","100000 M Dollars");
+//        pass += test("6","100 bn Dollars","100000 M ");
 //        count +=1;
-//        pass += test("7","100 billion U.S. dollars","100000 M Dollars");
+//        pass += test("6","100.8 bn Dollars","100000 M ");
 //        count +=1;
-//        pass += test("8","320 million U.S. dollars","320 M Dollars");
+//        pass += test("6","1,000.8 bn Dollars","100000 M ");
 //        count +=1;
-//        pass += test("9","1 trillion U.S. dollars","1000000 M Dollars");
+//        pass += test("7","100 billion U.S. dollars","100000 M ");
+//        count +=1;
+//        pass += test("8","320 million U.S. dollars","320 M ");
+//        count +=1;
+//        pass += test("9","1 trillion U.S. dollars","1000000 M ");
 //        count +=1;
 //
 //        /**
 //         * Date
 //         */
 //        System.out.println("~*~ Date Tests ~*~");
-//        pass += test("1","14 MAY","05-14");
+//        pass += test("1","14 MAY","05-");
 //        count +=1;
-//        pass += test("2","14 May","05-14");
+//        pass += test("2","14 May","05-");
 //        count +=1;
-//        pass += test("3","JUNE 4","06-04");
+//        pass += test("3","JUNE 4","06-");
 //        count +=1;
-//        pass += test("4","June 4","06-04");
+//        pass += test("4","June 5","06-");
 //        count +=1;
-//        pass += test("5","May 1994","1994-05");
+//        pass += test("5","May 299","-05");
 //        count +=1;
-//        pass += test("6","MAY 1994","1994-05");
+//        pass += test("6","MAY 1994","194-05");
 //        count +=1;
-//        pass += test("7","4 March","03-04"); //check
+//        pass += test("7","4 March","03-"); //check
 //        count +=1;
+
 //      /**
 //       * Hyphen
 //       */
@@ -177,15 +189,15 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("2","1-1","1-1");
 //        count +=1;
-//        pass += test("3","Xinhua,","XINHUA");
+//        pass += test("3","word-word,","XINHUA");
 //        count +=1;
-//        pass += test("4","[Xinhua]","XINHUA");
+//        pass += test("4","word-word-word","XINHUA");
 //        count +=1;
-//        pass += test("5","(Xinhua)","XINHUA");
+//        pass += test("5","1-word","XINHUA");
 //        count +=1;
-//        pass += test("6","Xinhua--","XINHUA");
+//        pass += test("6","word-1","XINHUA");
 //        count +=1;
-//        pass += test("7","the yaniv","yaniv");
+//        pass += test("7","1-2.5","yaniv");
 //        count +=1;
 //        pass += test("8","Value-added","Value-added");
 //        count +=1;
@@ -203,7 +215,7 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("14","between","");
 //        count +=1;
-//
+
 //
 //    /**
 //     * More
@@ -237,8 +249,8 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("13","-5","-5");
 //        count +=1;
-        pass += test("14","$10000","");
-        count +=1;
+//        pass += test("14","$10000","");
+//        count +=1;
         System.out.println("~*~ SUMMERY: PASS " + pass + "/" + (count) +" ~*~");
     }
 

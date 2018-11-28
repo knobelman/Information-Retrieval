@@ -59,6 +59,8 @@ public abstract class AParser {
     protected boolean isValidNum(String current){
         if(current.equals(""))
             return false;
+        if(current.contains("/"))//fraction
+            return isValidFrac(current);
         String[] currSplit;
         if(isNumeric(current))//just number
             return true;
@@ -89,7 +91,19 @@ public abstract class AParser {
         return false;
     }
 
-    private static boolean isNumeric(String str)
+    /**
+     *
+     * @param s1 fraction to check
+     * @return - is top is valid num and bottom is valid num
+     */
+    protected boolean isValidFrac(String s1){
+        String[]split = s1.split("/");
+        if(isNumeric(split[0]) && isNumeric(split[0]))
+            return true;
+        return false;
+    }
+
+    protected static boolean isNumeric(String str)
     {
         if(str.length()==0)
             return false;

@@ -15,8 +15,6 @@ public class MoneyParser extends AParser {
     protected String priceOnly(String s1) {
         s1 = addComa(s1);
         s1 = toMillionPrice(s1);
-//        if(s1.contains(","))
-//            s1 = delComa(s1);
         return s1;
     }
 
@@ -31,7 +29,6 @@ public class MoneyParser extends AParser {
     protected String priceAndSize(String s1, String s2) {
         s1 = addComa(s1);
         s1 = fixSize(s1,s2);
-        //s1 = addComa(s1);
         //s1 = toMillionPrice(s1);
         if(s1.contains(","))
             s1 = delComa(s1);
@@ -45,26 +42,13 @@ public class MoneyParser extends AParser {
      * @return
      */
     private String fixSize(String s1, String s2) {
-        String[] s1SplitDot=null;
         String tmpS1 = s1;//number without dot
-        boolean containsDot = false;
         if(s1.contains(".")){
-            containsDot = true;
-            s1SplitDot = s1.split("\\.");
-            tmpS1 = s1SplitDot[0];
+            return toMillionPriceWithDot(s1,s2);
         }
         tmpS1 += hmPriceSize.get(s2);
-        if(containsDot)
-            tmpS1 += "." + s1SplitDot[1];
         return tmpS1;
     }
-
-//    private String toMillionPrice(String s1) {
-//        String res = toMillion(s1);
-//        if(s1.split(",").length>=3)//if more then million
-//            return res + " " + "M";
-//        return res;
-//    }
 
     /**
      * 450,000,000, 1,000,000
@@ -81,6 +65,7 @@ public class MoneyParser extends AParser {
             containsDot = true;
             done = true;
             s1SplitDot = s1.split("\\.");
+            //return toMillionPriceWithDot(s1);
             tmpS1 = s1SplitDot[0];
         }
         String[] tmp = tmpS1.split(",");
@@ -114,45 +99,34 @@ public class MoneyParser extends AParser {
             if(containsDot){
                 s1Million += s1SplitDot[1];
             }
-
             return s1Million + " " + "M";
         }
     }
 
-//    /**
-//     * Check if number is with comas
-//     *
-//     * @param s1 - price
-//     * @return - price with comas
-//     */
-//    private String addComa(String s1) {
-//        if (s1.length() > 3 && !s1.contains(",")) {//if price>1,000 and without ','
-//            if (s1.contains(".")) {//if number with .
-//                String[] tmp = s1.split("\\.");
-//                s1 = toComa(tmp[0]) + "." + tmp[1];
-//            } else//number without .
-//                s1 = toComa(s1);
-//        }
-//        return s1;
-//    }
-
-//    /**
-//     * @param current - number without coma
-//     * @return - the number with comas
-//     */
-//    private String toComa(String current) {
-//        String temp = "";
-//        int count = 0;
-//        for (int i = current.length() - 1; i >= 0; i--) {
-//            if (count == 3) {
-//                temp = ',' + temp;
-//                count = 0;
-//            }
-//            temp = current.charAt(i) + temp;
-//            count++;
-//        }
-//        return temp;
-//    }
+    /**
+     *
+     * @param s1 - the number with .
+     * @param s2 - the billion/million/trillion
+     * @return - the correct representative
+     */
+    private String toMillionPriceWithDot(String s1,String s2) {
+        String[] s1SplitDot = s1.split("\\.");//[1000,5]
+        String before = s1SplitDot[0];//1000
+        String after = s1SplitDot[1];//5
+        String zeroToAdd = (String)hmPriceSize.get(s2);
+        int length = after.length();
+        if(zeroToAdd.equals(""))
+            return s1;
+        if(length==1)//7.5
+            return before + after + zeroToAdd.substring(1);
+        if(length==2)//7.75
+            return before + after + zeroToAdd.substring(2);
+        if(length==3)//7.775
+            return before + after + zeroToAdd.substring(3);
+        else{//7.num>3
+            return before + after.substring(0,3) + "." + after.substring(3);
+        }
+    }
 
     private String delComa(String s1) {
         String[] tmp = s1.split(",");
