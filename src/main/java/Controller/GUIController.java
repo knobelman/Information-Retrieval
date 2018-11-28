@@ -7,14 +7,14 @@ import java.io.File;
 /**
  * This class represents the controller class
  */
-public class Controller {
+public class GUIController {
 
     /**
      * Fields
      */
     private Model myModel;
 
-    public Controller(){
+    public GUIController(){
         myModel = new Model();
     }
 

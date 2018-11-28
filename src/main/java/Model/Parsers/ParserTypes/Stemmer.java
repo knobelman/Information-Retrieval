@@ -1,4 +1,4 @@
-package Model.Parsers;
+package Model.Parsers.ParserTypes;
 /*
 
    Porter stemmer in Java. The original paper is in

@@ -2,8 +2,9 @@ package Model.Indexers;
 import Model.DataObjects.CityData;
 import Model.DataObjects.ParseableObjects.Doc;
 import Model.DataObjects.Term;
-import Model.Parsers.JasonParser;
-import Model.Parsers.DocParser;
+import Model.Parsers.ParsingProcess.DocParsingProcess;
+import Model.Parsers.ParsingProcess.CityParsingProcess;
+import Model.Parsers.ParsingProcess.IParsingProcess;
 import javafx.util.Pair;
 import java.io.*;
 import java.util.*;
@@ -25,8 +26,8 @@ public class Indexer {
 
     private static ReadFile readFileObject;
     private Posting postingObject;
-    private DocParser ParserObject;
-    private JasonParser jasonParser;
+    private DocParsingProcess ParserObject;
+    private IParsingProcess cityParsingProcess;
 
     private HashMap<String,Pair<ArrayList<String>,CityData> > cityDictionary;
     private HashMap<String,Pair<Integer,Integer>> corpusDictionary; //term,totalTF,position in merged posting file
@@ -59,8 +60,8 @@ public class Indexer {
 
         this.threadList = new ArrayList<>();
         this.letters = new HashMap<>();
-        this.jasonParser = new JasonParser();
-        this.ParserObject = new DocParser(rootPath,toStem);
+        this.cityParsingProcess = new CityParsingProcess();
+        this.ParserObject = new DocParsingProcess(rootPath,toStem);
 
         this.numberofDocs = 0;
         letters.put('a',"ABCD"); letters.put('b',"ABCD"); letters.put('c',"ABCD"); letters.put('d',"ABCD");
@@ -127,7 +128,8 @@ public class Indexer {
                             TermAndDocumentsData.put(termName, current);
                         }
                     }
-                }                }
+                }
+            }
                 if(!this.TermAndDocumentsData.isEmpty()) {
                     Thread t = new Thread(() -> {
                         postingObject.createTempPostingFile(TermAndDocumentsData);
@@ -169,7 +171,7 @@ public class Indexer {
             String city = document.getCity(); //get city name from the doc
             String doc_num = document.getDoc_num(); // get doc name from the dock
             String positions_in_doc = document.getPositionOfCity().toString();
-            CityData cityData = jasonParser.getData(city); //get data about the city
+            CityData cityData = ((CityParsingProcess)cityParsingProcess).getData(city); //get data about the city
             ArrayList<String> list = new ArrayList<>();
             list.add(doc_num+":"+positions_in_doc); //add doc name to array list with positions in doc
             Pair<ArrayList<String>,CityData> pair = new Pair<>(list,cityData); //insert data into new pair
@@ -188,6 +190,7 @@ public class Indexer {
     public void createFinalPosting() {
         postingObject.createFinalPosting();
         try {
+            //check in the dictionary the right format (upper / lower)
             BufferedReader last = new BufferedReader(new FileReader(this.getPostingFilePath() + "\\" + "0"));
             String current = last.readLine();
             FileWriter fw = new FileWriter(this.getPostingFilePath() + "\\" + "new");
@@ -207,8 +210,6 @@ public class Indexer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void splitFinalPosting(){
