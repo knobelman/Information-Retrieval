@@ -119,7 +119,7 @@ public class Doc extends ParseableObject implements Serializable {
         if(Character.isLowerCase(term.charAt(0))) {
             term = term.toLowerCase();
         }
-        else{// if(Character.isUpperCase(term.charAt(0))) {
+        else if(Character.isUpperCase(term.charAt(0))){// if(Character.isUpperCase(term.charAt(0))) {
             term = term.toUpperCase();
         }
         if(termsInDoc.containsKey(term)){//term already exists in this doc

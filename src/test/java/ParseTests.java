@@ -237,7 +237,7 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("13","-5","-5");
 //        count +=1;
-        pass += test("14","1,000 1/3","");
+        pass += test("14","$10000","");
         count +=1;
         System.out.println("~*~ SUMMERY: PASS " + pass + "/" + (count) +" ~*~");
     }
