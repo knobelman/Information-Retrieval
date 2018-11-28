@@ -10,6 +10,7 @@ import javafx.util.Pair;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class represents the Indexer class
@@ -61,7 +62,7 @@ public class Indexer {
         this.cityDictionary = new HashMap<>();
         this.LanguageCollection = new HashSet<>();
 
-        this.threadList = new ArrayList<>();
+        this.threadList = new CopyOnWriteArrayList<>();
         this.letters = new HashMap<>();
         this.cityParsingProcess = new CityParsingProcess();
         this.ParserObject = new DocParsingProcess(rootPath, toStem);
