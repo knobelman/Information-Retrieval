@@ -105,58 +105,59 @@ public class Indexer {
      *             this function send date to posting class which create the posting files
      */
     public void init(final File root) throws IOException {
-        for (final File Directory : root.listFiles()) {//for each folder in root
-            for (File currFile : Directory.listFiles()) {//for each file in folder
-                DocumentsToParse = readFileObject.fromFileToDoc(currFile);
-                for (Doc d : DocumentsToParse) {
-                    numberofDocs++;
-                    //create document dictionary
-                    LanguageCollection.add(d.getLanguage()); //add language to language collection
+        for (final File directory : root.listFiles()) {//for each folder in root
+            if (directory.isDirectory())
+                for (File currFile : directory.listFiles()) {//for each file in folder
+                    DocumentsToParse = readFileObject.fromFileToDoc(currFile);
+                    for (Doc d : DocumentsToParse) {
+                        numberofDocs++;
+                        //create document dictionary
+                        LanguageCollection.add(d.getLanguage()); //add language to language collection
 
-                    //add to city dictionary
-                    if (!d.getCity().equals("")) {
-                        addToCityDictionary(d);
+                        //add to city dictionary
+                        if (!d.getCity().equals("")) {
+                            addToCityDictionary(d);
+                        }
+                        //parsing
+                        ParserObject.parsing(d);
+                        Doc toInsert = new Doc(d.getPath(), d.getCity(), d.getMax_tf(), d.getSpecialWordCount()); //doc to insert to the dictionary
+                        DocumentDictionary.put(d.getDoc_num(), toInsert); //insert to dictionary (Doc name | Doc object)
+                        for (Map.Entry<String, Term> entry : d.getTermsInDoc().entrySet()) {
+                            String termName = entry.getKey();
+                            String termNameTmp = termName;
+                            Term value = entry.getValue();
+                            if (corpusDictionary.containsKey(termName)) {//Dic contains the term
+                                updateDF(termName);
+                            } else if (corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
+                                termName = termName.toLowerCase();
+                                value.setTerm(termName);
+                                updateDF(termName);
+                            } else if (corpusDictionary.containsKey(termName.toUpperCase())) {
+                                changeUL(termName);
+                                updateDF(termName);
+                            } else {
+                                corpusDictionary.put(termName, new Pair<>(1, 0)); //term name, file name, position
+                            }
+                            String doc_name = d.getDoc_num();
+                            if (TermAndDocumentsData.containsKey(termName.toLowerCase())) {
+                                Integer newInt = new Integer(d.getTermsInDoc().get(termNameTmp).getTf(doc_name));
+                                TermAndDocumentsData.get(termName.toLowerCase()).put(d.getDoc_num(), newInt);
+                            } else {
+                                HashMap<String, Integer> current = new HashMap();
+                                current.put(doc_name, new Integer(value.getTf(doc_name)));
+                                TermAndDocumentsData.put(termName.toLowerCase(), current);
+                            }
+                        }
                     }
-                    //parsing
-                    ParserObject.parsing(d);
-                    Doc toInsert = new Doc(d.getPath(), d.getCity(), d.getMax_tf(), d.getSpecialWordCount()); //doc to insert to the dictionary
-                    DocumentDictionary.put(d.getDoc_num(), toInsert); //insert to dictionary (Doc name | Doc object)
-                    for (Map.Entry<String, Term> entry : d.getTermsInDoc().entrySet()) {
-                        String termName = entry.getKey();
-                        String termNameTmp = termName;
-                        Term value = entry.getValue();
-                        if (corpusDictionary.containsKey(termName)) {//Dic contains the term
-                            updateDF(termName);
-                        } else if (corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
-                            termName = termName.toLowerCase();
-                            value.setTerm(termName);
-                            updateDF(termName);
-                        } else if (corpusDictionary.containsKey(termName.toUpperCase())) {
-                            changeUL(termName);
-                            updateDF(termName);
-                        } else {
-                            corpusDictionary.put(termName, new Pair<>(1, 0)); //term name, file name, position
-                        }
-                        String doc_name = d.getDoc_num();
-                        if (TermAndDocumentsData.containsKey(termName)) {
-                            Integer newInt = new Integer(d.getTermsInDoc().get(termNameTmp).getTf(doc_name));
-                            TermAndDocumentsData.get(termName).put(d.getDoc_num(), newInt);
-                        } else {
-                            HashMap<String, Integer> current = new HashMap();
-                            current.put(doc_name, new Integer(value.getTf(doc_name)));
-                            TermAndDocumentsData.put(termName, current);
-                        }
+                    if (!this.TermAndDocumentsData.isEmpty()) {//for each file in folder - create posting
+                        Thread t = new Thread(() -> {
+                            postingObject.createTempPostingFile(TermAndDocumentsData);
+                            TermAndDocumentsData = new LinkedHashMap<>();
+                        });
+                        t.start();
+                        threadList.add(t);
                     }
                 }
-                if (!this.TermAndDocumentsData.isEmpty()) {//for each file in folder - create posting
-                    Thread t = new Thread(() -> {
-                        postingObject.createTempPostingFile(TermAndDocumentsData);
-                        TermAndDocumentsData = new LinkedHashMap<>();
-                    });
-                    t.start();
-                    threadList.add(t);
-                }
-            }
         }
         while (!threadList.isEmpty()) {
             for (Thread t : threadList) {
