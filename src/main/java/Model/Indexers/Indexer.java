@@ -119,6 +119,7 @@ public class Indexer {
                         if (!d.getCity().equals("")) {
                             addToCityDictionary(d);
                         }
+                        //
                         //parsing
                         ParserObject.parsing(d);
                         Doc toInsert = new Doc(d.getPath(), d.getCity(), d.getMax_tf(), d.getSpecialWordCount()); //doc to insert to the dictionary
