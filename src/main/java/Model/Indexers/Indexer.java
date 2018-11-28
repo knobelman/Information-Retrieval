@@ -259,6 +259,7 @@ public class Indexer {
             filePosition.put("UVWXYZ", new Integer(0));
             filePosition.put("OTHER", new Integer(0));
         } catch (Exception e) {
+            e.printStackTrace();
         }
         BufferedReader postingFile;
         BufferedWriter fileBuffer;
@@ -268,12 +269,12 @@ public class Indexer {
             postingFile = new BufferedReader(new FileReader(postingObject.getRootPath() + "\\0"));//read posting
             line = postingFile.readLine();
             do {
-                if (!letters.containsKey(line.charAt(0)) && !Character.isUpperCase(line.charAt(0))) {//if first char isn't a known letter
+                if (!letters.containsKey(line.toLowerCase().charAt(0))) {//if first char isn't a known letter
                     fileBuffer = fileWriters.get("OTHER");//get hte buffer to write
                     position = filePosition.get("OTHER").intValue();//get position to update Dic
                     fileName = "OTHER";//get name of file to update Dic
                 } else {
-                    char tmp = Character.toLowerCase(line.charAt(0));
+                    char tmp = line.toLowerCase().charAt(0);
                     fileBuffer = fileWriters.get(letters.get(tmp));
                     position = filePosition.get(letters.get(tmp)).intValue();//todo
                     fileName = letters.get(tmp);
@@ -287,7 +288,7 @@ public class Indexer {
                 position += line.length() + 1;//increase the position for next line //todo
                 filePosition.replace(fileName, position);//insert new position for next line //todo
                 line = postingFile.readLine();
-            } while (line != null && !line.equals(""));
+            } while (line != null && !line.equals("") && line.length()!=0);
             File pFile = new File(postingObject.getRootPath() + "\\" + "0");
             fileWriters.get("ABCD").close();
             fileWriters.get("EFGH").close();
