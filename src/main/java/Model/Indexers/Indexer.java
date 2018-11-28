@@ -101,15 +101,13 @@ public class Indexer {
      * send all the docs to parsing
      * insert to TermAndDocumentsData structure and to the dictionary if need to update
      *
-     * @param file - entry file
+     * @param root - entry file
      *             this function send date to posting class which create the posting files
      */
-    public void init(final File file) throws IOException {
-        for (final File fileEntry : file.listFiles()) {
-            if (fileEntry.isDirectory()) {
-                init(fileEntry);
-            } else {
-                DocumentsToParse = readFileObject.fromFileToDoc(fileEntry);
+    public void init(final File root) throws IOException {
+        for (final File Directory : root.listFiles()) {//for each folder in root
+            for (File currFile : Directory.listFiles()) {//for each file in folder
+                DocumentsToParse = readFileObject.fromFileToDoc(currFile);
                 for (Doc d : DocumentsToParse) {
                     numberofDocs++;
                     //create document dictionary
@@ -150,23 +148,23 @@ public class Indexer {
                         }
                     }
                 }
+                if (!this.TermAndDocumentsData.isEmpty()) {//for each file in folder - create posting
+                    Thread t = new Thread(() -> {
+                        postingObject.createTempPostingFile(TermAndDocumentsData);
+                        TermAndDocumentsData = new LinkedHashMap<>();
+                    });
+                    t.start();
+                    threadList.add(t);
+                }
             }
-            if (!this.TermAndDocumentsData.isEmpty()) {
-                Thread t = new Thread(() -> {
-                    postingObject.createTempPostingFile(TermAndDocumentsData);
-                    TermAndDocumentsData = new LinkedHashMap<>();
-                });
-                t.start();
-                threadList.add(t);
-            }
-            while (!threadList.isEmpty()) {
-                for (Thread t : threadList) {
-                    try {
-                        t.join();
-                        threadList.remove(t);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        }
+        while (!threadList.isEmpty()) {
+            for (Thread t : threadList) {
+                try {
+                    t.join();
+                    threadList.remove(t);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
