@@ -55,6 +55,7 @@ public class ParserClassifier extends AParser {
             else//$price million\billion\trillion
                 currValue = dollarParser.parsing(current, s2,"","");
         }
+        //number first
         else if (isValidNum(current)) {//check if token is a valid number - todo
             if (s2.equals(""))
                 currValue = numberFirst(current, "", "", "");
@@ -103,8 +104,11 @@ public class ParserClassifier extends AParser {
         else if (s2.equals("Dollars")){//valid number Dollars
             return dollarParser.PriceDollars(s1,s2);
         }
-        else if(s2.contains("/") && s3.equals("Dollars")){//valid number fraction Dollars
-            return dollarParser.PriceFractionDollars(s1,s2,s3);
+        else if(s2.contains("/")){//valid number fraction ...
+            if(s3.equals("Dollars"))//valid number fraction Dollars
+                return dollarParser.PriceFractionDollars(s1,s2,s3);
+            else//valid number fraction only
+                return numberParser.parsing(s1,s2,"","");
         }
         else if(hmPriceSize.containsKey(s2)){//valid number million\billion\trillion\m\bn\tn
             if(s3.equals("Dollars")) {//...Dollars

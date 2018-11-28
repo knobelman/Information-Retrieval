@@ -16,10 +16,19 @@ public class NumberParser extends AParser {
         if(s2.equals("")){//just number
             return numberOnly(s1);
         }
-        else{//s2 -> Thousand\Million\Trillion\Billion
+        else if(s2.contains("/")) {//number fraction
+            i=1;
+            return s1 + " " + s2;
+        }
+        else if(hmNum.containsKey(s2)){//s2 -> Thousand\Million\Trillion\Billion
             i=1;
             return numberAndSize(s1,s2);
         }
+        else{
+            i=0;
+            return numberOnly(s1);
+        }
+
     }
 
     /**
