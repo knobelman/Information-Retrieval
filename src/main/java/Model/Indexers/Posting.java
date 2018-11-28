@@ -1,4 +1,6 @@
 package Model.Indexers;
+import javafx.util.Pair;
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,11 +37,7 @@ public class Posting {
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry)it.next();
                 int size = ((HashMap<String, Integer>)pair.getValue()).size();
-                if((((String)pair.getKey()).contains("-"))){
-                    allLines.add((pair.getKey()) + "|DF:" + size + "|" + pair.getValue()+"\n");
-                }else{
-                    allLines.add(((String)pair.getKey()).toLowerCase() + "|DF:" + size + "|" + pair.getValue()+"\n");
-                }
+                allLines.add((pair.getKey()) + "|DF:" + size + "|" + pair.getValue()+"\n");
                 it.remove();
             }
             sort();
@@ -67,8 +65,9 @@ public class Posting {
      * @param firstFile - the first file
      * @param secondFile - the second file
      * @param bw - bufferedWriter object
+     * @param corpusDictionary
      */
-    public void mergeBetweenTempPostingFiles(String firstFile, String secondFile, BufferedWriter bw) {
+    public void mergeBetweenTempPostingFiles(String firstFile, String secondFile, BufferedWriter bw, HashMap<String, Pair<Integer, Integer>> corpusDictionary) {
         try {
             String firstCurrentLine;
             String secondCurrentLine;
@@ -82,15 +81,20 @@ public class Posting {
             while(firstCurrentLine!=null && secondCurrentLine!=null) {
                 String t1 = firstCurrentLine.substring(0, firstCurrentLine.indexOf('|'));
                 String t2 = secondCurrentLine.substring(0, secondCurrentLine.indexOf('|'));
-                if(t1.compareTo(t2)<0){ //t1 < t2
+                if(t1.toLowerCase().compareTo(t2.toLowerCase())<0){ //t1 < t2
                     bw.write(firstCurrentLine + "\n");
                     firstCurrentLine = first.readLine();
-                }else if(t1.compareTo(t2)>0){ // t1 > t2
+                }else if(t1.toLowerCase().compareTo(t2.toLowerCase())>0){ // t1 > t2
                     bw.write(secondCurrentLine + "\n");
                     secondCurrentLine = second.readLine();
                 }else {//t1 = t2
                     //firstCurrentLine = firstCurrentLine.substring(firstCurrentLine.indexOf('|') + 1, firstCurrentLine.length());
-                    secondCurrentLine = createLine(firstCurrentLine,secondCurrentLine); //secondCurrentLine.concat(firstCurrentLine +"\n");
+                    String correctTerm;
+                    if(corpusDictionary.containsKey(t1))
+                        correctTerm = t1;
+                    else
+                        correctTerm = t2;
+                    secondCurrentLine = createLine(firstCurrentLine,secondCurrentLine,correctTerm); //secondCurrentLine.concat(firstCurrentLine +"\n");
                     bw.write(secondCurrentLine +"\n");
                     firstCurrentLine = first.readLine();
                     secondCurrentLine = second.readLine();
@@ -122,11 +126,13 @@ public class Posting {
      * This method concat DF's of two lines
      * HEROLD|DF:1|{FBIS3-9996=1}   HEROLD|DF:1|{FBIS3-10419=1}
      * Example for a line: 0.256K|DF:2|{FBIS3-2314=1, FBIS3-2531=1}
+     *
+     * @param currentTerm
      * @param firstCurrentLine
      * @param secondCurrentLine
      * @return - concat lines as needed
      */
-    private String createLine(String firstCurrentLine, String secondCurrentLine) {
+    private String createLine(String firstCurrentLine, String secondCurrentLine, String currentTerm) {
         String[] cut1 = firstCurrentLine.split("\\|"); // [0.256K,DF:2,{FBIS3-2314=1, FBIS3-2531=1}]
         String[] cut2 = secondCurrentLine.split("\\|");
 
@@ -144,7 +150,7 @@ public class Posting {
             int DF2 = Integer.parseInt(cut22[1]);
             int newDF = DF1 + DF2;
             //Create the correct string
-            String secondNewLine = cut1[0] + "|DF:" + newDF + "|" + cut2[2];//term + "\DF" + newDF + "|" + TF
+            String secondNewLine = currentTerm + "|DF:" + newDF + "|" + cut2[2];//term + "\DF" + newDF + "|" + TF
             return secondNewLine;
         }catch (Exception e){
             e.printStackTrace();
@@ -153,7 +159,7 @@ public class Posting {
       return "";
     }
 
-    public void createEvenPostingFiles(int currPostingNumber){
+    public void createEvenPostingFiles(int currPostingNumber, HashMap<String, Pair<Integer, Integer>> corpusDictionary){
         int lastPosting = currPostingNumber-1;
         FileWriter mergedWriter;
         BufferedWriter mergedBuffer;
@@ -162,7 +168,7 @@ public class Posting {
         try {
             mergedWriter = new FileWriter(this.getRootPath() + "\\" + "merged");
             mergedBuffer = new BufferedWriter(mergedWriter);
-            mergeBetweenTempPostingFiles("" + (lastPosting), "" + (lastPosting-1), mergedBuffer);
+            mergeBetweenTempPostingFiles("" + (lastPosting), "" + (lastPosting-1), mergedBuffer,corpusDictionary);
             mergedBuffer.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -173,12 +179,12 @@ public class Posting {
         mergedF.renameTo(blFILE);
     }
 
-    public void createFinalPosting(){
+    public void createFinalPosting(HashMap<String, Pair<Integer, Integer>> corpusDictionary){
         int postingCounter = postingFileCounter;
         int newName = 0;
         while(postingCounter>=2) {
             if (!(postingCounter % 2 == 0)) {
-                createEvenPostingFiles(postingCounter);
+                createEvenPostingFiles(postingCounter,corpusDictionary);
                 postingCounter--;
             }
             int currPostingCounter = postingCounter;
@@ -190,7 +196,7 @@ public class Posting {
                 try {
                     mergedWriter = new FileWriter(this.getRootPath() + "\\" + "merged");
                     mergedBuffer = new BufferedWriter(mergedWriter);
-                    mergeBetweenTempPostingFiles("" + (i), "" + (i+1), mergedBuffer);
+                    mergeBetweenTempPostingFiles("" + (i), "" + (i+1), mergedBuffer, corpusDictionary);
                     mergedBuffer.close();
                 } catch (Exception e) {
                     e.printStackTrace();

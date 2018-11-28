@@ -94,7 +94,12 @@ public class DocParsingProcess implements IParsingProcess {
                 for (String curr : current.split("--")) {
                     moreThenOneWord.push(curr);
                 }
-            } else {
+            }
+            else if(current.contains("...")) {//fill stack with all words to work on
+                for (String curr : current.split("...")) {
+                    moreThenOneWord.push(curr);
+                }
+            }else {
                 moreThenOneWord.push(current);
             }
             if (moreThenOneWord.empty())

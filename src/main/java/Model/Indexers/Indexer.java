@@ -128,11 +128,10 @@ public class Indexer {
                             Term value = entry.getValue();
                             if (corpusDictionary.containsKey(termName)) {//Dic contains the term
                                 updateDF(termName);
-                            } else if (corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
+                            } else if (!containsDigit(termName) && corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
                                 termName = termName.toLowerCase();
-                                //value.setTerm(termName.toLowerCase());//change term name in curr doc
                                 updateDF(termName);
-                            } else if (corpusDictionary.containsKey(termName.toUpperCase())) {
+                            } else if (!containsDigit(termName) && corpusDictionary.containsKey(termName.toUpperCase())) {
                                 changeULDic(termName);
                                 updateDF(termName);
                             } else {
@@ -178,6 +177,16 @@ public class Indexer {
 //                }
 //            }
 //        }
+    }
+
+    private boolean containsDigit(String termName)
+    {
+        for (char c : termName.toCharArray())
+        {
+            if (Character.isDigit(c))
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -228,56 +237,7 @@ public class Indexer {
     }
 
     public void createFinalPosting() {
-        postingObject.createFinalPosting();
-        try {
-            //check in the dictionary the right format (upper / lower)
-            BufferedReader last = new BufferedReader(new FileReader(this.getPostingFilePath() + "\\" + "0"));
-            String current = last.readLine();
-            FileWriter fw = new FileWriter(this.getPostingFilePath() + "\\" + "new");
-            while (current != null) {
-                String t1 = current.substring(0, current.indexOf('|'));
-                String more = current.substring(current.indexOf('|'), current.length());
-//                if((t1.contains("dollars") || t1.contains("yen")) && t1.contains(" ")){
-//                    if(t1.contains("m")){
-//                        //100 m dollars
-//                        String[] splitted = t1.split(" ");
-//                        if(splitted.length == 3){
-//                            String price = splitted[0];
-//                            String m = splitted[1].toUpperCase();
-//                            String dollars = splitted[2];
-//                            dollars = Character.toUpperCase(dollars.charAt(0)) + dollars.substring(1,dollars.length());
-//                            current = price + " " + m + " " + dollars + more;
-//                            fw.write(current + "\n");
-//                        }
-//                    }else{
-//                        //100 dollars
-//                        String[] splitted = t1.split(" ");
-//                        if(splitted.length == 2){
-//                            String price = splitted[0];
-//                            String dollars = splitted[1];
-//                            dollars = Character.toUpperCase(dollars.charAt(0)) + dollars.substring(1,dollars.length());
-//                            current = price + " " + dollars + more;
-//                            fw.write(current + "\n");
-//                        }
-//                    }
-//                }
-                if (corpusDictionary.containsKey(t1.toLowerCase())) {
-                    current = t1.toLowerCase() + more;
-                    fw.write(current + "\n");
-                }
-                else if(corpusDictionary.containsKey(t1.toUpperCase())) {
-                    current = t1.toUpperCase() + more;
-                    fw.write(current + "\n");
-                }
-//                else{
-//                    fw.write(t1 + more + "\n");
-//                }
-                current = last.readLine();
-            }
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        postingObject.createFinalPosting(corpusDictionary);
     }
 
     public void splitFinalPosting() {
@@ -305,7 +265,7 @@ public class Indexer {
         String currTerm, line, fileName;
         int position;
         try {
-            postingFile = new BufferedReader(new FileReader(postingObject.getRootPath() + "\\new"));//read posting
+            postingFile = new BufferedReader(new FileReader(postingObject.getRootPath() + "\\0"));//read posting
             line = postingFile.readLine();
             do {
                 if (!letters.containsKey(line.charAt(0)) && !Character.isUpperCase(line.charAt(0))) {//if first char isn't a known letter
@@ -318,11 +278,8 @@ public class Indexer {
                     position = filePosition.get(letters.get(tmp)).intValue();//todo
                     fileName = letters.get(tmp);
                 }
-//                if(!line.contains("|"))
-//                    System.out.println(line + " - The line!!!");
                 currTerm = line.substring(0, line.indexOf('|'));//get the term
-                //System.out.println(currTerm+" "+corpusDictionary.containsKey(currTerm));
-                if(!corpusDictionary.containsKey(currTerm))
+                if(!corpusDictionary.containsKey(currTerm))//todo *********************************************
                     System.out.println(currTerm);
                 Pair tmpPair = new Pair<>(corpusDictionary.get(currTerm).getKey(), position);//create tmppair to insert into Dic
                 corpusDictionary.replace(currTerm, tmpPair);//change the position for the term in the Dic
