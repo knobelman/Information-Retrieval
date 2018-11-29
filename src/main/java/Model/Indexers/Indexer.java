@@ -25,7 +25,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @parser - parser class object which parsing the document content
  */
 public class Indexer {
-
     private String rootPath;
 
     private static ReadFile readFileObject;
@@ -90,7 +89,6 @@ public class Indexer {
                         if (!d.getCity().equals("")) {
                             addToCityDictionary(d);
                         }
-                        //parsing
                         ParserObject.parsing(d);
                         Doc toInsert = new Doc(d.getPath(), d.getCity(), d.getMax_tf(), d.getSpecialWordCount()); //doc to insert to the dictionary
                         DocumentDictionary.put(d.getDoc_num(), toInsert); //insert to dictionary (Doc name | Doc object)
@@ -222,7 +220,6 @@ public class Indexer {
         return this.postingObject.getRootPath();
     }
 
-
     /**
      * Setter
      *
@@ -350,8 +347,6 @@ public class Indexer {
         } catch (Exception e) {
         }
     }
-
-
 
     public int getNumberOfDocs() {
         return numberofDocs;

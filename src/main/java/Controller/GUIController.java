@@ -30,4 +30,8 @@ public class GUIController {
     public void loadDictionary(File file){
         myModel.loadDictionary(file);
     }
+
+    public void getLine(long position) {
+        myModel.getLine(position);
+    }
 }

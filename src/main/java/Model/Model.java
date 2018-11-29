@@ -85,4 +85,8 @@ public class Model {
         languageParsingProcess = new LanguageParsingProcess();
         return ((LanguageParsingProcess)languageParsingProcess).getLanguageCollection();
     }
+
+    public void getLine(long position) {
+        indexer.getLine(position);
+    }
 }

@@ -1,5 +1,6 @@
 package View;
 import Controller.GUIController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -22,6 +23,7 @@ public class GUI {
     public javafx.scene.control.Button RESET;
     public javafx.scene.control.CheckBox STEMM;
     public javafx.scene.control.TextField CorpusPath;
+    public javafx.scene.control.TextField lineValue;
     public javafx.scene.control.TextField PostingPath;
 
     /**
@@ -208,5 +210,10 @@ public class GUI {
                 "Start indexing...");
         alert.show();
         return alert;
+    }
+
+    public void getLine() {
+        long position = Long.parseLong(lineValue.getText());
+        myGUIController.getLine(position);
     }
 }
