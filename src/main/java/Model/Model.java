@@ -48,6 +48,9 @@ public class Model {
             indexer.writeCityDictionaryToDisk();
             float endTime = System.currentTimeMillis();
 
+            //Read seek
+            indexer.getLine(69809);
+
             //finish indexing
             int numberOfDocs = indexer.getNumberOfDocs();
             int termsCount = indexer.getUniqueTermsCount();
