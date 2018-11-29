@@ -105,6 +105,11 @@ public class Indexer {
      */
     public void init(final File root) throws IOException {
         ConcurrentHashMap <String, HashMap<String, Integer>> TermAndDocumentsData = new ConcurrentHashMap<>();
+        int Firstif=0;
+        int Secondif=0;
+        int Thirdif = 0;
+        int Fourif = 0;
+        int numberofFor =0;
         for (final File directory : root.listFiles()){//for each folder in root
             if (directory.isDirectory())
                 for (File currFile : directory.listFiles()) {//for each file in folder
@@ -122,20 +127,26 @@ public class Indexer {
                         //
                         //parsing
                         ParserObject.parsing(d);
+                        //System.out.println(d.getDoc_num() + " : " + d.getTermsInDoc().size());//***********************************8
                         Doc toInsert = new Doc(d.getPath(), d.getCity(), d.getMax_tf(), d.getSpecialWordCount()); //doc to insert to the dictionary
                         DocumentDictionary.put(d.getDoc_num(), toInsert); //insert to dictionary (Doc name | Doc object)
                         for (Map.Entry<String, Term> entry : d.getTermsInDoc().entrySet()) {
+                            numberofFor++;
                             String termName = entry.getKey();//term from doc
                             Term value = entry.getValue();
                             if (corpusDictionary.containsKey(termName)) {//Dic contains the term
+                                Firstif++;
                                 updateDF(termName);
                             } else if (!containsDigit(termName) && corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
+                                Secondif++;
                                 termName = termName.toLowerCase();
                                 updateDF(termName);
                             } else if (!containsDigit(termName) && corpusDictionary.containsKey(termName.toUpperCase())) {
+                                Thirdif++;
                                 changeULDic(termName);
                                 updateDF(termName);
                             } else {
+                                Fourif++;
                                 corpusDictionary.put(termName, new Pair<>(1, 0)); //term name, file name, position
                             }
                             String doc_name = d.getDoc_num();
@@ -165,6 +176,12 @@ public class Indexer {
 //                        threadList.add(t);
 //                        TermAndDocumentsData = new ConcurrentHashMap<>();
 //                    }
+//                    System.out.println("SIZE: " + corpusDictionary.size());***************************
+//                    System.out.println("Number of four: " + numberofFor);***************************
+//                    System.out.println("First if: " + Firstif);***************************
+//                    System.out.println("Second if: " + Secondif);***************************
+//                    System.out.println("Third if: " + Thirdif);***************************
+//                    System.out.println("Four if: " + Fourif);***************************
                     postingObject.createTempPostingFile(TermAndDocumentsData);
                 }
         }

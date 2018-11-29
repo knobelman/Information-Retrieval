@@ -80,6 +80,7 @@ public class ParserClassifier extends AParser {
         }
         //check if word with 's
         else {
+            i=0;
             current = apostropheS(current);
             currValue = current;
         }

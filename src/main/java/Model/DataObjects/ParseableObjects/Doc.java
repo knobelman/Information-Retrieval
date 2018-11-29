@@ -122,11 +122,12 @@ public class Doc extends ParseableObject implements Serializable {
         else if(Character.isUpperCase(term.charAt(0))){
             term = term.toUpperCase();
         }
+
         if(termsInDoc.containsKey(term)){//term already exists in this doc
             currentTerm = termsInDoc.get(term);
             termsInDoc.get(term).incAmounts(this.doc_num);
         }
-        else {//it's not in the doc in it's form
+        else {//it's not in the doc in it's from
             //termsInDoc contains Upper case of current word and current word is lower case
             if(termsInDoc.containsKey(term.toUpperCase())) {
                 changeUL(term);
