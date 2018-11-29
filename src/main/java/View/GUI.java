@@ -1,5 +1,7 @@
 package View;
 import Controller.GUIController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * This class represents the GUI of the engine
@@ -215,5 +218,20 @@ public class GUI {
     public void getLine() {
         long position = Long.parseLong(lineValue.getText());
         myGUIController.getLine(position);
+    }
+
+    public void showDictionary() {
+        FXMLLoader fxmlLoader=new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/Dictionary.fxml"));
+        Scene scene=null;
+        try{
+            scene=new Scene(fxmlLoader.load(), 400, 400);
+        } catch (IOException e) {
+            //e.printStackTrace();
+        }
+        Stage stage=new Stage();
+        stage.setTitle("Corpus Dictionary");
+        stage.setScene(scene);
+        stage.show();
     }
 }

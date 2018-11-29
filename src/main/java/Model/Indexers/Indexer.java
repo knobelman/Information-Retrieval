@@ -361,7 +361,7 @@ public class Indexer {
             RandomAccessFile rndFile = new RandomAccessFile(postingObject.getRootPath() + "\\" + "OTHER","r");
             rndFile.seek(position);
             String line = rndFile.readLine();
-            System.out.println(line);
+//            System.out.println(line);
         } catch (Exception e) {
             e.printStackTrace();
         }

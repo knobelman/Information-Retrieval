@@ -11,10 +11,11 @@ import Model.Indexers.ReadFile;
 import Model.Parsers.ParsingProcess.IParsingProcess;
 import Model.Parsers.ParsingProcess.LanguageParsingProcess;
 import javafx.scene.control.Alert;
+import javafx.util.Pair;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 
 /**
  * @indexr - indexer object
@@ -88,5 +89,9 @@ public class Model {
 
     public void getLine(long position) {
         indexer.getLine(position);
+    }
+
+    public HashMap<String, Pair<Integer, Integer>> showDictionary() {
+        return indexer.getCorpusDictionary();
     }
 }

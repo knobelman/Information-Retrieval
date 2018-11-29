@@ -8,13 +8,8 @@ import java.util.HashSet;
 /**
  * Created by Maor on 11/28/2018.
  */
-public class LanguageController {
+public class LanguageController extends Acontroller {
 
-    private Model myModel;
-
-    public LanguageController(){
-        myModel = new Model();
-    }
     public ArrayList<String> openLanguageList() {
         return myModel.openLanguageList();
     }
