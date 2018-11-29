@@ -11,12 +11,12 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane alignment="center" hgap="10" style="-fx-background-color: #E3DAC9;" vgap="10" xmlns="http://javafx.com/javafx/8.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.GUI">
+<GridPane alignment="center" hgap="10" style="-fx-background-color: #E3DAC9;" vgap="10" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.GUI">
    <children>
       <GridPane prefHeight="372.0" prefWidth="524.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.33335367838544" minWidth="10.0" prefWidth="195.66670735677084" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="450.0" minWidth="10.0" prefWidth="327.6666259765625" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.33335367838544" minWidth="10.0" prefWidth="123.9999771118164" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="450.0" minWidth="10.0" prefWidth="400.66668955485034" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints maxHeight="151.66666158040366" minHeight="10.0" prefHeight="56.99998982747396" vgrow="SOMETIMES" />
@@ -85,9 +85,9 @@
                   <Insets left="150.0" top="20.0" />
                </GridPane.margin>
             </Button>
-            <Label text="Information Retrieval Engine" GridPane.halignment="CENTER">
+            <Label prefHeight="32.0" prefWidth="327.0" text="Information Retrieval Engine" GridPane.columnIndex="1" GridPane.halignment="LEFT">
                <font>
-                  <Font size="15.0" />
+                  <Font size="22.0" />
                </font>
             </Label>
             <Button fx:id="loadDictionary" mnemonicParsing="false" onAction="#loadDictionary" prefHeight="25.0" prefWidth="67.0" text="LOAD" GridPane.columnIndex="1" GridPane.rowIndex="6">
@@ -116,7 +116,7 @@
                </GridPane.margin>
             </Button>
             <TextField fx:id="lineValue" maxWidth="150.0" prefHeight="25.0" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Button fx:id="showDictionary" onAction="#showDictionary" mnemonicParsing="false" prefHeight="25.0" prefWidth="67.0" text="SHOW" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <Button fx:id="showDictionary" mnemonicParsing="false" onAction="#showDictionary" prefHeight="25.0" prefWidth="67.0" text="SHOW" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <GridPane.margin>
                   <Insets left="170.0" top="5.0" />
                </GridPane.margin>

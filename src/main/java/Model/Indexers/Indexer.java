@@ -324,7 +324,6 @@ public class Indexer {
             fos.close();
         } catch (Exception e) {
         }
-        corpusDictionary.clear();//todo - delete
         System.out.println("Dictionary saved and Empty" + corpusDictionary.isEmpty());
     }
 
@@ -360,11 +359,17 @@ public class Indexer {
         try {
             RandomAccessFile rndFile = new RandomAccessFile(postingObject.getRootPath() + "\\" + "OTHER","r");
             rndFile.seek(position);
-            String line = rndFile.readLine();
+//            String line = rndFile.readLine();
 //            System.out.println(line);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public void reset() {
+        corpusDictionary.clear();
+        cityDictionary.clear();
+        DocumentDictionary.clear();
     }
 }

@@ -174,6 +174,7 @@ public class GUI {
                 if (!file.isDirectory())
                     file.delete();
         }
+        myGUIController.reset();
     }
 
     public void saveDictionary() {
@@ -189,6 +190,13 @@ public class GUI {
 //        chooser.setTitle("Load Dictionary");
 //        File file = chooser.showOpenDialog(null);
 //        if (file != null) {
+        if(PostingPath.getText().equals("")){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Path not specified");
+            alert.setHeaderText("Path not specified");
+            alert.setContentText("Please enter path in Posting path field");
+            alert.show();
+        }
         File file;
         if(!STEMM.isSelected()){
             file = new File(PostingPath.getText()+"\\CorpusDictionaryWithoutStem");
@@ -204,11 +212,6 @@ public class GUI {
         alert.setTitle("Indexing start...");
         alert.setHeaderText("Indexing start...");
         alert.setContentText("Indexing process start...");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         alert.setContentText("Indexing process start...\n"+"" +
                 "Start indexing...");
         alert.show();

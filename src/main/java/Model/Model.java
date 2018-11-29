@@ -92,6 +92,15 @@ public class Model {
     }
 
     public HashMap<String, Pair<Integer, Integer>> showDictionary() {
-        return indexer.getCorpusDictionary();
+        if(indexer == null){
+            return null;
+        }
+        else {
+            return indexer.getCorpusDictionary();
+        }
+    }
+
+    public void reset() {
+        indexer.reset();
     }
 }

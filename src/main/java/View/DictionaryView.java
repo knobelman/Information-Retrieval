@@ -22,16 +22,18 @@ public class DictionaryView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        HashMap<String,Pair<Integer, Integer>> ourCorpusDictionary = myDictionaryController.showDictionary();
+        if(myDictionaryController.showDictionary() != null) {
+            HashMap<String, Pair<Integer, Integer>> ourCorpusDictionary = myDictionaryController.showDictionary();
 
-        TableColumn<Map.Entry<String, Pair<Integer,Integer>>, String> column1 = new TableColumn<>("Term");
-        column1.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getKey()));
+            TableColumn<Map.Entry<String, Pair<Integer, Integer>>, String> column1 = new TableColumn<>("TERM");
+            column1.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getKey()));
 
-        TableColumn<Map.Entry<String,Pair<Integer,Integer>>, String> column2 = new TableColumn<>("DF");
-        column2.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getKey().toString()));
+            TableColumn<Map.Entry<String, Pair<Integer, Integer>>, String> column2 = new TableColumn<>("DF");
+            column2.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getKey().toString()));
 
-        ObservableList<Map.Entry<String, Pair<Integer,Integer>>> items = FXCollections.observableArrayList(ourCorpusDictionary.entrySet());
-        DictionaryView.setItems(items.sorted());
-        DictionaryView.getColumns().setAll(column1,column2);
+            ObservableList<Map.Entry<String, Pair<Integer, Integer>>> items = FXCollections.observableArrayList(ourCorpusDictionary.entrySet());
+            DictionaryView.setItems(items.sorted());
+            DictionaryView.getColumns().setAll(column1, column2);
+        }
     }
 }

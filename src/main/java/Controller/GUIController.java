@@ -36,4 +36,8 @@ public class GUIController extends Acontroller {
     public HashMap<String, Pair<Integer,Integer>> showDictionary() {
         return myModel.showDictionary();
     }
+
+    public void reset() {
+        myModel.reset();
+    }
 }
