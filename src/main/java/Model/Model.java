@@ -36,22 +36,23 @@ public class Model {
     public void startIndexing(String pathOfCorpus,String pathOfPosting, boolean stem) {
         indexer = new Indexer(pathOfCorpus,stem);
         postingObject = new Posting(pathOfPosting);
+        postingObject.resetPostingCounter();
         readFileObject = new ReadFile(indexer.getRootPath());
         indexer.setPostingObject(postingObject);
         indexer.setReadFileObject(readFileObject);
         indexer.setStemming(true);
         try {
-            long startTime = System.currentTimeMillis();
+            float startTime = System.currentTimeMillis();
             indexer.init(indexer.getReadFileObject());
             indexer.createFinalPosting();
             indexer.splitFinalPosting();
             indexer.writeCityDictionaryToDisk();
-            long endTime = System.currentTimeMillis();
+            float endTime = System.currentTimeMillis();
 
             //finish indexing
             int numberOfDocs = indexer.getNumberOfDocs();
             int termsCount = indexer.getUniqueTermsCount();
-            long totalTime = (endTime - startTime)/1000/60;
+            float totalTime = (endTime - startTime)/1000;
 
             //show alert
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -59,7 +60,7 @@ public class Model {
             alert.setHeaderText("Indexing process finished");
             alert.setContentText("Number of Docs: " + numberOfDocs + "\n"
             +"Unique Terms count: " + termsCount + "\n"
-            +"Total Run time: " + totalTime +" Minutes");
+            +"Total Run time: " + totalTime +" Seconds");
             alert.showAndWait();
         }catch (Exception e){
             e.printStackTrace();

@@ -239,5 +239,9 @@ public class Posting {
     public static int getPostingFilecounter() {
         return postingFileCounter;
     }
+
+    public void resetPostingCounter() {
+        Posting.postingFileCounter = 0;
+    }
 }
 

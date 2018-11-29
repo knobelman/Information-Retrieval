@@ -119,7 +119,6 @@ public class Indexer {
                         numberofDocs++;
                         //create document dictionary
                         LanguageCollection.add(d.getLanguage()); //add language to language collection
-
                         //add to city dictionary
                         if (!d.getCity().equals("")) {
                             addToCityDictionary(d);
@@ -127,7 +126,6 @@ public class Indexer {
                         //
                         //parsing
                         ParserObject.parsing(d);
-                        //System.out.println(d.getDoc_num() + " : " + d.getTermsInDoc().size());//***********************************8
                         Doc toInsert = new Doc(d.getPath(), d.getCity(), d.getMax_tf(), d.getSpecialWordCount()); //doc to insert to the dictionary
                         DocumentDictionary.put(d.getDoc_num(), toInsert); //insert to dictionary (Doc name | Doc object)
                         for (Map.Entry<String, Term> entry : d.getTermsInDoc().entrySet()) {
@@ -176,12 +174,6 @@ public class Indexer {
 //                        threadList.add(t);
 //                        TermAndDocumentsData = new ConcurrentHashMap<>();
 //                    }
-//                    System.out.println("SIZE: " + corpusDictionary.size());***************************
-//                    System.out.println("Number of four: " + numberofFor);***************************
-//                    System.out.println("First if: " + Firstif);***************************
-//                    System.out.println("Second if: " + Secondif);***************************
-//                    System.out.println("Third if: " + Thirdif);***************************
-//                    System.out.println("Four if: " + Fourif);***************************
                     postingObject.createTempPostingFile(TermAndDocumentsData);
                 }
         }
@@ -458,6 +450,8 @@ public class Indexer {
         } catch (Exception e) {
         }
     }
+
+
 
     public int getNumberOfDocs() {
         return numberofDocs;
