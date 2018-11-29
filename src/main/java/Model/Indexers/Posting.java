@@ -16,6 +16,7 @@ public class Posting {
     ArrayList<String> allLines;
     private String rootPath;
     private static int postingFileCounter;
+    private HashMap<Character, String> letters; // every letter and the name of the file
 
 
     /**
@@ -24,6 +25,33 @@ public class Posting {
     public Posting(String rootPath) {
         allLines = new ArrayList<>();
         this.rootPath = rootPath;
+        this.letters = new HashMap<>();
+        letters.put('a', "ABCD");
+        letters.put('b', "ABCD");
+        letters.put('c', "ABCD");
+        letters.put('d', "ABCD");
+        letters.put('e', "EFGH");
+        letters.put('f', "EFGH");
+        letters.put('g', "EFGH");
+        letters.put('h', "EFGH");
+        letters.put('i', "IJKL");
+        letters.put('j', "IJKL");
+        letters.put('k', "IJKL");
+        letters.put('l', "IJKL");
+        letters.put('m', "MNOP");
+        letters.put('n', "MNOP");
+        letters.put('o', "MNOP");
+        letters.put('p', "MNOP");
+        letters.put('q', "QRST");
+        letters.put('r', "QRST");
+        letters.put('s', "QRST");
+        letters.put('t', "QRST");
+        letters.put('u', "UVWXYZ");
+        letters.put('v', "UVWXYZ");
+        letters.put('w', "UVWXYZ");
+        letters.put('x', "UVWXYZ");
+        letters.put('y', "UVWXYZ");
+        letters.put('z', "UVWXYZ");
     }
 
     /**
@@ -210,6 +238,69 @@ public class Posting {
                 newName++;
             }
             newName = 0;
+        }
+    }
+
+    public void splitFinalPosting(HashMap<String, Pair<Integer, Integer>> corpusDictionary) {
+        HashMap<String, BufferedWriter> fileWriters = new HashMap<>();//hashmap for Filewriters
+        HashMap<String, Integer> filePosition = new HashMap<>();//hashmap for Filewriters
+        try {
+            fileWriters.put("ABCD", new BufferedWriter(new FileWriter(this.rootPath + "\\ABCD")));
+            fileWriters.put("EFGH", new BufferedWriter(new FileWriter(this.rootPath + "\\EFGH")));
+            fileWriters.put("IJKL", new BufferedWriter(new FileWriter(this.rootPath + "\\IJKL")));
+            fileWriters.put("MNOP", new BufferedWriter(new FileWriter(this.rootPath + "\\MNOP")));
+            fileWriters.put("QRST", new BufferedWriter(new FileWriter(this.rootPath + "\\QRST")));
+            fileWriters.put("UVWXYZ", new BufferedWriter(new FileWriter(this.rootPath + "\\UVWXYZ")));
+            fileWriters.put("OTHER", new BufferedWriter(new FileWriter(this.rootPath + "\\OTHER")));
+            filePosition.put("ABCD", new Integer(0));
+            filePosition.put("EFGH", new Integer(0));
+            filePosition.put("IJKL", new Integer(0));
+            filePosition.put("MNOP", new Integer(0));
+            filePosition.put("QRST", new Integer(0));
+            filePosition.put("UVWXYZ", new Integer(0));
+            filePosition.put("OTHER", new Integer(0));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        BufferedReader postingFile;
+        BufferedWriter fileBuffer;
+        String currTerm, line, fileName;
+        int position;
+        try {
+            postingFile = new BufferedReader(new FileReader(this.rootPath + "\\0"));//read posting
+            line = postingFile.readLine();
+            do {
+                if (!letters.containsKey(line.toLowerCase().charAt(0))) {//if first char isn't a known letter
+                    fileBuffer = fileWriters.get("OTHER");//get hte buffer to write
+                    position = filePosition.get("OTHER").intValue();//get position to update Dic
+                    fileName = "OTHER";//get name of file to update Dic
+                } else {
+                    char tmp = line.toLowerCase().charAt(0);
+                    fileBuffer = fileWriters.get(letters.get(tmp));
+                    position = filePosition.get(letters.get(tmp)).intValue();//todo
+                    fileName = letters.get(tmp);
+                }
+                currTerm = line.substring(0, line.indexOf('|'));//get the term
+                if(!corpusDictionary.containsKey(currTerm))//todo *********************************************
+                    System.out.println(currTerm);
+                Pair tmpPair = new Pair<>(corpusDictionary.get(currTerm).getKey(), position);//create tmppair to insert into Dic
+                corpusDictionary.replace(currTerm, tmpPair);//change the position for the term in the Dic
+                fileBuffer.write(line + "\n");
+                position += line.length() + 1;//increase the position for next line //todo
+                filePosition.replace(fileName, position);//insert new position for next line //todo
+                line = postingFile.readLine();
+            } while (line != null && !line.equals("") && line.length()!=0);
+            File pFile = new File(this.rootPath + "\\" + "0");
+            fileWriters.get("ABCD").close();
+            fileWriters.get("EFGH").close();
+            fileWriters.get("IJKL").close();
+            fileWriters.get("MNOP").close();
+            fileWriters.get("QRST").close();
+            fileWriters.get("UVWXYZ").close();
+            fileWriters.get("OTHER").close();
+            pFile.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

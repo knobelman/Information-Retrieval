@@ -81,10 +81,12 @@ public class ReadFile {
             }
             return sb.toString();
         } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             try {
                 br.close();
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         return sb.toString();

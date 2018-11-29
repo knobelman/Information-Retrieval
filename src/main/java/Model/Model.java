@@ -45,7 +45,6 @@ public class Model {
             float startTime = System.currentTimeMillis();
             indexer.init(indexer.getReadFileObject());
             indexer.createFinalPosting();
-            indexer.splitFinalPosting();
             indexer.writeCityDictionaryToDisk();
             float endTime = System.currentTimeMillis();
 
