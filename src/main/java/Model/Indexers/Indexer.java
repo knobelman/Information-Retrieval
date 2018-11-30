@@ -3,13 +3,13 @@ package Model.Indexers;
 import Model.DataObjects.CityData;
 import Model.DataObjects.ParseableObjects.Doc;
 import Model.DataObjects.Term;
+import Model.DataObjects.TermData;
 import Model.Parsers.ParsingProcess.DocParsingProcess;
 import Model.Parsers.ParsingProcess.CityParsingProcess;
 import Model.Parsers.ParsingProcess.IParsingProcess;
 import javafx.util.Pair;
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -33,7 +33,8 @@ public class Indexer {
     private IParsingProcess cityParsingProcess;
 
     private HashMap<String, Pair<ArrayList<String>, CityData>> cityDictionary;
-    private HashMap<String, Pair<Integer, Integer>> corpusDictionary; //term,totalTF,position in merged posting file
+//    private HashMap<String, Pair<Integer, Integer>> corpusDictionary; //term,totalTF,position in merged posting file
+    private HashMap<String, TermData> corpusDictionary; //term,totalTF,position in merged posting file
     private HashMap<String, Doc> DocumentDictionary;
     private HashSet<String> LanguageCollection;
 
@@ -97,14 +98,17 @@ public class Indexer {
                             String doc_name = d.getDoc_num();
                             if (corpusDictionary.containsKey(termName)) {//Dic contains the term
                                 updateDF(termName);
+                                updateTF(termName,value.getTf(doc_name));
                             } else if (!termName.contains("Dollars") && !termName.contains("Yen") && corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
                                 termName = termName.toLowerCase();
                                 updateDF(termName);
+                                updateTF(termName,value.getTf(doc_name));
                             } else if (!termName.contains("Dollars") && !termName.contains("Yen") && corpusDictionary.containsKey(termName.toUpperCase())) {
                                 changeULDic(termName);
                                 updateDF(termName);
+                                updateTF(termName,value.getTf(doc_name));
                             } else {
-                                corpusDictionary.put(termName, new Pair<>(1, 0)); //term name, file name, position
+                                corpusDictionary.put(termName, new TermData(1,value.getTf(doc_name),0)); //term name, file name, position
                             }
                             if (TermAndDocumentsData.containsKey(termName)) {//term is in TermAndDocumentsData already
                                 Integer newInt = new Integer(value.getTf(doc_name));
@@ -150,35 +154,45 @@ public class Indexer {
 //        }
     }
 
-    private boolean containsDigit(String termName)
-    {
-        for (char c : termName.toCharArray())
-        {
-            if (Character.isDigit(c))
-                return true;
-        }
-        return false;
-    }
+//    private boolean containsDigit(String termName)
+//    {
+//        for (char c : termName.toCharArray())
+//        {
+//            if (Character.isDigit(c))
+//                return true;
+//        }
+//        return false;
+//    }
 
     /**
      *
      * @param termName - corpusDictionary contains this term
      */
     private void updateDF(String termName) {
-        Pair<Integer, Integer> tmp = corpusDictionary.get(termName);
-        tmp = new Pair<>(tmp.getKey().intValue() + 1, tmp.getValue());
-        corpusDictionary.replace(termName, tmp);
+        corpusDictionary.get(termName).incDF(1);
+//        Pair<Integer, Integer> tmp = corpusDictionary.get(termName);
+//        tmp = new Pair<>(tmp.getKey().intValue() + 1, tmp.getValue());
+//        corpusDictionary.replace(termName, tmp);
     }
 
+    /**
+     * Update totalTF in TD in the Dic
+     * @param plusTF - the tf to add
+     * @param termName - the term to update
+     */
+    private void updateTF(String termName, int plusTF) {
+        corpusDictionary.get(termName).incTotalTF(plusTF);
+    }
 
     /**
      *
      * @param termName - lowercase of something in corpusDictionary that is uppercase
      */
     private void changeULDic(String termName) {
-        Pair<Integer, Integer> tmpPair = corpusDictionary.get(termName.toUpperCase());
+        TermData td = corpusDictionary.get(termName.toUpperCase());
+//        Pair<Integer, Integer> tmpPair = corpusDictionary.get(termName.toUpperCase());
         corpusDictionary.remove(termName.toUpperCase());
-        corpusDictionary.put(termName, tmpPair);
+        corpusDictionary.put(termName, td);
     }
 
     /**
@@ -249,7 +263,7 @@ public class Indexer {
         Indexer.readFileObject = readFileObject;
     }
 
-    public HashMap<String, Pair<Integer, Integer>> getCorpusDictionary() {
+    public HashMap<String, TermData> getCorpusDictionary() {
         return corpusDictionary;
     }
 
@@ -339,7 +353,7 @@ public class Indexer {
             try {
                 FileInputStream fis = new FileInputStream(file);
                 ObjectInputStream ois = new ObjectInputStream(fis);
-                this.corpusDictionary = (HashMap<String, Pair<Integer, Integer>>) ois.readObject();
+                this.corpusDictionary = (HashMap<String, TermData>) ois.readObject();
                 ois.close();
                 fis.close();
                 System.out.println("Dictionary loaded");

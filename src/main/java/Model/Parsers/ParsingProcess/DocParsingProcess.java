@@ -86,7 +86,7 @@ public class DocParsingProcess implements IParsingProcess {
 
     public Doc parsing(Doc document, boolean stem) {
         String text = document.getDoc_content();//("[: () -- ]");
-        String[] tokenz = text.split("[\\*\\\n\\ \\:\\;\\?\\!\\#\\]\\|\\}\\{\\~\\�\\[\\_\\+\\'\"'\\(\\)\\>\\=\\⪕\\⪖\\Ω]+");//("[: ()|]");
+        String[] tokenz = text.split("[\\*\\\n\\ \\:\\;\\?\\!\\#\\]\\|\\}\\{\\~\\�\\[\\_\\+\\'\"'\\(\\)\\>\\<\\=\\⪕\\⪖\\Ω]+");//("[: ()|]");
         for (i = 0; i < tokenz.length; i++) {//for to go over all tokenz
             String current = tokenz[i];
             String currValue;

@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.DataObjects.TermData;
 import Model.Model;
 import javafx.util.Pair;
 
@@ -33,7 +34,7 @@ public class GUIController extends Acontroller {
         myModel.getLine(position);
     }
 
-    public HashMap<String, Pair<Integer,Integer>> showDictionary() {
+    public HashMap<String, TermData> showDictionary() {
         return myModel.showDictionary();
     }
 

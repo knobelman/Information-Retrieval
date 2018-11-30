@@ -1,6 +1,7 @@
 package View;
 
 import Controller.DictionaryController;
+import Model.DataObjects.TermData;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,17 +24,20 @@ public class DictionaryView implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(myDictionaryController.showDictionary() != null) {
-            HashMap<String, Pair<Integer, Integer>> ourCorpusDictionary = myDictionaryController.showDictionary();
+            HashMap<String, TermData> ourCorpusDictionary = myDictionaryController.showDictionary();
 
-            TableColumn<Map.Entry<String, Pair<Integer, Integer>>, String> column1 = new TableColumn<>("TERM");
+            TableColumn<Map.Entry<String, TermData>, String> column1 = new TableColumn<>("TERM");
             column1.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getKey()));
 
-            TableColumn<Map.Entry<String, Pair<Integer, Integer>>, String> column2 = new TableColumn<>("DF");
-            column2.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getKey().toString()));
+            TableColumn<Map.Entry<String, TermData>, String> column2 = new TableColumn<>("DF");
+            column2.setCellValueFactory(p -> new SimpleStringProperty((p.getValue().getValue().getDf()) + ""));
 
-            ObservableList<Map.Entry<String, Pair<Integer, Integer>>> items = FXCollections.observableArrayList(ourCorpusDictionary.entrySet());
+            TableColumn<Map.Entry<String, TermData>, String> column3 = new TableColumn<>("TotalTF");
+            column3.setCellValueFactory(p -> new SimpleStringProperty((p.getValue().getValue().getTotalTF()) + ""));
+
+            ObservableList<Map.Entry<String, TermData>> items = FXCollections.observableArrayList(ourCorpusDictionary.entrySet());
             DictionaryView.setItems(items.sorted());
-            DictionaryView.getColumns().setAll(column1, column2);
+            DictionaryView.getColumns().setAll(column1, column2, column3);
         }
     }
 }

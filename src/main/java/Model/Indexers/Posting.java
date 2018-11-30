@@ -1,4 +1,5 @@
 package Model.Indexers;
+import Model.DataObjects.TermData;
 import javafx.util.Pair;
 
 import java.io.*;
@@ -95,7 +96,7 @@ public class Posting {
      * @param bw - bufferedWriter object
      * @param corpusDictionary
      */
-    public void mergeBetweenTempPostingFiles(String firstFile, String secondFile, BufferedWriter bw, HashMap<String, Pair<Integer, Integer>> corpusDictionary) {
+    public void mergeBetweenTempPostingFiles(String firstFile, String secondFile, BufferedWriter bw, HashMap<String, TermData> corpusDictionary) {
         try {
             String firstCurrentLine;
             String secondCurrentLine;
@@ -187,7 +188,7 @@ public class Posting {
       return "";
     }
 
-    public void createEvenPostingFiles(int currPostingNumber, HashMap<String, Pair<Integer, Integer>> corpusDictionary){
+    public void createEvenPostingFiles(int currPostingNumber, HashMap<String, TermData> corpusDictionary){
         int lastPosting = currPostingNumber-1;
         FileWriter mergedWriter;
         BufferedWriter mergedBuffer;
@@ -207,7 +208,7 @@ public class Posting {
         mergedF.renameTo(blFILE);
     }
 
-    public void createFinalPosting(HashMap<String, Pair<Integer, Integer>> corpusDictionary){
+    public void createFinalPosting(HashMap<String, TermData> corpusDictionary){
         int postingCounter = postingFileCounter;
         int newName = 0;
         while(postingCounter>=2) {
@@ -242,7 +243,7 @@ public class Posting {
         }
     }
 
-    public void splitFinalPosting(HashMap<String, Pair<Integer, Integer>> corpusDictionary) {
+    public void splitFinalPosting(HashMap<String, TermData> corpusDictionary) {
         HashMap<String, BufferedWriter> fileWriters = new HashMap<>();//hashmap for Filewriters
         HashMap<String, Integer> filePosition = new HashMap<>();//hashmap for Filewriters
         try {
@@ -283,8 +284,9 @@ public class Posting {
                 }
                 currTerm = line.substring(0, line.indexOf('|'));//get the term
                 newLine = line.split("\\|")[2];//create line to wrtie without term and DF
-                Pair tmpPair = new Pair<>(corpusDictionary.get(currTerm).getKey(), position);//create tmppair to insert into Dic
-                corpusDictionary.replace(currTerm, tmpPair);//change the position for the term in the Dic
+//                Pair tmpPair = new Pair<>(corpusDictionary.get(currTerm).getKey(), position);//create tmppair to insert into Dic
+//                corpusDictionary.replace(currTerm, tmpPair);//change the position for the term in the Dic
+                corpusDictionary.get(currTerm).setPosition(position);
                 fileBuffer.write(newLine + "\n");
                 position += line.length() + 1;//increase the position for next line //todo
                 filePosition.replace(fileName, position);//insert new position for next line //todo

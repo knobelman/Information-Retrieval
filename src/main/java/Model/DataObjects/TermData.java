@@ -34,4 +34,12 @@ public class TermData {
     public int getPosition() {
         return position;
     }
+
+    public void incDF(int plusDF){
+        this.df += plusDF;
+    }
+
+    public void incTotalTF(int plusTF){
+        this.totalTF += plusTF;
+    }
 }

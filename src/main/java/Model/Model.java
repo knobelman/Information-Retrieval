@@ -5,6 +5,7 @@ package Model;
  * responsible for start the indexing process
  */
 
+import Model.DataObjects.TermData;
 import Model.Indexers.Indexer;
 import Model.Indexers.Posting;
 import Model.Indexers.ReadFile;
@@ -91,7 +92,7 @@ public class Model {
         indexer.getLine(position);
     }
 
-    public HashMap<String, Pair<Integer, Integer>> showDictionary() {
+    public HashMap<String, TermData> showDictionary() {
         if(indexer == null){
             return null;
         }
