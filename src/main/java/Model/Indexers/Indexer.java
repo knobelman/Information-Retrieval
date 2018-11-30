@@ -118,6 +118,8 @@ public class Indexer {
                                 HashMap<String, Integer> tmpHM = TermAndDocumentsData.get(termName.toUpperCase());
                                 TermAndDocumentsData.remove(termName.toUpperCase());
                                 TermAndDocumentsData.put(termName, tmpHM);
+                                Integer newInt = new Integer(value.getTf(doc_name));
+                                TermAndDocumentsData.get(termName).put(d.getDoc_num(), newInt);
                             }
                             else {
                                 HashMap<String, Integer> current = new HashMap();
