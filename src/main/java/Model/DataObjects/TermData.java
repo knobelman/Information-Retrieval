@@ -1,6 +1,8 @@
 package Model.DataObjects;
 
-public class TermData {
+import java.io.Serializable;
+
+public class TermData implements Serializable{
     private int df;
     private int totalTF;
     private int position;

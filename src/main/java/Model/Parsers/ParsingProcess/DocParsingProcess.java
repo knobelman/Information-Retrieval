@@ -35,6 +35,8 @@ public class DocParsingProcess implements IParsingProcess {
     int i;
     boolean stem;
 
+    public DocParsingProcess(){
+    }
     /**
      * C'tor
      *

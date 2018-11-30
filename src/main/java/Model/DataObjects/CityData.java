@@ -7,13 +7,13 @@ package Model.DataObjects;
  */
 public class CityData {
     private String countryName;
-    private Long population;
+    private String population;
     private String currency;
 
     /**
      * C'tor
      */
-    public CityData(String countryName, Long population, String currency) {
+    public CityData(String countryName, String population, String currency) {
         this.countryName = countryName;
         this.population = population;
         this.currency = currency;
@@ -31,7 +31,7 @@ public class CityData {
      * Getter
      * @return population size
      */
-    public Long getPopulation() {
+    public String getPopulation() {
         return population;
     }
 

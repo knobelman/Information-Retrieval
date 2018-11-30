@@ -12,7 +12,7 @@ public class NumberParser extends AParser {
      * s1 - Valid number
      * s2 - Thousand\Million\Trillion\Billion OR ""
      */
-    protected String parsing(String s1, String s2, String s3, String s4) {
+    public String parsing(String s1, String s2, String s3, String s4) {
         if(s2.equals("")){//just number
             i=0;
             return numberOnly(s1);

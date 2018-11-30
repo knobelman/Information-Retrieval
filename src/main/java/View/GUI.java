@@ -18,6 +18,15 @@ import java.util.ArrayList;
  * This class represents the GUI of the engine
  */
 public class GUI {
+
+    /**
+     * Fields
+     * @myController - the controller
+     * @corpusePathSelected - boolean flag for indicate if corpus path selected
+     * @postingPathSelected - boolean flag for indicate if posting path selected
+     * @pathOfCorpus - the path of the corpus
+     * @pathOfPosting - the path of the posting
+     */
     @FXML
     public javafx.scene.control.Button LOAD;
     public javafx.scene.control.Button POSTING;
@@ -29,14 +38,6 @@ public class GUI {
     public javafx.scene.control.TextField lineValue;
     public javafx.scene.control.TextField PostingPath;
 
-    /**
-     * Fields
-     * @myController - the controller
-     * @corpusePathSelected - boolean flag for indicate if corpus path selected
-     * @postingPathSelected - boolean flag for indicate if posting path selected
-     * @pathOfCorpus - the path of the corpus
-     * @pathOfPosting - the path of the posting
-     */
     GUIController myGUIController = new GUIController();
     boolean corpusePathSelected = false;
     boolean postingPathSelected = false;
@@ -197,19 +198,21 @@ public class GUI {
             alert.setContentText("Please enter path in Posting path field");
             alert.show();
         }
-        File file;
-        if(!STEMM.isSelected()){
-            file = new File(PostingPath.getText()+"\\CorpusDictionaryWithoutStem");
-            myGUIController.loadDictionary(file);
-        }else{
-            file = new File(PostingPath.getText()+"\\withStem\\CorpusDictionaryWithStem");
-            myGUIController.loadDictionary(file);
+        else {
+            File file;
+            if (!STEMM.isSelected()) {
+                file = new File(PostingPath.getText() + "\\CorpusDictionaryWithoutStem");
+                myGUIController.loadDictionary(file);
+            } else {
+                file = new File(PostingPath.getText() + "\\withStem\\CorpusDictionaryWithStem");
+                myGUIController.loadDictionary(file);
+            }
         }
     }
 
     private Alert showWindow(){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Indexing start...");
+        alert.setTitle("Indexing starting...");
         alert.setHeaderText("Indexing start...");
         alert.setContentText("Indexing process start...");
         alert.setContentText("Indexing process start...\n"+"" +
@@ -228,7 +231,7 @@ public class GUI {
         fxmlLoader.setLocation(getClass().getResource("/Dictionary.fxml"));
         Scene scene=null;
         try{
-            scene=new Scene(fxmlLoader.load(), 400, 400);
+            scene=new Scene(fxmlLoader.load(), 580, 545);
         } catch (IOException e) {
             //e.printStackTrace();
         }

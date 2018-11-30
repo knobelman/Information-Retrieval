@@ -44,11 +44,12 @@ public class Model {
         indexer.setReadFileObject(readFileObject);
         indexer.setStemming(true);
         try {
-            float startTime = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
             indexer.init(indexer.getReadFileObject());
             indexer.createFinalPosting();
-            indexer.writeCityDictionaryToDisk();
-            float endTime = System.currentTimeMillis();
+            indexer.writeCityPostingFile();
+
+            long endTime = System.currentTimeMillis();
 
             //Read seek
             //indexer.getLine(69809);
@@ -57,7 +58,7 @@ public class Model {
             int numberOfDocs = indexer.getNumberOfDocs();
             int termsCount = indexer.getUniqueTermsCount();
             Thread.sleep(2000);
-            float totalTime = (endTime - startTime)/1000;
+            long totalTime = (endTime - startTime)/1000;
             //show alert
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Finished!");

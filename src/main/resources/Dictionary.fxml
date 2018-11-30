@@ -4,13 +4,13 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="385.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.DictionaryView">
+<AnchorPane prefHeight="400.0" prefWidth="385.0" xmlns="http://javafx.com/javafx/8.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.DictionaryView">
    <children>
-      <TableView fx:id="DictionaryView" prefHeight="400.0" prefWidth="575.0">
+      <TableView fx:id="DictionaryView" prefHeight="544.0" prefWidth="576.0">
         <columns>
-          <TableColumn fx:id="Term" prefWidth="192.66665649414062" text="Term" />
-          <TableColumn fx:id="DF" prefWidth="190.0" text="DF" />
-          <TableColumn fx:id="TotalTF" prefWidth="190.0" text="Total TF" />
+          <TableColumn fx:id="Term" prefWidth="192" text="Term" />
+          <TableColumn fx:id="DF" prefWidth="192" text="DF" />
+          <TableColumn fx:id="TotalTF" prefWidth="192" text="Total TF" />
         </columns>
       </TableView>
    </children>

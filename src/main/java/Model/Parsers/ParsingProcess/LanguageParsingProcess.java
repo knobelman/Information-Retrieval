@@ -1,5 +1,5 @@
 package Model.Parsers.ParsingProcess;
-import Model.DataObjects.ParseableObjects.JasonObjectI;
+import Model.DataObjects.ParseableObjects.JasonObject;
 import Model.DataObjects.ParseableObjects.IParseableObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -34,7 +34,7 @@ public class LanguageParsingProcess implements IParsingProcess {
         try {
             Object obj = parser.parse(new FileReader(directory.getAbsoluteFile()+"\\src\\main\\resources\\languages.json"));
             JSONArray jsonArray = (JSONArray)obj;
-            JasonObjectI JasonObject = new JasonObjectI(jsonArray);
+            JasonObject JasonObject = new JasonObject(jsonArray);
             parsing(JasonObject);
         } catch (IOException e) {
             //e.printStackTrace();
@@ -45,7 +45,7 @@ public class LanguageParsingProcess implements IParsingProcess {
 
     @Override
     public void parsing(IParseableObject parseObject) {
-        JSONArray jsonArray = ((JasonObjectI) parseObject).getJasonArray();
+        JSONArray jsonArray = ((JasonObject) parseObject).getJasonArray();
         JSONObject s = (JSONObject) jsonArray.get(0);
         for (Object currentValue : s.values()) {
             String languageName = (String) ((JSONObject) currentValue).get("name");

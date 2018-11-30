@@ -33,7 +33,6 @@ public class Indexer {
     private IParsingProcess cityParsingProcess;
 
     private HashMap<String, Pair<ArrayList<String>, CityData>> cityDictionary;
-//    private HashMap<String, Pair<Integer, Integer>> corpusDictionary; //term,totalTF,position in merged posting file
     private HashMap<String, TermData> corpusDictionary; //term,totalTF,position in merged posting file
     private HashMap<String, Doc> DocumentDictionary;
     private HashSet<String> LanguageCollection;
@@ -90,7 +89,7 @@ public class Indexer {
                             addToCityDictionary(d);
                         }
                         ParserObject.parsing(d);
-                        Doc toInsert = new Doc(d.getPath(), d.getCity(), d.getMax_tf(), d.getSpecialWordCount()); //doc to insert to the dictionary
+                        Doc toInsert = new Doc(d.getPath(), d.getCity(), d.getMax_tf(), d.getSpecialWordCount(),d.getMax_tf_String()); //doc to insert to the dictionary
                         DocumentDictionary.put(d.getDoc_num(), toInsert); //insert to dictionary (Doc name | Doc object)
                         for (Map.Entry<String, Term> entry : d.getTermsInDoc().entrySet()) {
                             String termName = entry.getKey();//term from doc
@@ -203,6 +202,10 @@ public class Indexer {
     public void addToCityDictionary(Doc document) {
         if (!cityDictionary.containsKey(document.getCity())) { //if city not in the dictionary
             String city = document.getCity(); //get city name from the doc
+            //remove spam
+            if(city.equals("--FOR") || city.equals("--") || Character.isDigit(city.charAt(0))){
+                return;
+            }
             String doc_num = document.getDoc_num(); // get doc name from the dock
             String positions_in_doc = document.getPositionOfCity().toString();
             CityData cityData = ((CityParsingProcess) cityParsingProcess).getData(city); //get data about the city
@@ -289,7 +292,7 @@ public class Indexer {
         return cityDictionary;
     }
 
-    public void writeCityDictionaryToDisk() {
+    public void writeCityPostingFile() {
         try {
             ArrayList<String> s = new ArrayList();
             Iterator it = this.cityDictionary.entrySet().iterator();
@@ -299,14 +302,19 @@ public class Indexer {
                 String alist = (((Pair) pair.getValue()).getKey()).toString();
                 CityData c = (CityData) ((Pair) pair.getValue()).getValue();
                 try {
-                    String data = c.getCountryName() + "|" + c.getPopulation() + "|" + c.getCurrency();
-                    s.add(cityName + "|" + alist + "|" + data + "\n");
+                    if(c == null){
+                        String data ="";
+                        s.add(cityName + "|" + alist + "|" + data + "\n");
+                    }else {
+                        String data = c.getCountryName() + "|" + c.getPopulation() + "|" + c.getCurrency();
+                        s.add(cityName + "|" + alist + "|" + data + "\n");
+                    }
                 } catch (Exception e) {
                 }
                 it.remove();
             }
             s.sort(Comparator.naturalOrder());
-            FileWriter fw = new FileWriter(this.getPostingFilePath() + "\\" + "citiesTest");
+            FileWriter fw = new FileWriter(this.getPostingFilePath() + "\\" + "CityPostingFile");
             for (String a : s) {
                 fw.write(a);
             }
@@ -358,6 +366,7 @@ public class Indexer {
                 fis.close();
                 System.out.println("Dictionary loaded");
             } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (Exception e) {
         }
@@ -387,5 +396,7 @@ public class Indexer {
         corpusDictionary.clear();
         cityDictionary.clear();
         DocumentDictionary.clear();
+        LanguageCollection.clear();
+        DocumentsToParse.clear();
     }
 }

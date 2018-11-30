@@ -18,9 +18,17 @@ import java.util.ResourceBundle;
  */
 public class DictionaryView implements Initializable {
 
+    /**
+     * Fields
+     */
     public javafx.scene.control.TableView DictionaryView;
     DictionaryController myDictionaryController = new DictionaryController();
 
+    /**
+     * initialize tableView
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(myDictionaryController.showDictionary() != null) {

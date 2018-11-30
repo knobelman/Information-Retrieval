@@ -66,11 +66,12 @@ public class Doc implements IParseableObject,Serializable {
      * @param max_tf
      * @param SpecialWordCount
      */
-    public Doc(String path, String city, int max_tf, int SpecialWordCount) {
+    public Doc(String path, String city, int max_tf, int SpecialWordCount,String max_tf_String) {
         this.city = city;
         this.path = path;
         this.max_tf = max_tf;
         this.specialWordCount = SpecialWordCount;
+        this.max_tf_String = max_tf_String;
     }
     /**
      * Getter
@@ -165,49 +166,50 @@ public class Doc implements IParseableObject,Serializable {
     }
 
     /**
-     * this method check if terms in doc contains a term
-     * @param term
-     * @return
+     * Getter
+     * @return the max tf
      */
-    public boolean contains(String term){
-        return termsInDoc.containsKey(term);
-    }
-
-    /**
-     * this method remove term from doc
-     * @param term
-     */
-    public void removeFromDoc(String term){
-        termsInDoc.remove(term);
-    }
-
     public int getMax_tf() {
         return max_tf;
     }
 
+    /**
+     * Getter
+     * @return the path of the file
+     */
     public String getPath() {
         return path;
     }
 
+    /**
+     * Getter
+     * @return the special word count
+     */
     public int getSpecialWordCount() {
         return this.getTermsInDoc().size();
     }
 
-//    public void setSpecialWordCount() {
-//        if(specialWordCount == termsInDoc.size()){
-//            System.out.println("TRUE");
-//        }
-//        else{
-//            System.out.println("FALSE");
-//        }
-//        specialWordCount = termsInDoc.size();
-//    }
-
+    /**
+     * Getter
+     * @return the city name
+     */
     public String getCity() {
         return city;
     }
 
+    /**
+     * Getter
+     * @return the language name
+     */
     public String getLanguage() {
         return language;
+    }
+
+    /**
+     * Getter
+     * @return the most frequency string
+     */
+    public String getMax_tf_String() {
+        return max_tf_String;
     }
 }
