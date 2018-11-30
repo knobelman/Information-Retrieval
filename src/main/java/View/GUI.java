@@ -171,9 +171,15 @@ public class GUI {
         else {
             //delete all posting files
             File postingDirecory = new File(PostingPath.getText());
-            for (File file : postingDirecory.listFiles())
-                if (!file.isDirectory())
-                    file.delete();
+            for (File file : postingDirecory.listFiles()) {
+                if(file.isDirectory()){
+                    File[] files = file.listFiles();
+                    for(File inner : files){
+                        inner.delete();
+                    }
+                }
+                file.delete();
+            }
         }
         myGUIController.reset();
     }
@@ -202,10 +208,27 @@ public class GUI {
             File file;
             if (!STEMM.isSelected()) {
                 file = new File(PostingPath.getText() + "\\CorpusDictionaryWithoutStem");
-                myGUIController.loadDictionary(file);
+                if(!file.exists()){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Dictionary not exists");
+                    alert.setHeaderText("Dictionary not exists");
+                    alert.setContentText("Please run and save dictionary before");
+                    alert.show();
+                }
+                else {
+                    myGUIController.loadDictionary(file);
+                }
             } else {
                 file = new File(PostingPath.getText() + "\\withStem\\CorpusDictionaryWithStem");
-                myGUIController.loadDictionary(file);
+                if(!file.exists()){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Dictionary not exists");
+                    alert.setHeaderText("Dictionary not exists");
+                    alert.setContentText("Please run and save dictionary before");
+                    alert.show();
+                }else {
+                    myGUIController.loadDictionary(file);
+                }
             }
         }
     }

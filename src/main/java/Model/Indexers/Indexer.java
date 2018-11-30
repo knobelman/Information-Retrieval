@@ -7,6 +7,7 @@ import Model.DataObjects.TermData;
 import Model.Parsers.ParsingProcess.DocParsingProcess;
 import Model.Parsers.ParsingProcess.CityParsingProcess;
 import Model.Parsers.ParsingProcess.IParsingProcess;
+import javafx.scene.control.Alert;
 import javafx.util.Pair;
 import java.io.*;
 import java.util.*;
@@ -83,7 +84,9 @@ public class Indexer {
                     for (Doc d : DocumentsToParse) {
                         numberofDocs++;
                         //create document dictionary
-                        LanguageCollection.add(d.getLanguage()); //add language to language collection
+                        if(!d.getLanguage().equals("")) {
+                            LanguageCollection.add(d.getLanguage()); //add language to language collection
+                        }
                         //add to city dictionary
                         if (!d.getCity().equals("")) {
                             addToCityDictionary(d);
@@ -340,15 +343,28 @@ public class Indexer {
             else {
                 fileOne = new File(this.getPostingFilePath() + "\\" + "CorpusDictionaryWithStem");
             }
-            FileOutputStream fos = new FileOutputStream(fileOne);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(corpusDictionary);
-            oos.flush();
-            oos.close();
-            fos.close();
+            if(corpusDictionary.isEmpty()){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Dictionary is empty");
+                alert.setHeaderText("Dictionary is empty");
+                alert.setContentText("Please run indexing to create the dictionary");
+                alert.show();
+            }
+            else {
+                FileOutputStream fos = new FileOutputStream(fileOne);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(corpusDictionary);
+                oos.flush();
+                oos.close();
+                fos.close();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Dictionary saved successfully");
+                alert.setHeaderText("Dictionary saved successfully");
+                alert.setContentText("Dictionary saved successfully");
+                alert.show();
+            }
         } catch (Exception e) {
         }
-        System.out.println("Dictionary saved and Empty" + corpusDictionary.isEmpty());
     }
 
     /**
@@ -364,7 +380,11 @@ public class Indexer {
                 this.corpusDictionary = (HashMap<String, TermData>) ois.readObject();
                 ois.close();
                 fis.close();
-                System.out.println("Dictionary loaded");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Dictionary Loaded successfully");
+                alert.setHeaderText("Dictionary Loaded successfully");
+                alert.setContentText("Dictionary Loaded successfully");
+                alert.show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -393,10 +413,17 @@ public class Indexer {
     }
 
     public void reset() {
-        corpusDictionary.clear();
-        cityDictionary.clear();
-        DocumentDictionary.clear();
-        LanguageCollection.clear();
-        DocumentsToParse.clear();
+        if(corpusDictionary != null){
+            corpusDictionary.clear();
+        }
+        if(cityDictionary != null){
+            cityDictionary.clear();
+        }
+        if(DocumentDictionary != null){
+            DocumentDictionary.clear();
+        }
+        if(LanguageCollection != null){
+            LanguageCollection.clear();
+        }
     }
 }

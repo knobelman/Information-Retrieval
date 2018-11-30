@@ -23,23 +23,22 @@
           <RowConstraints maxHeight="151.66666158040366" minHeight="0.0" prefHeight="56.99998982747396" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="210.66666666666669" minHeight="10.0" prefHeight="51.6666768391927" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="218.99997456868493" minHeight="10.0" prefHeight="68.00002034505209" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="218.99997456868493" minHeight="10.0" prefHeight="68.00002034505209" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="218.99997456868493" minHeight="10.0" prefHeight="70.33332316080731" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="218.99997456868493" minHeight="10.0" prefHeight="69.66667683919269" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="saveDictionary" disable="true" mnemonicParsing="false" onAction="#saveDictionary" prefHeight="25.0" prefWidth="60.0" text="SAVE" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <Button fx:id="saveDictionary" disable="true" mnemonicParsing="false" onAction="#saveDictionary" prefHeight="25.0" prefWidth="60.0" text="SAVE" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets left="100.0" top="5.0" />
                </GridPane.margin></Button>
             <TextField fx:id="CorpusPath" maxWidth="150.0" minWidth="120.0" prefHeight="25.0" prefWidth="120.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
-                  <Insets />
+                  <Insets bottom="15.0" />
                </GridPane.margin>
             </TextField>
             <Button fx:id="LOAD" mnemonicParsing="false" onAction="#loadCorpus" prefHeight="25.0" prefWidth="67.0" text="BROWSE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
-                  <Insets left="80.0" />
+                  <Insets bottom="15.0" left="30.0" />
                </GridPane.margin></Button>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Corpus Path" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                <font>
@@ -64,13 +63,16 @@
             </CheckBox>
             <Button fx:id="POSTING" mnemonicParsing="false" onAction="#loadPosting" prefHeight="25.0" prefWidth="67.0" text="BROWSE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <GridPane.margin>
-                  <Insets left="80.0" />
+                  <Insets bottom="15.0" left="30.0" />
                </GridPane.margin></Button>
-            <Button fx:id="START" mnemonicParsing="false" onAction="#startIndexing" prefHeight="25.0" prefWidth="119.0" text="RUN" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="5" GridPane.valignment="TOP">
+            <Button fx:id="START" mnemonicParsing="false" onAction="#startIndexing" prefHeight="25.0" prefWidth="119.0" text="RUN" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets left="20.0" top="20.0" />
                </GridPane.margin></Button>
-            <TextField fx:id="PostingPath" maxWidth="150.0" prefHeight="25.0" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="PostingPath" maxWidth="150.0" prefHeight="25.0" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets bottom="10.0" />
+               </GridPane.margin></TextField>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select Language" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                <font>
                   <Font size="16.0" />
@@ -80,7 +82,7 @@
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin></Button>
-            <Button fx:id="RESET" disable="true" mnemonicParsing="false" onAction="#reset" prefHeight="25.0" prefWidth="116.0" text="RESET" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="TOP">
+            <Button fx:id="RESET" disable="true" mnemonicParsing="false" onAction="#reset" prefHeight="25.0" prefWidth="116.0" text="RESET" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets left="150.0" top="20.0" />
                </GridPane.margin>
@@ -90,33 +92,22 @@
                   <Font size="22.0" />
                </font>
             </Label>
-            <Button fx:id="loadDictionary" mnemonicParsing="false" onAction="#loadDictionary" prefHeight="25.0" prefWidth="67.0" text="LOAD" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <Button fx:id="loadDictionary" mnemonicParsing="false" onAction="#loadDictionary" prefHeight="25.0" prefWidth="67.0" text="LOAD" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets left="20.0" top="5.0" />
                </GridPane.margin>
             </Button>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Indexing" textAlignment="RIGHT" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Indexing" textAlignment="RIGHT" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <font>
                   <Font size="16.0" />
                </font>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dictionary" GridPane.halignment="CENTER" GridPane.rowIndex="6">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dictionary" GridPane.halignment="CENTER" GridPane.rowIndex="5">
                <font>
                   <Font size="16.0" />
                </font>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select Line" GridPane.halignment="CENTER" GridPane.rowIndex="4">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Text>
-            <Button fx:id="selectLine" mnemonicParsing="false" onAction="#getLine" prefHeight="25.0" prefWidth="65.0" text="SELECT" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
-               <GridPane.margin>
-                  <Insets left="80.0" />
-               </GridPane.margin>
-            </Button>
-            <TextField fx:id="lineValue" maxWidth="150.0" prefHeight="25.0" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Button fx:id="showDictionary" mnemonicParsing="false" onAction="#showDictionary" prefHeight="25.0" prefWidth="67.0" text="SHOW" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <Button fx:id="showDictionary" mnemonicParsing="false" onAction="#showDictionary" prefHeight="25.0" prefWidth="67.0" text="SHOW" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets left="170.0" top="5.0" />
                </GridPane.margin>
