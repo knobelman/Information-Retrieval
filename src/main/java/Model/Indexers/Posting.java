@@ -3,7 +3,6 @@ import javafx.util.Pair;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class represents the Posting class
@@ -12,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @rootPath - the path of posting file
  * @postingFilecounter - a counter from 0 to number of files in the corpus
  */
+
 public class Posting {
     ArrayList<String> allLines;
     private String rootPath;
@@ -59,7 +59,7 @@ public class Posting {
      * for each file will be temp posting file
      * @param linkedHashMap String - term, String - doc, Integer - tf
      */
-    public void createTempPostingFile(ConcurrentHashMap<String, HashMap<String, Integer>> linkedHashMap) {
+    public void createTempPostingFile(HashMap<String, HashMap<String, Integer>> linkedHashMap) {
         try {
             Iterator it = linkedHashMap.entrySet().iterator();
             while (it.hasNext()) {
@@ -226,6 +226,7 @@ public class Posting {
                     mergedBuffer = new BufferedWriter(mergedWriter);
                     mergeBetweenTempPostingFiles("" + (i), "" + (i+1), mergedBuffer, corpusDictionary);
                     mergedBuffer.close();
+                    mergedWriter.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

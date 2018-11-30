@@ -14,7 +14,7 @@ import java.util.HashSet;
  * city - city the doc come from
  * termsInDoc - all the terms exists in current document
  */
-public class Doc extends ParseableObject implements Serializable {
+public class Doc implements IParseableObject,Serializable {
     private String doc_num;
     private String doc_content;
     private String path;

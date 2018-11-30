@@ -1,6 +1,6 @@
 package Model.Parsers.ParsingProcess;
 import Model.DataObjects.ParseableObjects.Doc;
-import Model.DataObjects.ParseableObjects.ParseableObject;
+import Model.DataObjects.ParseableObjects.IParseableObject;
 import Model.Parsers.ParserTypes.AParser;
 import Model.Parsers.ParserTypes.ParserClassifier;
 import Model.Parsers.ParserTypes.Stemmer;
@@ -79,7 +79,7 @@ public class DocParsingProcess implements IParsingProcess {
      * @return - document with parsed tokens
      */
 
-    public void parsing(ParseableObject documentToParse) {
+    public void parsing(IParseableObject documentToParse) {
         Doc document = (Doc) documentToParse;
         parsing(document, stem);
     }

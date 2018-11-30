@@ -1,8 +1,7 @@
 package Model.Parsers.ParsingProcess;
 import Model.DataObjects.CityData;
-import Model.DataObjects.ParseableObjects.JasonObject;
-import Model.DataObjects.ParseableObjects.ParseableObject;
-import Model.Parsers.ParsingProcess.IParsingProcess;
+import Model.DataObjects.ParseableObjects.JasonObjectI;
+import Model.DataObjects.ParseableObjects.IParseableObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -31,7 +30,7 @@ public class CityParsingProcess implements IParsingProcess {
         try {
             Object obj = parser.parse(new FileReader(directory.getAbsoluteFile()+"\\src\\main\\resources\\cities.json"));
             JSONArray jsonArray = (JSONArray)obj;
-            JasonObject JasonObject = new JasonObject(jsonArray);
+            JasonObjectI JasonObject = new JasonObjectI(jsonArray);
             parsing(JasonObject);
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,8 +42,8 @@ public class CityParsingProcess implements IParsingProcess {
     /**
      * Initialize cityData HashMap
      */
-    public void parsing(ParseableObject parseObject){
-        JSONArray jsonArray = ((JasonObject)parseObject).getJasonArray();
+    public void parsing(IParseableObject parseObject){
+        JSONArray jsonArray = ((JasonObjectI)parseObject).getJasonArray();
         for(Object s: jsonArray){
             String cityName = (String)((JSONObject)s).get("capital");
             String countryName = (String)((JSONObject)s).get("name");

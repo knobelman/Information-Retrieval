@@ -50,13 +50,13 @@ public class Model {
             float endTime = System.currentTimeMillis();
 
             //Read seek
-            indexer.getLine(69809);
+            //indexer.getLine(69809);
 
             //finish indexing
             int numberOfDocs = indexer.getNumberOfDocs();
             int termsCount = indexer.getUniqueTermsCount();
+            Thread.sleep(2000);
             float totalTime = (endTime - startTime)/1000;
-
             //show alert
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Finished!");

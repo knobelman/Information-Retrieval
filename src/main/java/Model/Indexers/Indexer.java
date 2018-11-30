@@ -75,11 +75,10 @@ public class Indexer {
      *             this function send date to posting class which create the posting files
      */
     public void init(final File root) throws IOException {
-        ConcurrentHashMap <String, HashMap<String, Integer>> TermAndDocumentsData = new ConcurrentHashMap<>();
+        HashMap <String, HashMap<String, Integer>> TermAndDocumentsData = new HashMap<>();
         for (final File directory : root.listFiles()){//for each folder in root
             if (directory.isDirectory())
                 for (File currFile : directory.listFiles()) {//for each file in folder
-                    TermAndDocumentsData.clear();
                     DocumentsToParse = readFileObject.fromFileToDoc(currFile);
                     for (Doc d : DocumentsToParse) {
                         numberofDocs++;
@@ -109,11 +108,11 @@ public class Indexer {
                             String doc_name = d.getDoc_num();
                             if (TermAndDocumentsData.containsKey(termName)) {//term is in TermAndDocumentsData already
                                 Integer newInt = new Integer(value.getTf(doc_name));
-                                TermAndDocumentsData.get(termName).put(d.getDoc_num(), newInt); //todo - remove to lower
+                                TermAndDocumentsData.get(termName).put(d.getDoc_num(), newInt);
                             }
                             else if(TermAndDocumentsData.containsKey(termName.toLowerCase())){//term name is upper, TADD contains lower
                                 Integer newInt = new Integer(value.getTf(doc_name));
-                                TermAndDocumentsData.get(termName.toLowerCase()).put(d.getDoc_num(), newInt); //todo - remove to lower
+                                TermAndDocumentsData.get(termName.toLowerCase()).put(d.getDoc_num(), newInt);
                             }
                             else if(TermAndDocumentsData.containsKey(termName.toUpperCase())){//term is lowercase, TADD contains upper
                                 HashMap<String, Integer> tmpHM = TermAndDocumentsData.get(termName.toUpperCase());
@@ -123,7 +122,7 @@ public class Indexer {
                             else {
                                 HashMap<String, Integer> current = new HashMap();
                                 current.put(doc_name, new Integer(value.getTf(doc_name)));
-                                TermAndDocumentsData.put(termName, current); //todo - remove to lower
+                                TermAndDocumentsData.put(termName, current);
                             }
                         }
                     }
@@ -134,6 +133,7 @@ public class Indexer {
 //                        TermAndDocumentsData = new ConcurrentHashMap<>();
 //                    }
                     postingObject.createTempPostingFile(TermAndDocumentsData);
+                    TermAndDocumentsData.clear();
                 }
         }
 //        while (!threadList.isEmpty()) {

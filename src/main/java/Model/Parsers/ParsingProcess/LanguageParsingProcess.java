@@ -1,6 +1,6 @@
 package Model.Parsers.ParsingProcess;
-import Model.DataObjects.ParseableObjects.JasonObject;
-import Model.DataObjects.ParseableObjects.ParseableObject;
+import Model.DataObjects.ParseableObjects.JasonObjectI;
+import Model.DataObjects.ParseableObjects.IParseableObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -11,8 +11,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 
 
 /**
@@ -36,7 +34,7 @@ public class LanguageParsingProcess implements IParsingProcess {
         try {
             Object obj = parser.parse(new FileReader(directory.getAbsoluteFile()+"\\src\\main\\resources\\languages.json"));
             JSONArray jsonArray = (JSONArray)obj;
-            JasonObject JasonObject = new JasonObject(jsonArray);
+            JasonObjectI JasonObject = new JasonObjectI(jsonArray);
             parsing(JasonObject);
         } catch (IOException e) {
             //e.printStackTrace();
@@ -46,8 +44,8 @@ public class LanguageParsingProcess implements IParsingProcess {
     }
 
     @Override
-    public void parsing(ParseableObject parseObject) {
-        JSONArray jsonArray = ((JasonObject) parseObject).getJasonArray();
+    public void parsing(IParseableObject parseObject) {
+        JSONArray jsonArray = ((JasonObjectI) parseObject).getJasonArray();
         JSONObject s = (JSONObject) jsonArray.get(0);
         for (Object currentValue : s.values()) {
             String languageName = (String) ((JSONObject) currentValue).get("name");
