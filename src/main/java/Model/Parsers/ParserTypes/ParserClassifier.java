@@ -83,6 +83,10 @@ public class ParserClassifier extends AParser {
                 currValue = dateParser.parsing(current, trimming(s2),"","");
             }
         }
+        else if(checkRiskyEnding(current)){
+            i=0;
+            currValue = current.toUpperCase();
+        }
         //check if word with 's
         else {
             i=0;
@@ -92,8 +96,15 @@ public class ParserClassifier extends AParser {
         return currValue;
     }
 
+    private boolean checkRiskyEnding(String current) {
+        String left = current.substring(0,current.length()-1);
+        char right = current.charAt(current.length()-1);
+        if((right=='m' || right=='k' || right=='b') && isValidNum(left))
+            return true;
+        return false;
+    }
+
     /**
-     *
      * @param s1 - valid number
      * @param s2 - second token
      * @param s3 - third token
@@ -104,20 +115,20 @@ public class ParserClassifier extends AParser {
         if(s1.length()<=2 & hmDate.containsKey(trimming(s2))){//the second token is a month
             return dateParser.dayFirst(s1,trimming(s2));
         }
-        else if(s2.equals("percentage") || s2.equals("percent")){//the second word is percent\percentage
+        else if(s2.equals("percentage") || s2.equals("percent") || s2.equals("Percent") || s2.equals("Percentage")){//the second word is percent\percentage
             return percentParser.parsing(s1,s2,"","");
         }
-        else if (s2.equals("Dollars")){//valid number Dollars
+        else if (s2.equals("Dollars") || s2.equals("dollars")){//valid number Dollars
             return dollarParser.PriceDollars(s1,s2);
         }
         else if(s2.contains("/")){//valid number fraction ...
-            if(s3.equals("Dollars"))//valid number fraction Dollars
+            if(s3.equals("Dollars") || s3.equals("dollars"))//valid number fraction Dollars
                 return dollarParser.PriceFractionDollars(s1,s2,s3);
             else//valid number fraction only
                 return numberParser.parsing(s1,s2,"","");
         }
         else if(hmPriceSize.containsKey(s2)){//valid number million\billion\trillion\m\bn\tn
-            if(s3.equals("Dollars")) {//...Dollars
+            if(s3.equals("Dollars") || s3.equals("dollars")) {//...Dollars
                 i = 2;
                 return dollarParser.parsing(s1, s2,s3,"");
             }

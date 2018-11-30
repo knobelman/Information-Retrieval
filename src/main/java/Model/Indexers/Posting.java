@@ -66,7 +66,7 @@ public class Posting {
                 Map.Entry pair = (Map.Entry)it.next();
                 int size = ((HashMap<String, Integer>)pair.getValue()).size();
                 allLines.add((pair.getKey()) + "|DF:" + size + "|" + pair.getValue()+"\n");
-                it.remove();
+//                it.remove();
             }
             sort();
             FileWriter fw = new FileWriter(this.rootPath + "\\" + postingFileCounter);

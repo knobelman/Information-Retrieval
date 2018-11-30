@@ -97,10 +97,10 @@ public class Indexer {
                             String doc_name = d.getDoc_num();
                             if (corpusDictionary.containsKey(termName)) {//Dic contains the term
                                 updateDF(termName);
-                            } else if (!containsDigit(termName) && corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
+                            } else if (!termName.contains("Dollars") && !termName.contains("Yen") && corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
                                 termName = termName.toLowerCase();
                                 updateDF(termName);
-                            } else if (!containsDigit(termName) && corpusDictionary.containsKey(termName.toUpperCase())) {
+                            } else if (!termName.contains("Dollars") && !termName.contains("Yen") && corpusDictionary.containsKey(termName.toUpperCase())) {
                                 changeULDic(termName);
                                 updateDF(termName);
                             } else {
