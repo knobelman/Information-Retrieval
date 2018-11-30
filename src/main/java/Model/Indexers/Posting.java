@@ -265,7 +265,7 @@ public class Posting {
         }
         BufferedReader postingFile;
         BufferedWriter fileBuffer;
-        String currTerm, line, fileName;
+        String currTerm, line, fileName, newLine;
         int position;
         try {
             postingFile = new BufferedReader(new FileReader(this.rootPath + "\\0"));//read posting
@@ -282,11 +282,10 @@ public class Posting {
                     fileName = letters.get(tmp);
                 }
                 currTerm = line.substring(0, line.indexOf('|'));//get the term
-                if(!corpusDictionary.containsKey(currTerm))//todo *********************************************
-                    System.out.println(currTerm);
+                newLine = line.split("\\|")[2];//create line to wrtie without term and DF
                 Pair tmpPair = new Pair<>(corpusDictionary.get(currTerm).getKey(), position);//create tmppair to insert into Dic
                 corpusDictionary.replace(currTerm, tmpPair);//change the position for the term in the Dic
-                fileBuffer.write(line + "\n");
+                fileBuffer.write(newLine + "\n");
                 position += line.length() + 1;//increase the position for next line //todo
                 filePosition.replace(fileName, position);//insert new position for next line //todo
                 line = postingFile.readLine();

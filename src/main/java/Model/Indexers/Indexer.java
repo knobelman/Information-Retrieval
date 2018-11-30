@@ -94,6 +94,7 @@ public class Indexer {
                         for (Map.Entry<String, Term> entry : d.getTermsInDoc().entrySet()) {
                             String termName = entry.getKey();//term from doc
                             Term value = entry.getValue();
+                            String doc_name = d.getDoc_num();
                             if (corpusDictionary.containsKey(termName)) {//Dic contains the term
                                 updateDF(termName);
                             } else if (!containsDigit(termName) && corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
@@ -105,7 +106,6 @@ public class Indexer {
                             } else {
                                 corpusDictionary.put(termName, new Pair<>(1, 0)); //term name, file name, position
                             }
-                            String doc_name = d.getDoc_num();
                             if (TermAndDocumentsData.containsKey(termName)) {//term is in TermAndDocumentsData already
                                 Integer newInt = new Integer(value.getTf(doc_name));
                                 TermAndDocumentsData.get(termName).put(d.getDoc_num(), newInt);

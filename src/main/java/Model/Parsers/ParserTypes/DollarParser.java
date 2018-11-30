@@ -14,13 +14,18 @@ public class DollarParser extends MoneyParser {
             price = s1.substring(1);//get the price out of $price
         else
             price = s1;
-        if(!isValidNum(price))
+        if(!isValidNum(price)) {
+            i=0;
             return "";
+        }
         if(s2.equals("") || !hmPriceSize.containsKey(s2)) {
-            if (s1.charAt(0) == '¥')
+            i=0;
+            if (s1.charAt(0) == '¥') {
                 return priceOnly(price) + " " + "Yen";
-            else
+            }
+            else {
                 return priceOnly(price) + " " + "Dollars";
+            }
         }
         else if(s3.equals("")){
             i=1;
@@ -59,6 +64,7 @@ public class DollarParser extends MoneyParser {
             i=2;
             return priceOnly(s1) + " " + s2 + " " + "Dollars";
         }
+        i=0;
         return s1;
     }
 

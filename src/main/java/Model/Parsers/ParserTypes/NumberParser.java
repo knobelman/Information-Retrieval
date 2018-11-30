@@ -14,6 +14,7 @@ public class NumberParser extends AParser {
      */
     protected String parsing(String s1, String s2, String s3, String s4) {
         if(s2.equals("")){//just number
+            i=0;
             return numberOnly(s1);
         }
         else if(s2.contains("/")) {//number fraction

@@ -30,21 +30,4 @@ public class PercentParser extends AParser {
         i=0;
         return "";
     }
-
-    /**
-     * Check if s1 is a number and s2 is percent\percentage
-     * @param s1 - valid num
-     * @param s2 - the percent string - percent\percentage
-     * @return - 10.8% or "" if not valid percent
-     */
-//    private String percentWordCheck(String s1, String s2) {
-//        if(isValidNum(s1)){
-//            if(s2.equals("percent") || s2.equals("percentage")){
-//                i = 1;
-//                return s1 + "%";
-//            }
-//        }
-//        i=0;
-//        return s1;
-//    }
 }

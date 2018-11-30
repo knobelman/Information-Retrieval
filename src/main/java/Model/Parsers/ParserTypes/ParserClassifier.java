@@ -7,7 +7,7 @@ import javafx.util.Pair;
  */
 
 public class ParserClassifier extends AParser {
-    private Pair<Integer,String>doneTerm;
+//    private Pair<Integer,String>doneTerm;
     private NumberParser numberParser;
     private DollarParser dollarParser;
     private DateParser dateParser;
@@ -31,11 +31,14 @@ public class ParserClassifier extends AParser {
     protected String parsing(String s1, String s2, String s3, String s4){
         String current = s1;
         current = trimming(current);
-        if(current.equals(""))
+        if(current.equals("")) {
+            i=0;
             return "";
-        String currValue = "";
+        }
+        String currValue;
         //Contains '-' VVV
         if (current.contains("-")) {
+            i=0;
             if(current.charAt(0)=='-' && isValidNum(current.substring(1))){//-number
                 currValue = current;
             }
@@ -46,7 +49,7 @@ public class ParserClassifier extends AParser {
         //"Between xyz and abc" (xyz,abc = number) VVV
         else if ((s1.equals("Between") || s1.equals("between")) && isValidNum(s2) && s3.equals("and") && isValidNum(s4)) {
             currValue = current + " " + s2 + " " + s3 + " " + s4;
-            i += 3;
+            i = 3;
         }
         //$
         else if (current.charAt(0) == '$' || current.charAt(0) == '¥') {//if first char is '$' or '¥'
@@ -72,8 +75,10 @@ public class ParserClassifier extends AParser {
         }
         //First token is Month VVV
         else if (hmDate.containsKey(current)) {
-            if (s2.equals(""))//if only Month
+            if (s2.equals("")) {//if only Month
                 currValue = current;
+                i=0;
+            }
             else {//s2 = year\day
                 currValue = dateParser.parsing(current, trimming(s2),"","");
             }
