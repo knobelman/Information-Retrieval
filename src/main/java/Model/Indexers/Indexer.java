@@ -26,33 +26,42 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @parser - parser class object which parsing the document content
  */
 public class Indexer {
+    //paths
     private String rootPath;
+    private String pathOfPosting;
 
+    //objects
     private ReadFile readFileObject;
     private Posting postingObject;
     private DocParsingProcess ParserObject;
     private IParsingProcess cityParsingProcess;
 
+    //dictionaries
     private HashMap<String, Pair<ArrayList<String>, CityData>> cityDictionary;// City -> cityData
     private HashMap<String, TermData> corpusDictionary; //term,totalTF,position in merged posting file
     private HashMap<String, Doc> DocumentDictionary; //Doc String - > Doc object
     private HashMap<String,String> LanguageDictionary; //Language -> Docs
 
+    //other
     private HashSet<Doc> DocumentsToParse;
     private List<Thread> threadList;
-    private Boolean toStem;
-
     private int numberofDocs;
 
     /**
      * C'tor
-     * initialize DocumentsToParse HashSet and Dictionary HashMap
      */
     public Indexer() {
     }
 
+    /**
+     * C'tor
+     * @param rootPath - the path of the corpus
+     * @param pathOfPosting - the path of the posting
+     * @param toStem - if stem or not
+     */
     public Indexer(String rootPath,String pathOfPosting, boolean toStem) {
         this.rootPath = rootPath;
+        this.pathOfPosting = pathOfPosting;
         this.DocumentsToParse = new HashSet<>();
 
         this.postingObject = new Posting(pathOfPosting);
@@ -67,7 +76,6 @@ public class Indexer {
         this.threadList = new CopyOnWriteArrayList<>();
         this.cityParsingProcess = new CityParsingProcess();
         this.ParserObject = new DocParsingProcess(rootPath, toStem);
-
         this.numberofDocs = 0;
     }
 
@@ -89,7 +97,7 @@ public class Indexer {
                         numberofDocs++;
                         //create document dictionary
                         if(!d.getLanguage().equals("")) {
-                            addToLanguagaDictionary(d);
+                            addToLanguageDictionary(d);
                         }
                         //add to city dictionary
                         if (!d.getCity().equals("")) {
@@ -146,7 +154,7 @@ public class Indexer {
         writeCityPostingFile();
     }
 
-    private void addToLanguagaDictionary(Doc d) {
+    private void addToLanguageDictionary(Doc d) {
         //if language dictionary contains the language
         if(this.LanguageDictionary.containsKey(d.getLanguage())){
             String Docs = this.LanguageDictionary.get(d.getLanguage()); //get old value
@@ -160,15 +168,6 @@ public class Indexer {
         }
     }
 
-//    private boolean containsDigit(String termName)
-//    {
-//        for (char c : termName.toCharArray())
-//        {
-//            if (Character.isDigit(c))
-//                return true;
-//        }
-//        return false;
-//    }
 
     /**
      *
@@ -237,44 +236,8 @@ public class Indexer {
 
     }
 
-    /**
-     * this method get posting file path
-     *
-     * @return
-     */
-    public String getPostingFilePath() {
-        return this.postingObject.getRootPath();
-    }
-
-    /**
-     * Setter
-     *
-     * @param flag - set stemming to false or true
-     */
-    public void setStemming(boolean flag) {
-        this.toStem = flag;
-    }
-
     public HashMap<String, TermData> getCorpusDictionary() {
         return corpusDictionary;
-    }
-
-    /**
-     * Getter
-     *
-     * @return the root path
-     */
-    public String getRootPath() {
-        return rootPath;
-    }
-
-    /**
-     * Setter
-     *
-     * @param postingObject - to set
-     */
-    public void setPostingObject(Posting postingObject) {
-        this.postingObject = postingObject;
     }
 
     public HashMap<String, Pair<ArrayList<String>, CityData>> getCityDictionary() {
@@ -303,7 +266,7 @@ public class Indexer {
                 it.remove();
             }
             s.sort(Comparator.naturalOrder());
-            FileWriter fw = new FileWriter(this.getPostingFilePath() + "\\" + "CityPostingFile");
+            FileWriter fw = new FileWriter(this.pathOfPosting + "\\" + "CityPostingFile");
             for (String a : s) {
                 fw.write(a);
             }
@@ -323,11 +286,11 @@ public class Indexer {
             File fileOne;
             //without stemming
             if (!stem) {
-                fileOne = new File(this.getPostingFilePath() + "\\" + "CorpusDictionaryWithoutStem");
+                fileOne = new File(this.pathOfPosting + "\\" + "CorpusDictionaryWithoutStem");
             }
             //with stemming
             else {
-                fileOne = new File(this.getPostingFilePath() + "\\" + "CorpusDictionaryWithStem");
+                fileOne = new File(this.pathOfPosting + "\\" + "CorpusDictionaryWithStem");
             }
             if(corpusDictionary.isEmpty()){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -388,7 +351,7 @@ public class Indexer {
 
     public String getLine(long position){
         try {
-            RandomAccessFile rndFile = new RandomAccessFile(postingObject.getRootPath() + "\\" + "OTHER","r");
+            RandomAccessFile rndFile = new RandomAccessFile(this.pathOfPosting + "\\" + "OTHER","r");
             rndFile.seek(position);
 //            String line = rndFile.readLine();
 //            System.out.println(line);

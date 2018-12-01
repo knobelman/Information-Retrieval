@@ -85,7 +85,7 @@ public class Posting {
      * this function clear the current posting file content for the next one
      */
     public void clearDic() {
-        this.allLines = new ArrayList<>();
+        this.allLines.clear();
     }
 
 
@@ -192,10 +192,10 @@ public class Posting {
         int lastPosting = currPostingNumber-1;
         FileWriter mergedWriter;
         BufferedWriter mergedBuffer;
-        File lFILE = new File(this.getRootPath() + "\\" + lastPosting);
-        File blFILE = new File(this.getRootPath() + "\\" + (lastPosting-1));
+        File lFILE = new File(this.rootPath + "\\" + lastPosting);
+        File blFILE = new File(this.rootPath + "\\" + (lastPosting-1));
         try {
-            mergedWriter = new FileWriter(this.getRootPath() + "\\" + "merged");
+            mergedWriter = new FileWriter(this.rootPath + "\\" + "merged");
             mergedBuffer = new BufferedWriter(mergedWriter);
             mergeBetweenTempPostingFiles("" + (lastPosting), "" + (lastPosting-1), mergedBuffer,corpusDictionary);
             mergedBuffer.close();
@@ -204,7 +204,7 @@ public class Posting {
         }
         lFILE.delete();
         blFILE.delete();
-        File mergedF = new File(this.getRootPath()+"\\"+"merged");
+        File mergedF = new File(this.rootPath+"\\"+"merged");
         mergedF.renameTo(blFILE);
     }
 
@@ -220,10 +220,10 @@ public class Posting {
             for (int i = 0; i < currPostingCounter; i+=2) {
                 FileWriter mergedWriter;
                 BufferedWriter mergedBuffer;
-                File lFILE = new File(this.getRootPath() + "\\" + i);
-                File blFILE = new File(this.getRootPath() + "\\" + (i+1));
+                File lFILE = new File(this.rootPath + "\\" + i);
+                File blFILE = new File(this.rootPath + "\\" + (i+1));
                 try {
-                    mergedWriter = new FileWriter(this.getRootPath() + "\\" + "merged");
+                    mergedWriter = new FileWriter(this.rootPath + "\\" + "merged");
                     mergedBuffer = new BufferedWriter(mergedWriter);
                     mergeBetweenTempPostingFiles("" + (i), "" + (i+1), mergedBuffer, corpusDictionary);
                     mergedBuffer.close();
@@ -234,8 +234,8 @@ public class Posting {
                 lFILE.delete();
                 blFILE.delete();
                 postingCounter--;
-                File mergedF = new File(this.getRootPath()+"\\"+"merged");
-                File newFile = new File(this.getRootPath()+"\\"+ newName);
+                File mergedF = new File(this.rootPath+"\\"+"merged");
+                File newFile = new File(this.rootPath+"\\"+ newName);
                 mergedF.renameTo(newFile);
                 newName++;
             }
@@ -316,22 +316,6 @@ public class Posting {
             String s2 = o2.substring(0, o2.indexOf('|'));
             return s1.toLowerCase().compareTo(s2.toLowerCase());
         });
-    }
-
-    /**
-     * Getter
-     * @return the path of the posting files
-     */
-    public String getRootPath() {
-        return rootPath;
-    }
-
-    /**
-     * Getter
-     * @return the posting file counter
-     */
-    public static int getPostingFilecounter() {
-        return postingFileCounter;
     }
 
     public void resetPostingCounter() {

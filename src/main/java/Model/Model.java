@@ -34,7 +34,6 @@ public class Model {
      */
     public void startIndexing(String pathOfCorpus,String pathOfPosting, boolean stem) {
         indexer = new Indexer(pathOfCorpus,pathOfPosting,stem);
-        indexer.setStemming(true);
         try {
             long startTime = System.currentTimeMillis();
             indexer.init(new File(pathOfCorpus));
