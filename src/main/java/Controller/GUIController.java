@@ -13,10 +13,6 @@ import java.util.HashMap;
  */
 public class GUIController extends Acontroller {
 
-    /**
-     * Fields
-     */
-
     //call to model to start indexing
     public void startIndexing(String pathOfCorpus, String pathOfPosting, boolean stem){
         myModel.startIndexing(pathOfCorpus,pathOfPosting,stem);

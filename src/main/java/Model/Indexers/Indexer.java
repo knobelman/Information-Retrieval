@@ -28,15 +28,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Indexer {
     private String rootPath;
 
-    private static ReadFile readFileObject;
+    private ReadFile readFileObject;
     private Posting postingObject;
     private DocParsingProcess ParserObject;
     private IParsingProcess cityParsingProcess;
 
-    private HashMap<String, Pair<ArrayList<String>, CityData>> cityDictionary;
+    private HashMap<String, Pair<ArrayList<String>, CityData>> cityDictionary;// City -> cityData
     private HashMap<String, TermData> corpusDictionary; //term,totalTF,position in merged posting file
-    private HashMap<String, Doc> DocumentDictionary;
-    private HashSet<String> LanguageCollection;
+    private HashMap<String, Doc> DocumentDictionary; //Doc String - > Doc object
+    private HashMap<String,String> LanguageDictionary; //Language -> Docs
 
     private HashSet<Doc> DocumentsToParse;
     private List<Thread> threadList;
@@ -51,14 +51,18 @@ public class Indexer {
     public Indexer() {
     }
 
-    public Indexer(String rootPath, boolean toStem) {
+    public Indexer(String rootPath,String pathOfPosting, boolean toStem) {
         this.rootPath = rootPath;
         this.DocumentsToParse = new HashSet<>();
 
+        this.postingObject = new Posting(pathOfPosting);
+        this.postingObject.resetPostingCounter();
+
+        this.readFileObject = new ReadFile();
         this.corpusDictionary = new HashMap<>();
         this.DocumentDictionary = new HashMap<>();
         this.cityDictionary = new HashMap<>();
-        this.LanguageCollection = new HashSet<>();
+        this.LanguageDictionary = new HashMap<>();
 
         this.threadList = new CopyOnWriteArrayList<>();
         this.cityParsingProcess = new CityParsingProcess();
@@ -85,7 +89,7 @@ public class Indexer {
                         numberofDocs++;
                         //create document dictionary
                         if(!d.getLanguage().equals("")) {
-                            LanguageCollection.add(d.getLanguage()); //add language to language collection
+                            addToLanguagaDictionary(d);
                         }
                         //add to city dictionary
                         if (!d.getCity().equals("")) {
@@ -134,26 +138,26 @@ public class Indexer {
                             }
                         }
                     }
-//                    if (!TermAndDocumentsData.isEmpty()) {//for each file in folder - create posting
-//                        Thread t = new Thread(() -> postingObject.createTempPostingFile(TermAndDocumentsData));
-//                        t.start();
-//                        threadList.add(t);
-//                        TermAndDocumentsData = new ConcurrentHashMap<>();
-//                    }
                     postingObject.createTempPostingFile(TermAndDocumentsData);
                     TermAndDocumentsData.clear();
                 }
         }
-//        while (!threadList.isEmpty()) {
-//            for (Thread t : threadList) {
-//                try {
-//                    t.join();
-//                    threadList.remove(t);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
+        createFinalPosting();
+        writeCityPostingFile();
+    }
+
+    private void addToLanguagaDictionary(Doc d) {
+        //if language dictionary contains the language
+        if(this.LanguageDictionary.containsKey(d.getLanguage())){
+            String Docs = this.LanguageDictionary.get(d.getLanguage()); //get old value
+            Docs = Docs + "|" + d.getDoc_num(); //update docs string
+            this.LanguageDictionary.remove(d.getLanguage()); //remove the old key
+            this.LanguageDictionary.put(d.getLanguage(),Docs); //add new key
+        }
+        //if language dictionary not contains the language
+        else{
+            this.LanguageDictionary.put(d.getLanguage(),d.getDoc_num());
+        }
     }
 
 //    private boolean containsDigit(String termName)
@@ -249,24 +253,6 @@ public class Indexer {
      */
     public void setStemming(boolean flag) {
         this.toStem = flag;
-    }
-
-    /**
-     * Getter
-     *
-     * @return read file object
-     */
-    public File getReadFileObject() {
-        return readFileObject.getRoot();
-    }
-
-    /**
-     * Setter
-     *
-     * @param readFileObject - set read file object
-     */
-    public static void setReadFileObject(ReadFile readFileObject) {
-        Indexer.readFileObject = readFileObject;
     }
 
     public HashMap<String, TermData> getCorpusDictionary() {
@@ -422,8 +408,8 @@ public class Indexer {
         if(DocumentDictionary != null){
             DocumentDictionary.clear();
         }
-        if(LanguageCollection != null){
-            LanguageCollection.clear();
+        if(LanguageDictionary != null){
+            LanguageDictionary.clear();
         }
     }
 }

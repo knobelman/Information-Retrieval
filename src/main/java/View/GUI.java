@@ -148,7 +148,7 @@ public class GUI {
         fxmlLoader.setLocation(getClass().getResource("/Language.fxml"));
         Scene scene=null;
         try{
-            scene=new Scene(fxmlLoader.load(), 500, 400);
+            scene=new Scene(fxmlLoader.load(), 585, 400);
         } catch (IOException e) {
             //e.printStackTrace();
         }

@@ -13,15 +13,11 @@ import java.util.HashSet;
  * @root - root object
  */
 public class ReadFile {
-    private String path;
-    private File root;
 
     /**
      * C'tor
      */
-    public ReadFile(String path) {
-        this.path = path;
-        this.root = new File(path);
+    public ReadFile() {
     }
 
     /**
@@ -90,13 +86,5 @@ public class ReadFile {
             }
         }
         return sb.toString();
-    }
-
-    /**
-     * Getter
-     * @return the root file object
-     */
-    public File getRoot() {
-        return root;
     }
 }

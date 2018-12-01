@@ -26,9 +26,6 @@ import java.util.HashMap;
 public class Model {
     Indexer indexer;
     IParsingProcess languageParsingProcess;
-    Posting postingObject;
-    ReadFile readFileObject;
-
     /**
      * This method start indexing process
      * @param pathOfCorpus - the path of the corpus file
@@ -36,19 +33,11 @@ public class Model {
      * @param stem - indicate if stemming required or not
      */
     public void startIndexing(String pathOfCorpus,String pathOfPosting, boolean stem) {
-        indexer = new Indexer(pathOfCorpus,stem);
-        postingObject = new Posting(pathOfPosting);
-        postingObject.resetPostingCounter();
-        readFileObject = new ReadFile(indexer.getRootPath());
-        indexer.setPostingObject(postingObject);
-        indexer.setReadFileObject(readFileObject);
+        indexer = new Indexer(pathOfCorpus,pathOfPosting,stem);
         indexer.setStemming(true);
         try {
             long startTime = System.currentTimeMillis();
-            indexer.init(indexer.getReadFileObject());
-            indexer.createFinalPosting();
-            indexer.writeCityPostingFile();
-
+            indexer.init(new File(pathOfCorpus));
             long endTime = System.currentTimeMillis();
 
             //Read seek

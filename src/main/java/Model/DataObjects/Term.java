@@ -52,8 +52,4 @@ public class Term implements Serializable{
     public void setTerm(String term){
         this.term = term;
     }
-
-    public String getTermName(){
-        return term;
-    }
 }

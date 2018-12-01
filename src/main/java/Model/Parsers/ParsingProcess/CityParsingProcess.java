@@ -14,8 +14,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * This class represents the jason parser
- * responsible for parsing the json file and save the required data about each city
+ * responsible for parsing the city json file and save the required data about each city
  * @cityData - contains the required data about each city
  */
 public class CityParsingProcess implements IParsingProcess {
