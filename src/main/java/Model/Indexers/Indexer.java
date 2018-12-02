@@ -53,7 +53,7 @@ public class Indexer {
      */
     public Indexer() {
     }
-
+//
     /**
      * C'tor
      * @param rootPath - the path of the corpus
