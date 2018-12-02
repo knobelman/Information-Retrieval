@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -26,12 +27,12 @@ public class ReadFile {
      * @param file - file to separate to documents
      * return hash set of documents for the next station - parsing
      */
-    public HashSet<Doc> fromFileToDoc(File file) {
+    public ArrayList<Doc> fromFileToDoc(File file) {
         String path = file.toString();
         Document doc = Jsoup.parse(readFile(path));
         Elements docs = doc.select("DOC");
         Doc document;
-        HashSet<Doc> documents = new HashSet<>();
+        ArrayList<Doc> documents = new ArrayList<>();
         //loop throughout all the documents
         for (Element d: docs){
             String doc_num = d.select("DOCNO").text();

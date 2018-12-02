@@ -44,7 +44,7 @@ public class Indexer {
     private HashMap<String,Integer> cityDictionary; //City name -> position in posting
 
     //other
-    private HashSet<Doc> DocumentsToParse;
+    private ArrayList<Doc> DocumentsToParse;
     private List<Thread> threadList;
     private int numberofDocs;
 
@@ -63,7 +63,7 @@ public class Indexer {
     public Indexer(String rootPath,String pathOfPosting, boolean toStem) {
         this.rootPath = rootPath;
         this.pathOfPosting = pathOfPosting;
-        this.DocumentsToParse = new HashSet<>();
+        this.DocumentsToParse = new ArrayList<>();
 
         this.postingObject = new Posting(pathOfPosting);
         this.postingObject.resetPostingCounter();
@@ -115,15 +115,24 @@ public class Indexer {
                             if (corpusDictionary.containsKey(termName)) {//Dic contains the term
                                 updateDF(termName);
                                 updateTF(termName,value.getTf(doc_name));
-                            } else if (!termName.contains("Dollars") && !termName.contains("Yen") && corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
+                                //todo - Yaniv please check it
+                                //check also if the first char is a letter (to filter only Words)
+                            } else if (!termName.contains("Dollars") && !termName.contains("Yen") && Character.isLetter(termName.charAt(0)) && corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
                                 termName = termName.toLowerCase();
                                 updateDF(termName);
                                 updateTF(termName,value.getTf(doc_name));
-                            } else if (!termName.contains("Dollars") && !termName.contains("Yen") && corpusDictionary.containsKey(termName.toUpperCase())) {
+                                //todo - also here
+                            } else if (!termName.contains("Dollars") && !termName.contains("Yen") && Character.isLetter(termName.charAt(0)) && (corpusDictionary.containsKey(termName.toUpperCase()))) {
                                 changeULDic(termName);
                                 updateDF(termName);
                                 updateTF(termName,value.getTf(doc_name));
                             } else {
+                                //todo - yaniv please check it
+                                //if contains "-" the we save it as upper case
+                                //if not contains Dollars or Yen and the first char is not a letter then we save as uppercase
+                                if(termName.contains("-") || (!termName.contains("Dollars") && !termName.contains("Yen") && !Character.isLetter(termName.charAt(0)))){
+                                    termName = termName.toUpperCase();
+                                }
                                 corpusDictionary.put(termName, new TermData(1,value.getTf(doc_name),0)); //term name, file name, position
                             }
                             if (TermAndDocumentsData.containsKey(termName)) {//term is in TermAndDocumentsData already
@@ -142,6 +151,9 @@ public class Indexer {
                                 TermAndDocumentsData.get(termName).put(d.getDoc_num(), newInt);
                             }
                             else {
+//                                if(termName.contains("-") || (!termName.contains("Dollars") && !termName.contains("Yen") && !Character.isLetter(termName.charAt(0)))){
+//                                    termName = termName.toUpperCase();
+//                                }
                                 HashMap<String, Integer> current = new HashMap();
                                 current.put(doc_name, new Integer(value.getTf(doc_name)));
                                 TermAndDocumentsData.put(termName, current);
@@ -378,4 +390,55 @@ public class Indexer {
             LanguageDictionary.clear();
         }
     }
+
+//    public void testSaveDictionaryToDisk(){
+//        Iterator it = this.corpusDictionary.entrySet().iterator();
+//        ArrayList<String> a = new ArrayList<>();
+//        FileWriter fw = null;
+//        try {
+//            fw = new FileWriter(this.pathOfPosting + "\\" + "test");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        while (it.hasNext()) {
+//            Map.Entry pair = (Map.Entry) it.next();
+//            String term = pair.getKey().toString();
+//            a.add(term +"\n");
+//        }
+//        a.sort(Comparator.comparing(String::toLowerCase));
+//        try {
+//            for(String s: a){
+//                fw.write(s);
+//            }
+//            fw.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public void checkDiffernces(){
+//        BufferedReader zero = null,test = null;
+//        try {
+//             zero = new BufferedReader(new FileReader(this.pathOfPosting+"\\"+"0"));
+//             test = new BufferedReader(new FileReader(this.pathOfPosting+"\\"+"test"));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            String line = zero.readLine();
+//            String line2 = test.readLine();
+//            while(line!=null && line2!=null){
+//                String term = line.substring(0,line.indexOf("|"));
+//                if(!term.equals(line2)){
+//                    System.out.println(term +"," + line2);
+//                }
+//                line = zero.readLine();
+//                line2 = test.readLine();
+//            }
+//        }catch (Exception e){
+//        }
+//
+//    }
 }
