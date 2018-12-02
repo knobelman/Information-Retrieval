@@ -9,10 +9,12 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 
 import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
@@ -28,10 +30,11 @@ public class LanguageView implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ArrayList<String> languageCollection = myLanguageController.openLanguageList();
-        ObservableList languageObservableList = FXCollections.observableArrayList();
-        languageObservableList.addAll(languageCollection);
-        langugageView.setItems(languageObservableList);
-        langugageView.setOnMouseClicked(event -> System.out.println("clicked on " + langugageView.getSelectionModel().getSelectedItem()));
+        if(myLanguageController.getLanguageDictionary()!=null) {
+            HashMap<String, String> languageCollection = myLanguageController.getLanguageDictionary();
+            ObservableList languageObservableList = FXCollections.observableArrayList();
+            languageObservableList.addAll(languageCollection.keySet());
+            langugageView.setItems(languageObservableList);
+        }
     }
 }

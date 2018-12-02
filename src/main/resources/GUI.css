@@ -1,0 +1,4 @@
+.root {
+ -fx-background-image:url("/easySearch.png");
+ -fx-border-radius: 20;
+}

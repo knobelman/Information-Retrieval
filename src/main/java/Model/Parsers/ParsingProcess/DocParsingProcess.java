@@ -38,7 +38,7 @@ public class DocParsingProcess implements IParsingProcess {
      */
     public DocParsingProcess(String path, boolean stem) {
         this.stem = stem;
-        readStopWords(path + "\\STOPWORDS");
+        readStopWords(path + "\\stop_words.txt");
         parserClassifier = new ParserClassifier();
     }
 

@@ -37,11 +37,16 @@ public class Indexer {
     private IParsingProcess cityParsingProcess;
 
     //dictionaries
-    private HashMap<String, Pair<ArrayList<String>, CityData>> cityPostingData;// City -> cityData
-    private HashMap<String, TermData> corpusDictionary; //term,totalTF,position in merged posting file
-    private HashMap<String, Doc> DocumentDictionary; //Doc String - > Doc object
-    private HashMap<String,String> LanguageDictionary; //Language -> Docs
     private HashMap<String,Integer> cityDictionary; //City name -> position in posting
+    private HashMap<String, Pair<ArrayList<String>, CityData>> cityPostingData;// City -> cityData
+
+    private HashMap<String, TermData> corpusDictionary; //term,totalTF,position in merged posting file
+
+    private HashMap<String,String> LanguageDictionary; //Language -> Docs
+
+    private HashMap<String,Integer> DocumentDictionary; //DocumentName -> position
+    private HashMap<String, Doc> DocumentPostingData; //DocumentName -> Doc object
+
 
     //other
     private ArrayList<Doc> DocumentsToParse;
@@ -71,6 +76,7 @@ public class Indexer {
         this.readFileObject = new ReadFile();
         this.corpusDictionary = new HashMap<>();
         this.DocumentDictionary = new HashMap<>();
+        this.DocumentPostingData = new HashMap<>();
         this.cityPostingData = new HashMap<>();
         this.LanguageDictionary = new HashMap<>();
         this.cityDictionary = new HashMap<>();
@@ -106,8 +112,11 @@ public class Indexer {
                             addToCityDictionary(d);
                         }
                         ParserObject.parsing(d);
-                        Doc toInsert = new Doc(d.getPath(), d.getCity(), d.getMax_tf(), d.getSpecialWordCount(),d.getMax_tf_String()); //doc to insert to the dictionary
-                        DocumentDictionary.put(d.getDoc_num(), toInsert); //insert to dictionary (Doc name | Doc object)
+
+                        //add to DocumentDictionary
+                        Doc toInsert = new Doc(d.getPath(), d.getMax_tf(), d.getSpecialWordCount(),d.getMax_tf_String()); //doc to insert to the dictionary
+                        DocumentPostingData.put(d.getDoc_num(), toInsert); //insert to dictionary (Doc name | Doc object)
+
                         for (Map.Entry<String, Term> entry : d.getTermsInDoc().entrySet()) {
                             String termName = entry.getKey();//term from doc
                             Term value = entry.getValue();
@@ -117,12 +126,12 @@ public class Indexer {
                                 updateTF(termName,value.getTf(doc_name));
                                 //todo - Yaniv please check it
                                 //check also if the first char is a letter (to filter only Words)
-                            } else if (!termName.contains("Dollars") && !termName.contains("Yen") && Character.isLetter(termName.charAt(0)) && corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
+                            } else if (!termName.contains("Dollars") && !termName.contains("-") && !termName.contains("Yen") && Character.isLetter(termName.charAt(0)) && corpusDictionary.containsKey(termName.toLowerCase())) {//if Dic has lowercase of this word
                                 termName = termName.toLowerCase();
                                 updateDF(termName);
                                 updateTF(termName,value.getTf(doc_name));
                                 //todo - also here
-                            } else if (!termName.contains("Dollars") && !termName.contains("Yen") && Character.isLetter(termName.charAt(0)) && (corpusDictionary.containsKey(termName.toUpperCase()))) {
+                            } else if (!termName.contains("Dollars") && !termName.contains("-") && !termName.contains("Yen") && Character.isLetter(termName.charAt(0)) && (corpusDictionary.containsKey(termName.toUpperCase()))) {
                                 changeULDic(termName);
                                 updateDF(termName);
                                 updateTF(termName,value.getTf(doc_name));
@@ -166,6 +175,7 @@ public class Indexer {
         }
         createFinalPosting();
         writeCityPostingFile();
+        writeDocumentPostingFile();
     }
 
     private void addToLanguageDictionary(Doc d) {
@@ -255,6 +265,47 @@ public class Indexer {
         return cityPostingData;
     }
 
+    /**
+     * This method write document posting file
+     */
+    public void writeDocumentPostingFile(){
+        int position = 0;
+        try {
+            ArrayList<String> s = new ArrayList();
+            Iterator it = this.DocumentPostingData.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+                String docName = pair.getKey().toString();
+                Doc value = (Doc) pair.getValue();
+                String path = value.getPath();
+                String maxTf = value.getMax_tf()+"";
+                String specialWordCount = value.getSpecialWordCount()+"";
+                String maxTfString = value.getMax_tf_String();
+                String Data = docName + "|" + path + "|" + maxTf + "|" + specialWordCount +"|" + maxTfString;
+                try {
+                    s.add( Data + "\n");
+                } catch (Exception e) {
+                }
+                it.remove();
+            }
+            s.sort(Comparator.naturalOrder());
+            FileWriter fw = new FileWriter(this.pathOfPosting + "\\" + "DocumentPostingFile");
+            for (String a : s) {
+                String toAdd = a.substring(a.indexOf("|")+1);
+                DocumentDictionary.put(a.substring(0,a.indexOf("|")),new Integer(position));
+                fw.write(toAdd);
+                position += toAdd.length();
+            }
+            fw.close();
+            s.clear();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method write city posting file
+     */
     public void writeCityPostingFile() {
         int position = 0;
         try {
@@ -366,10 +417,10 @@ public class Indexer {
 
     public String getLine(long position){
         try {
-            RandomAccessFile rndFile = new RandomAccessFile(this.pathOfPosting + "\\" + "OTHER","r");
+            RandomAccessFile rndFile = new RandomAccessFile(this.pathOfPosting + "\\" + "DocumentPostingFile","r");
             rndFile.seek(position);
-//            String line = rndFile.readLine();
-//            System.out.println(line);
+            String line = rndFile.readLine();
+            System.out.println(line);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -389,6 +440,10 @@ public class Indexer {
         if(LanguageDictionary != null){
             LanguageDictionary.clear();
         }
+    }
+
+    public HashMap<String,String> getLanguageDictionary() {
+        return this.LanguageDictionary;
     }
 
 //    public void testSaveDictionaryToDisk(){

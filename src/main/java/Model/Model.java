@@ -37,6 +37,7 @@ public class Model {
         try {
             long startTime = System.currentTimeMillis();
             indexer.init(new File(pathOfCorpus));
+            //indexer.getLine(517057);
             long endTime = System.currentTimeMillis();
 
             //Read seek
@@ -92,5 +93,12 @@ public class Model {
 
     public void reset() {
         indexer.reset();
+    }
+
+    public HashMap<String,String> getLanguageDictionary(){
+        if(indexer == null){
+            return null;
+        }
+        return indexer.getLanguageDictionary();
     }
 }

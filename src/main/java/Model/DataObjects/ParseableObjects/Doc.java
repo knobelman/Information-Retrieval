@@ -62,12 +62,10 @@ public class Doc implements IParseableObject,Serializable {
     /**
      * Copy C'tor
      * @param path
-     * @param city
      * @param max_tf
      * @param SpecialWordCount
      */
-    public Doc(String path, String city, int max_tf, int SpecialWordCount,String max_tf_String) {
-        this.city = city;
+    public Doc(String path,int max_tf, int SpecialWordCount, String max_tf_String) {
         this.path = path;
         this.max_tf = max_tf;
         this.specialWordCount = SpecialWordCount;
@@ -186,7 +184,7 @@ public class Doc implements IParseableObject,Serializable {
      * @return the special word count
      */
     public int getSpecialWordCount() {
-        return this.getTermsInDoc().size();
+        return this.specialWordCount;
     }
 
     /**
@@ -212,4 +210,5 @@ public class Doc implements IParseableObject,Serializable {
     public String getMax_tf_String() {
         return max_tf_String;
     }
+
 }
