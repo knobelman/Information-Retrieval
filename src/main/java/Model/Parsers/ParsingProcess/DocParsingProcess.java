@@ -24,15 +24,9 @@ import java.util.Stack;
  * allTermsInCorpus -
  */
 public class DocParsingProcess implements IParsingProcess {
-    //    private HashMap hmNum = new HashMap<String, String>();
-//    private HashMap hmSign = new HashMap<String, String>();
-//    private HashMap hmDate = new HashMap<String, String>();
-//    private HashSet hsDot = new HashSet<String>();
     private HashSet stop_words = new HashSet<String>();
     private Stack moreThenOneWord = new Stack<String>();
-    private HashSet allTermsInCorpus = new HashSet<String>();
     private AParser parserClassifier;
-    int i;
     boolean stem;
 
     public DocParsingProcess(){
@@ -44,7 +38,7 @@ public class DocParsingProcess implements IParsingProcess {
      */
     public DocParsingProcess(String path, boolean stem) {
         this.stem = stem;
-        readStopWords(path + "\\STOPWORDS");//todo take care of "WORD
+        readStopWords(path + "\\STOPWORDS");
         parserClassifier = new ParserClassifier();
     }
 
@@ -83,13 +77,13 @@ public class DocParsingProcess implements IParsingProcess {
 
     public void parsing(IParseableObject documentToParse) {
         Doc document = (Doc) documentToParse;
-        parsing(document, stem);
+        parsing(document);
     }
 
-    public Doc parsing(Doc document, boolean stem) {
-        String text = document.getDoc_content();//("[: () -- ]");
+    public Doc parsing(Doc document) {
+        String text = document.getDoc_content();
         String[] tokenz = text.split("[\\*\\\n\\ \\:\\;\\?\\!\\#\\]\\|\\}\\{\\~\\�\\[\\_\\+\\'\"'\\(\\)\\>\\<\\=\\⪕\\⪖\\Ω]+");//("[: ()|]");
-        for (i = 0; i < tokenz.length; i++) {//for to go over all tokenz
+        for (int i = 0; i < tokenz.length; i++) {//for to go over all tokenz
             String current = tokenz[i];
             String currValue;
             if (current.contains("--")) {//fill stack with all words to work on
@@ -108,7 +102,6 @@ public class DocParsingProcess implements IParsingProcess {
                 continue;
             do {
                 current = (String) moreThenOneWord.pop();
-                //current = trimming(current);
                 if (current.length() == 0 || current.equals("")) {//check if empty
                     continue;
                 }
@@ -153,6 +146,6 @@ public class DocParsingProcess implements IParsingProcess {
         if (stop_words.contains(currValue.toLowerCase()))
             return;
         document.addTermToDoc(currValue);
-        allTermsInCorpus.add(currValue);//todo
+//        allTermsInCorpus.add(currValue);//todo
     }
 }
