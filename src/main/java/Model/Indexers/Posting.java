@@ -185,7 +185,7 @@ public class Posting {
             e.printStackTrace();
         }
 
-      return "";
+        return "";
     }
 
     public void createEvenPostingFiles(int currPostingNumber, HashMap<String, TermData> corpusDictionary){
@@ -322,4 +322,3 @@ public class Posting {
         Posting.postingFileCounter = 0;
     }
 }
-

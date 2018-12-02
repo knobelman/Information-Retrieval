@@ -114,24 +114,73 @@ public class CityParsingProcess implements IParsingProcess {
      * @param s - to round
      * @return rounded number
      */
-    private String roundby2digits(String s){
-        char lastChar = s.charAt(s.length()-1);
-        String withoutLastChar = s.substring(0,s.length()-1);
-        String[] spllited = withoutLastChar.split("\\.");
-        String leftSide = spllited[0];
-        String rightSide = spllited[1];
-        int secondNumber;
-        String fixed ="";
-        if(rightSide.length() > 2) {
-            secondNumber = Integer.parseInt(String.valueOf(rightSide.charAt(1)));
-            int thirdNumber = Integer.parseInt(String.valueOf(rightSide.charAt(2)));
-            if (thirdNumber >= 5) {
-                secondNumber += 1;
+    private static String roundby2digits(String s){
+        char lastChar = s.charAt(s.length()-1); //M OR K
+        if(lastChar =='M' || lastChar =='K') {
+            String withoutLastChar = s.substring(0, s.length() - 1);
+            String[] spllited = withoutLastChar.split("\\.");
+            String leftSide = spllited[0];
+            String rightSide = spllited[1];
+            int secondNumber;
+            String fixed = "";
+            if (rightSide.length() > 2) {
+                secondNumber = Integer.parseInt(String.valueOf(rightSide.charAt(1)));
+                int thirdNumber = Integer.parseInt(String.valueOf(rightSide.charAt(2)));
+                if (thirdNumber >= 5) {
+                    if(secondNumber == 9) {
+                        secondNumber = 0;
+                        int first_digit = Integer.parseInt(String.valueOf(rightSide.charAt(0)));
+                        first_digit += 1;
+                        fixed = leftSide + "." + first_digit + (secondNumber + "") + lastChar;
+                    }else {
+                        secondNumber += 1;
+                        fixed = leftSide + "." + rightSide.charAt(0) + (secondNumber + "") + lastChar;
+
+                    }
+                }else {
+                    fixed = leftSide + "." + rightSide.charAt(0) + (secondNumber + "") + lastChar;
+                }
+            } else {
+                fixed = leftSide + "." + rightSide + lastChar;
             }
-            fixed = leftSide + "." + rightSide.charAt(0) + (secondNumber + "") + lastChar;
-        }else{
-            fixed = leftSide + "." + rightSide + lastChar;
+            return fixed;
         }
-        return fixed;
+        else{
+            //not contains M OR K (FOR EXAMPLE: 1.3468)
+            String[] spllited = s.split("\\.");
+            String leftSide = spllited[0];
+            String rightSide = spllited[1];
+            int secondNumber;
+            String fixed;
+            if (rightSide.length() > 2) {
+                secondNumber = Integer.parseInt(String.valueOf(rightSide.charAt(1)));
+                int thirdNumber = Integer.parseInt(String.valueOf(rightSide.charAt(2)));
+                if (thirdNumber >= 5) {
+                    if(secondNumber == 9){
+                        secondNumber =0;
+                        int first_digit = Integer.parseInt(String.valueOf(rightSide.charAt(0)));
+                        first_digit +=1;
+                        fixed = leftSide + "." + first_digit + (secondNumber + "");
+                    }else {
+                        secondNumber += 1;
+                    }
+                }
+                fixed = leftSide + "." + rightSide.charAt(0) + (secondNumber + "");
+            } else {
+                fixed = leftSide + "." + rightSide;
+            }
+            return fixed;
+        }
+    }
+
+    public static void main(String[]args){
+//        System.out.println(roundby2digits("1.496M"));
+//        System.out.println(roundby2digits("1.446K"));
+//        System.out.println(roundby2digits("1.79"));
+//        System.out.println(roundby2digits("1.855"));
+//        System.out.println(roundby2digits("236.654K"));
+//        System.out.println(roundby2digits("1,232,232.356M"));
+
     }
 }
+

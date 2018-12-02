@@ -37,10 +37,11 @@ public class Indexer {
     private IParsingProcess cityParsingProcess;
 
     //dictionaries
-    private HashMap<String, Pair<ArrayList<String>, CityData>> cityDictionary;// City -> cityData
+    private HashMap<String, Pair<ArrayList<String>, CityData>> cityPostingData;// City -> cityData
     private HashMap<String, TermData> corpusDictionary; //term,totalTF,position in merged posting file
     private HashMap<String, Doc> DocumentDictionary; //Doc String - > Doc object
     private HashMap<String,String> LanguageDictionary; //Language -> Docs
+    private HashMap<String,Integer> cityDictionary; //City name -> position in posting
 
     //other
     private HashSet<Doc> DocumentsToParse;
@@ -70,8 +71,9 @@ public class Indexer {
         this.readFileObject = new ReadFile();
         this.corpusDictionary = new HashMap<>();
         this.DocumentDictionary = new HashMap<>();
-        this.cityDictionary = new HashMap<>();
+        this.cityPostingData = new HashMap<>();
         this.LanguageDictionary = new HashMap<>();
+        this.cityDictionary = new HashMap<>();
 
         this.threadList = new CopyOnWriteArrayList<>();
         this.cityParsingProcess = new CityParsingProcess();
@@ -175,9 +177,6 @@ public class Indexer {
      */
     private void updateDF(String termName) {
         corpusDictionary.get(termName).incDF(1);
-//        Pair<Integer, Integer> tmp = corpusDictionary.get(termName);
-//        tmp = new Pair<>(tmp.getKey().intValue() + 1, tmp.getValue());
-//        corpusDictionary.replace(termName, tmp);
     }
 
     /**
@@ -206,28 +205,28 @@ public class Indexer {
      * @param document - current document
      */
     public void addToCityDictionary(Doc document) {
-        if (!cityDictionary.containsKey(document.getCity())) { //if city not in the dictionary
-            String city = document.getCity(); //get city name from the doc
-            //remove spam
-            if(city.equals("--FOR") || city.equals("--") || Character.isDigit(city.charAt(0))){
-                return;
-            }
-            String doc_num = document.getDoc_num(); // get doc name from the dock
-            String positions_in_doc = document.getPositionOfCity().toString();
-            CityData cityData = ((CityParsingProcess) cityParsingProcess).getData(city); //get data about the city
-            ArrayList<String> list = new ArrayList<>();
-            list.add(doc_num + ":" + positions_in_doc); //add doc name to array list with positions in doc
-            Pair<ArrayList<String>, CityData> pair = new Pair<>(list, cityData); //insert data into new pair
-            this.cityDictionary.put(city, pair); //insert to dictionary
+        if (!cityPostingData.containsKey(document.getCity())) { //if city not in the dictionary
+                String city = document.getCity(); //get city name from the doc
+                //remove spam
+                if (city.equals("--FOR") || city.equals("--") || Character.isDigit(city.charAt(0))) {
+                    return;
+                }
+                String doc_num = document.getDoc_num(); // get doc name from the dock
+                String positions_in_doc = document.getPositionOfCity().toString();
+                CityData cityData = ((CityParsingProcess) cityParsingProcess).getData(city); //get data about the city
+                ArrayList<String> list = new ArrayList<>();
+                list.add(doc_num + ":" + positions_in_doc); //add doc name to array list with positions in doc
+                Pair<ArrayList<String>, CityData> pair = new Pair<>(list, cityData); //insert data into new pair
+                this.cityPostingData.put(city, pair); //insert to dictionary
         } else {
-            //if city is in the dictionary
-            Pair<ArrayList<String>, CityData> tmp = cityDictionary.get(document.getCity()); //get existing pair
-            ArrayList<String> current = tmp.getKey(); //get array list from the pair
-            CityData city_data = tmp.getValue(); //get city data from the pair
-            current.add(document.getDoc_num() + ":" + document.getPositionOfCity());//add new doc and position in doc to the pair
-            Pair<ArrayList<String>, CityData> newPair = new Pair<>(current, city_data); //create new pair with the additional data
-            cityDictionary.replace(document.getCity(), newPair); //replace the existing data in the dictionary with the new data
-        }
+                //if city is in the dictionary
+                Pair<ArrayList<String>, CityData> tmp = cityPostingData.get(document.getCity()); //get existing pair
+                ArrayList<String> current = tmp.getKey(); //get array list from the pair
+                CityData city_data = tmp.getValue(); //get city data from the pair
+                current.add(document.getDoc_num() + ":" + document.getPositionOfCity());//add new doc and position in doc to the pair
+                Pair<ArrayList<String>, CityData> newPair = new Pair<>(current, city_data); //create new pair with the additional data
+                cityPostingData.replace(document.getCity(), newPair); //replace the existing data in the dictionary with the new data
+            }
     }
 
     public void createFinalPosting() {
@@ -241,13 +240,14 @@ public class Indexer {
     }
 
     public HashMap<String, Pair<ArrayList<String>, CityData>> getCityDictionary() {
-        return cityDictionary;
+        return cityPostingData;
     }
 
     public void writeCityPostingFile() {
+        int position = 0;
         try {
             ArrayList<String> s = new ArrayList();
-            Iterator it = this.cityDictionary.entrySet().iterator();
+            Iterator it = this.cityPostingData.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry) it.next();
                 String cityName = pair.getKey().toString();
@@ -255,8 +255,7 @@ public class Indexer {
                 CityData c = (CityData) ((Pair) pair.getValue()).getValue();
                 try {
                     if(c == null){
-                        String data ="";
-                        s.add(cityName + "|" + alist + "|" + data + "\n");
+                        s.add(cityName + "|" + alist + "|" + "\n");
                     }else {
                         String data = c.getCountryName() + "|" + c.getPopulation() + "|" + c.getCurrency();
                         s.add(cityName + "|" + alist + "|" + data + "\n");
@@ -268,9 +267,13 @@ public class Indexer {
             s.sort(Comparator.naturalOrder());
             FileWriter fw = new FileWriter(this.pathOfPosting + "\\" + "CityPostingFile");
             for (String a : s) {
-                fw.write(a);
+                String toAdd = a.substring(a.indexOf("|")+1);
+                cityDictionary.put(a.substring(0,a.indexOf("|")),new Integer(position));
+                fw.write(toAdd);
+                position += toAdd.length();
             }
             fw.close();
+            s.clear();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -365,8 +368,8 @@ public class Indexer {
         if(corpusDictionary != null){
             corpusDictionary.clear();
         }
-        if(cityDictionary != null){
-            cityDictionary.clear();
+        if(cityPostingData != null){
+            cityPostingData.clear();
         }
         if(DocumentDictionary != null){
             DocumentDictionary.clear();
