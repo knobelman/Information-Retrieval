@@ -10,7 +10,6 @@ import java.util.HashSet;
  */
 public abstract class AParser {
     protected HashMap hmNum ;
-    //protected HashMap hmSign;
     protected HashMap hmDate;
     protected HashSet hsDot ;
     protected HashMap hmPriceSize ;
@@ -18,7 +17,6 @@ public abstract class AParser {
 
     public AParser() {
         hmNum = new HashMap<String, String>();
-        //hmSign = new HashMap<String, String>();
         hmDate = new HashMap<String, String>();
         hsDot = new HashSet<String>();
         hmPriceSize = new HashMap<String, String>();
@@ -43,7 +41,6 @@ public abstract class AParser {
         hsDot.add(','); hsDot.add('.'); hsDot.add(':'); hsDot.add(';'); hsDot.add('|'); hsDot.add(' '); hsDot.add('"');
         hsDot.add('['); hsDot.add(']'); hsDot.add('*'); hsDot.add('\'');hsDot.add('+'); hsDot.add('"'); hsDot.add('\\');
         hsDot.add('?'); hsDot.add('-'); hsDot.add('&'); hsDot.add('`'); hsDot.add('!'); hsDot.add('/'); hsDot.add('#');
-        int i;
     }
 
     protected abstract String parsing(String s1, String s2, String s3, String s4);
@@ -146,59 +143,6 @@ public abstract class AParser {
         }
         return current;
     }
-
-//    /**
-//     * 450,000,000, 1,000,000
-//     *
-//     * @param s1 - price with comas
-//     * @return - the correct representation
-//     */
-//    protected String toMillion(String s1) {
-//        boolean done = false;
-//        String tmpS1 = s1;
-//        String[] s1SplitDot=null;
-//        boolean containsDot = false;
-//        if(s1.contains(".")){
-//            containsDot = true;
-//            done = true;
-//            s1SplitDot = s1.split("\\.");
-//            tmpS1 = s1SplitDot[0];
-//        }
-//        String[] tmp = tmpS1.split(",");
-//        if (tmp.length < 3)//if less then 1,000,000
-//        {
-//            return s1;
-//        }
-//        else {
-//            String s1Million = "";
-//            int count = 0;
-//            int j = tmp.length - 1;//the last array cell
-//            while (tmp[j].equals("000") && !done) {
-//                count++;
-//                j--;
-//                if (count == 2) {
-//                    done = true;
-//                    break;
-//                }
-//            }
-//            if (count != 2) {
-//                while (count != 2) {
-//                    s1Million = tmp[j] + s1Million;
-//                    count++;
-//                    j--;
-//                }
-//                s1Million = "." + s1Million;
-//            }
-//            for (; j >= 0; j--) {
-//                s1Million = tmp[j] + s1Million;
-//            }
-//            if(containsDot){
-//                s1Million += s1SplitDot[1];
-//            }
-//
-//            return s1Million;
-//        }
-//    }
 
     /**
      * Check if number is with comas
