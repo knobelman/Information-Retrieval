@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane alignment="center" hgap="10" stylesheets="@GUI.css" style="-fx-background-color: #E3DAC9;" vgap="10" xmlns="http://javafx.com/javafx/8.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.GUI">
+<GridPane alignment="center" hgap="10" style="-fx-background-color: #E3DAC9;" stylesheets="@GUI.css" vgap="10" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.GUI">
    <children>
       <GridPane prefHeight="372.0" prefWidth="524.0">
         <columnConstraints>
@@ -40,7 +40,7 @@
                <GridPane.margin>
                   <Insets bottom="15.0" left="30.0" />
                </GridPane.margin></Button>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Corpus Path" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Corpus Path" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                <font>
                   <Font size="16.0" />
                </font>
@@ -48,7 +48,7 @@
                   <Insets top="5.0" />
                </GridPane.margin>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Positng Path" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Positng Path" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
                <font>
                   <Font size="16.0" />
                </font>
@@ -56,7 +56,7 @@
                   <Insets top="5.0" />
                </GridPane.margin>
             </Text>
-            <CheckBox fx:id="STEMM" mnemonicParsing="false" text="STEM" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <CheckBox fx:id="STEMM" mnemonicParsing="false" text="STEM" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets left="230.0" />
                </GridPane.margin>
@@ -73,7 +73,7 @@
                <GridPane.margin>
                   <Insets bottom="10.0" />
                </GridPane.margin></TextField>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select Language" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Language" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                <font>
                   <Font size="16.0" />
                </font>
@@ -87,7 +87,7 @@
                   <Insets left="150.0" top="20.0" />
                </GridPane.margin>
             </Button>
-            <Label prefHeight="32.0" prefWidth="327.0" text="Information Retrieval Engine" GridPane.columnIndex="1" GridPane.halignment="LEFT">
+            <Label prefHeight="32.0" prefWidth="327.0" text="Information Retrieval Engine" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="LEFT">
                <font>
                   <Font size="22.0" />
                </font>
@@ -97,12 +97,12 @@
                   <Insets left="20.0" top="5.0" />
                </GridPane.margin>
             </Button>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Indexing" textAlignment="RIGHT" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Start Indexing" textAlignment="RIGHT" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <font>
                   <Font size="16.0" />
                </font>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dictionary" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Dictionary" GridPane.halignment="CENTER" GridPane.rowIndex="5">
                <font>
                   <Font size="16.0" />
                </font>
