@@ -57,7 +57,7 @@ public class Model {
 
             //
             tfp.countNumbers(indexer.getCorpusDictionary());
-            tfp.countCountries();
+            tfp.maxMinTotalTF(indexer.getCorpusDictionary());
             //
 
 

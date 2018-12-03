@@ -1,13 +1,14 @@
 package Model;
 
+import Model.DataObjects.Term;
 import Model.DataObjects.TermData;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class testesForPaper {
+    ArrayList<String> allLines;
     public void countNumbers(HashMap<String, TermData> corpusDictionary) {
+        allLines = new ArrayList<>();
         Iterator it = corpusDictionary.entrySet().iterator();
         int counter = 0;
         String term = "";
@@ -15,6 +16,7 @@ public class testesForPaper {
         System.out.println("Checking starts");
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
+            allLines.add(pair.getKey() + "|" + ((TermData)pair.getValue()).getTotalTF());
             term = (String)pair.getKey();
             if(term.charAt(term.length()-1)=='K' || term.charAt(term.length()-1)=='M' || term.charAt(term.length()-1)=='B')
                 tmp = term.substring(0,term.length()-1);
@@ -22,11 +24,10 @@ public class testesForPaper {
                 tmp = term;
             if(isValidNum(tmp)) {
                 counter++;
-                System.out.println(term);
             }
             it.remove();
         }
-        System.out.println(counter);
+        System.out.println("3. Number of numbers: "+counter);
     }
 
     protected boolean isValidNum(String current){
@@ -95,6 +96,37 @@ public class testesForPaper {
         return count>1;
     }
 
-    public void countCountries() {//
+    public void maxMinTotalTF(HashMap<String, TermData> corpusDictionary) {
+        sort();
+        List<String> first = allLines.subList(0, 11);
+        List<String> last = allLines.subList(allLines.size()-11,allLines.size()-1);
+
+        System.out.println("7. ");
+        System.out.println("Smallest: ");
+        for(String s:first)//smallest
+            System.out.println(s);
+        System.out.println("Biggest: ");
+        for(String s:last)//biggest
+            System.out.println(s);
+    }
+
+    /**
+     * This method sort the lines in a temp posting file before writing to disk
+     */
+    private void sort(){
+        allLines.sort((o1, o2) -> {
+            String[]first = o1.split("\\|");
+            String[]second = o2.split("\\|");
+            String tf1 = first[1];
+            String tf2 = second[1];
+            int int1 = Integer.parseInt(tf1);
+            int int2 = Integer.parseInt(tf2);
+            if(int1<int2)
+                return -1;
+            else if(int1>int2)
+                return 1;
+            else
+                return 0;
+        });
     }
 }

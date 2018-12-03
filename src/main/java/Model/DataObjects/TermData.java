@@ -19,12 +19,9 @@ public class TermData implements Serializable{
         this.position = position;
     }
 
-    public void setDf(int df) {
-        this.df = df;
-    }
 
-    public void setTotalTF(int totalTF) {
-        this.totalTF = totalTF;
+    public int getTotalTF() {
+        return totalTF;
     }
 
     public void setPosition(int position) {
@@ -33,10 +30,6 @@ public class TermData implements Serializable{
 
     public int getDf() {
         return df;
-    }
-
-    public int getTotalTF() {
-        return totalTF;
     }
 
     public int getPosition() {
