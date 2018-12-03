@@ -15,7 +15,7 @@ public class GUIController extends Acontroller {
 
     //call to model to start indexing
     public void startIndexing(String pathOfCorpus, String pathOfPosting, boolean stem){
-        myModel.startIndexing(pathOfCorpus,pathOfPosting,stem);
+        myModel.startIndexing(pathOfCorpus,pathOfPosting,stem);//
     }
 
     public void saveDictionry(boolean stem) {
