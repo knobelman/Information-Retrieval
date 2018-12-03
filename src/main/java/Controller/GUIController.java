@@ -22,8 +22,8 @@ public class GUIController extends Acontroller {
         myModel.saveDictionary(stem);
     }
 
-    public void loadDictionary(File file){
-        myModel.loadDictionary(file);
+    public void loadDictionary(String path,boolean stem){
+        myModel.loadDictionary(path, stem);
     }
 
     public void getLine(long position) {

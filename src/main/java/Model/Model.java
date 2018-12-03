@@ -65,11 +65,12 @@ public class Model {
         indexer.saveDictionary(stem);
     }
 
-    public void loadDictionary(File file){
+    public void loadDictionary(String path,boolean stem){
         indexer = new Indexer();
         try {
-            indexer.loadDictionary(file);
+            indexer.loadDictionary(path,stem);
         }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

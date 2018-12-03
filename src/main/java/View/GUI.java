@@ -193,10 +193,6 @@ public class GUI {
     }
 
     public void loadDictionary() {
-//        FileChooser chooser = new FileChooser();
-//        chooser.setTitle("Load Dictionary");
-//        File file = chooser.showOpenDialog(null);
-//        if (file != null) {
         if(PostingPath.getText().equals("")){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Path not specified");
@@ -207,7 +203,7 @@ public class GUI {
         else {
             File file;
             if (!STEMM.isSelected()) {
-                file = new File(PostingPath.getText() + "\\CorpusDictionaryWithoutStem");//todo
+                file = new File(PostingPath.getText() + "\\CorpusDictionary");
                 if(!file.exists()){
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Dictionary not exists");
@@ -216,10 +212,10 @@ public class GUI {
                     alert.show();
                 }
                 else {
-                    myGUIController.loadDictionary(file);
+                    myGUIController.loadDictionary(PostingPath.getText(),STEMM.isSelected());
                 }
             } else {
-                file = new File(PostingPath.getText() + "\\withStem\\CorpusDictionaryWithStem");
+                file = new File(PostingPath.getText() + "\\withStem\\CorpusDictionary");
                 if(!file.exists()){
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Dictionary not exists");
@@ -227,7 +223,7 @@ public class GUI {
                     alert.setContentText("Please run and save dictionary before");
                     alert.show();
                 }else {
-                    myGUIController.loadDictionary(file);
+                    myGUIController.loadDictionary(PostingPath.getText(),STEMM.isSelected());
                 }
             }
         }
