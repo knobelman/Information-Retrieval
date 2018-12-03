@@ -113,7 +113,7 @@ public class ParserClassifier extends AParser {
      */
     private String numberFirst(String s1, String s2, String s3, String s4) {
         if(s1.length()<=2 & hmDate.containsKey(trimming(s2))){//the second token is a month
-            return dateParser.dayFirst(s1,trimming(s2));
+            return dateParser.dayFirst(s1,trimming(s2),trimming(s3));
         }
         else if(s2.equals("percentage") || s2.equals("percent") || s2.equals("Percent") || s2.equals("Percentage")){//the second word is percent\percentage
             return percentParser.parsing(s1,s2,"","");

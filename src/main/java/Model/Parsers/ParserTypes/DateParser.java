@@ -22,13 +22,12 @@ public class DateParser extends AParser {
                 return s2 + "-" + hmDate.get(s1);
             }
             else if ((s2.length() == 1 || s2.length() == 2) && !s2.equals("0")) {//the number is a day in a month and not 0
+                i=1;
                 int day = Integer.parseInt(s2);
                 if (day < 10) {//if 1-9
-                    i=1;
                     return hmDate.get(s1) + "-0" + s2;
                 }
                 else if (day >= 10 && day <= 31) {//10-31
-                    i=1;
                     return hmDate.get(s1) + "-" + s2;
                 }
             }
@@ -55,16 +54,19 @@ public class DateParser extends AParser {
      * @param s2 is a month
      * @return - the correct version of the date - or if not date return day itself
      */
-    protected String dayFirst(String s1, String s2){
+    protected String dayFirst(String s1, String s2,String s3){
         s1 = isValidDay(s1);
         if(s1.equals("0")) {
             i=0;
             return s1;
         }
         else{
-            i=1;
+            if(isValidYear(s3))
+                i=0;
+            else
+                i=1;
             return hmDate.get(s2) + "-" + s1;
-        }
+    }
     }
 
     /**
