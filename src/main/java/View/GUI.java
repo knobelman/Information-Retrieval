@@ -92,7 +92,7 @@ public class GUI {
                     }
                     //send to controller with stemming
                     Alert alert = showWindow();
-                    myGUIController.startIndexing(pathOfCorpus, pathOfPosting + "\\withStem", true);
+                    myGUIController.startIndexing(pathOfCorpus, pathOfPosting, true);
                     alert.close();
                     saveDictionary.setDisable(false);
                     RESET.setDisable(false);

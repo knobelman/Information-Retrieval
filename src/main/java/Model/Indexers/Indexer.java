@@ -356,7 +356,7 @@ public class Indexer {
             }
             //with stemming
             else {
-                fileOne = new File(this.pathOfPosting + "\\withStem\\" + "CorpusDictionaryWithStem");
+                fileOne = new File(this.pathOfPosting + "\\" + "CorpusDictionaryWithStem");
             }
             if(corpusDictionary.isEmpty()){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
