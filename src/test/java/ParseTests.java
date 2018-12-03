@@ -248,7 +248,7 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("12","|1-12/93","1-12/93");
 //        count +=1;
-//        pass += test("13","-5","-5");
+//        pass += test("13","5 ../1/5.,","5 1/5");
 //        count +=1;
 //        pass += test("14","Mr Tomiichi Murayama, Japan's new Socialist prime minister, yesterday\n" +
 //                "attempted to win confidence in his much-criticised government by pledging to\n" +
@@ -267,7 +267,7 @@ public class ParseTests {
     }
 
     public static int test(String number, String input,String output) {
-        IParsingProcess p = new DocParsingProcess("C:\\Users\\Maor\\Desktop\\corpus",false);
+        IParsingProcess p = new DocParsingProcess("C:\\Users\\Yaniv\\Desktop\\corpus",false);
         Doc doc1 = new Doc();
         doc1.setDoc_content(input);
         p.parsing(doc1);

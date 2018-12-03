@@ -207,7 +207,7 @@ public class GUI {
         else {
             File file;
             if (!STEMM.isSelected()) {
-                file = new File(PostingPath.getText() + "\\CorpusDictionaryWithoutStem");
+                file = new File(PostingPath.getText() + "\\CorpusDictionaryWithoutStem");//todo
                 if(!file.exists()){
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Dictionary not exists");

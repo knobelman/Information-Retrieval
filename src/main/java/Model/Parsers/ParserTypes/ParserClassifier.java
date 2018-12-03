@@ -48,7 +48,7 @@ public class ParserClassifier extends AParser {
         }
         //"Between xyz and abc" (xyz,abc = number) VVV
         else if ((s1.equals("Between") || s1.equals("between")) && isValidNum(s2) && s3.equals("and") && isValidNum(s4)) {
-            currValue = current + " " + s2 + " " + s3 + " " + s4;
+            currValue = current + " " + trimming(s2) + " " + s3 + " " + trimming(s4);
             i = 3;
         }
         //$
@@ -123,9 +123,9 @@ public class ParserClassifier extends AParser {
         }
         else if(s2.contains("/")){//valid number fraction ...
             if(s3.equals("Dollars") || s3.equals("dollars"))//valid number fraction Dollars
-                return dollarParser.PriceFractionDollars(s1,s2,s3);
+                return dollarParser.PriceFractionDollars(s1,trimming(s2),s3);
             else//valid number fraction only
-                return numberParser.parsing(s1,s2,"","");
+                return numberParser.parsing(s1,trimming(s2),"","");
         }
         else if(hmPriceSize.containsKey(s2)){//valid number million\billion\trillion\m\bn\tn
             if(s3.equals("Dollars") || s3.equals("dollars")) {//...Dollars
