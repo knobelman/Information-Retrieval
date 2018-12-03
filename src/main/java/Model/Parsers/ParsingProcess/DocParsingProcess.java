@@ -52,6 +52,7 @@ public class DocParsingProcess implements IParsingProcess {
         try {
             br = new BufferedReader(new FileReader(fileName));
         } catch (FileNotFoundException e) {
+//            e.printStackTrace();
         }
         try {
             String line = br.readLine();
@@ -60,10 +61,12 @@ public class DocParsingProcess implements IParsingProcess {
                 line = br.readLine();
             }
         } catch (IOException e) {
+//            e.printStackTrace();
         } finally {
             try {
                 br.close();
             } catch (IOException e) {
+//                e.printStackTrace();
             }
         }
     }

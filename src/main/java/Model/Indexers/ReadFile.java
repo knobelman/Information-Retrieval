@@ -68,6 +68,7 @@ public class ReadFile {
         try {
             br = new BufferedReader(new FileReader(fileName));
         } catch (FileNotFoundException e) {
+//            e.printStackTrace();
         }
         try {
             String line = br.readLine();
@@ -78,12 +79,12 @@ public class ReadFile {
             }
             return sb.toString();
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         } finally {
             try {
                 br.close();
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }
         return sb.toString();

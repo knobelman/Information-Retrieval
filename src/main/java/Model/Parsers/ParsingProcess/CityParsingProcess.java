@@ -43,9 +43,9 @@ public class CityParsingProcess implements IParsingProcess {
 
             //cityAndCountry
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         } catch (ParseException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -80,9 +80,9 @@ public class CityParsingProcess implements IParsingProcess {
         try {
             obj2 = (JSONObject) parser.parse(new FileReader(directory.getAbsoluteFile() + "\\src\\main\\resources\\countriesAndCities.json"));
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         } catch (ParseException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         Iterator it = obj2.entrySet().iterator();
         while (it.hasNext()) {

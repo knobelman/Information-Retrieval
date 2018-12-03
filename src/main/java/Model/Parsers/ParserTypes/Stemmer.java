@@ -414,12 +414,14 @@ public class Stemmer {
                 }
                 }
                 catch (IOException e)
-                {  System.out.println("error reading " + args[i]);
+                {
+//                    e.printStackTrace();
                     break;
                 }
             }
             catch (FileNotFoundException e)
-            {  System.out.println("file " + args[i] + " not found");
+            {
+//                e.printStackTrace();
                 break;
             }
     }

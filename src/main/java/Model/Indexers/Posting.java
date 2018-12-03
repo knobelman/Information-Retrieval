@@ -78,7 +78,7 @@ public class Posting {
             clearDic();
             postingFileCounter++;
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
     /**
@@ -147,7 +147,7 @@ public class Posting {
             second.close();
             bw.close();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -182,7 +182,7 @@ public class Posting {
             String secondNewLine = currentTerm + "|DF:" + newDF + "|" + cut2[2];//term + "\DF" + newDF + "|" + TF
             return secondNewLine;
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
       return "";
@@ -200,7 +200,7 @@ public class Posting {
             mergeBetweenTempPostingFiles("" + (lastPosting), "" + (lastPosting-1), mergedBuffer,corpusDictionary);
             mergedBuffer.close();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         lFILE.delete();
         blFILE.delete();
@@ -229,7 +229,7 @@ public class Posting {
                     mergedBuffer.close();
                     mergedWriter.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
                 lFILE.delete();
                 blFILE.delete();
@@ -262,7 +262,7 @@ public class Posting {
             filePosition.put("UVWXYZ", new Integer(0));
             filePosition.put("OTHER", new Integer(0));
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         BufferedReader postingFile;
         BufferedWriter fileBuffer;
@@ -302,7 +302,7 @@ public class Posting {
             fileWriters.get("OTHER").close();
             pFile.delete();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 

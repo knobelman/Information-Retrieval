@@ -57,7 +57,7 @@ public class Model {
             +"Total Run time: " + totalTime +" Seconds");
             alert.showAndWait();
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -70,7 +70,7 @@ public class Model {
         try {
             indexer.loadDictionary(path,stem);
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
