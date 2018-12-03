@@ -56,7 +56,7 @@ public abstract class AParser {
     protected boolean isValidNum(String current){
         if(current.equals(""))
             return false;
-        if(current.contains("/"))//fraction
+        if(current.contains("/") && !moreThenOne(current,'/'))//fraction
             return isValidFrac(current);
         String[] currSplit;
         if(isNumeric(current))//just number
@@ -77,7 +77,7 @@ public abstract class AParser {
             }
             return true;
         }
-        else if(current.contains(".")){//number with .
+        else if(current.contains(".")  && !moreThenOne(current,'.')){//number with .
             currSplit = current.split("\\.");//[10,6] - check that all parts are numeric
             for(String s : currSplit){
                 if(!isNumeric(s))
@@ -97,7 +97,7 @@ public abstract class AParser {
         String[]split = s1.split("/");
         if(split.length<2)
             return false;
-        if(isNumeric(split[0]) && isNumeric(split[0]))
+        if(isNumeric(split[0]) && isNumeric(split[1]))
             return true;
         return false;
     }
@@ -112,6 +112,17 @@ public abstract class AParser {
                 return false;
         }
         return true;
+    }
+
+
+    public boolean moreThenOne(String str,char c){
+        int count = 0;
+        for (char curr : str.toCharArray())
+        {
+            if (curr == c)
+                count++;
+        }
+        return count>1;
     }
 
     /**

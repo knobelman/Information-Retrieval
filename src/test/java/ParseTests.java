@@ -248,8 +248,8 @@ public class ParseTests {
 //        count +=1;
 //        pass += test("12","|1-12/93","1-12/93");
 //        count +=1;
-//        pass += test("13","5 ../1/5.,","5 1/5");
-//        count +=1;
+        pass += test("13","23/0141Z\n","5 1/5");
+        count +=1;
 //        pass += test("14","Mr Tomiichi Murayama, Japan's new Socialist prime minister, yesterday\n" +
 //                "attempted to win confidence in his much-criticised government by pledging to\n" +
 //                "pursue moderate conservative policies.\n" +

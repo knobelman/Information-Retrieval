@@ -269,7 +269,7 @@ public class Posting {
         String currTerm, line, fileName, newLine;
         int position;
         try {
-            postingFile = new BufferedReader(new FileReader(this.rootPath + "\\0"));//read posting
+            postingFile = new BufferedReader(new FileReader(this.getRootPath() + "\\0"));//read posting
             line = postingFile.readLine();
             do {
                 if (!letters.containsKey(line.toLowerCase().charAt(0))) {//if first char isn't a known letter
@@ -284,15 +284,14 @@ public class Posting {
                 }
                 currTerm = line.substring(0, line.indexOf('|'));//get the term
                 newLine = line.split("\\|")[2];//create line to wrtie without term and DF
-//                Pair tmpPair = new Pair<>(corpusDictionary.get(currTerm).getKey(), position);//create tmppair to insert into Dic
-//                corpusDictionary.replace(currTerm, tmpPair);//change the position for the term in the Dic
                 corpusDictionary.get(currTerm).setPosition(position);
                 fileBuffer.write(newLine + "\n");
                 position += line.length() + 1;//increase the position for next line
                 filePosition.replace(fileName, position);//insert new position for next line
                 line = postingFile.readLine();
             } while (line != null && !line.equals("") && line.length()!=0);
-            File pFile = new File(this.rootPath + "\\" + "0");
+            postingFile.close();
+            File pFile = new File(this.getRootPath() + "\\" + "0");
             fileWriters.get("ABCD").close();
             fileWriters.get("EFGH").close();
             fileWriters.get("IJKL").close();

@@ -25,6 +25,7 @@ import java.util.HashMap;
  */
 public class Model {
     Indexer indexer;
+    testesForPaper tfp;
     IParsingProcess languageParsingProcess;
     /**
      * This method start indexing process
@@ -34,15 +35,12 @@ public class Model {
      */
     public void startIndexing(String pathOfCorpus,String pathOfPosting, boolean stem) {
         indexer = new Indexer(pathOfCorpus,pathOfPosting,stem);
+        tfp = new testesForPaper();
         try {
             long startTime = System.currentTimeMillis();
             indexer.init(new File(pathOfCorpus));
             //indexer.getLine(517057);
             long endTime = System.currentTimeMillis();
-
-            //Read seek
-            //indexer.getLine(69809);
-
             //finish indexing
             int numberOfDocs = indexer.getNumberOfDocs();
             int termsCount = indexer.getUniqueTermsCount();
@@ -56,8 +54,15 @@ public class Model {
             +"Unique Terms count: " + termsCount + "\n"
             +"Total Run time: " + totalTime +" Seconds");
             alert.showAndWait();
+
+            //
+            tfp.countNumbers(indexer.getCorpusDictionary());
+            tfp.countCountries();
+            //
+
+
         }catch (Exception e){
-//            e.printStackTrace();
+            e.printStackTrace();
         }
     }
 

@@ -62,17 +62,17 @@ public class CityParsingProcess implements IParsingProcess {
             NumberParser numberParser = new NumberParser();
             String correctPopulation = numberParser.parsing(populationToString, "", "", "");
             String fixRound;
-            if (correctPopulation.contains(".") && correctPopulation.length() > 4) {
-                fixRound = roundby2digits(correctPopulation);
-            } else {
-                fixRound = correctPopulation;
-            }
+//            if (correctPopulation.contains(".") && correctPopulation.length() > 4) {
+//                fixRound = roundby2digits(correctPopulation);
+//            } else {
+//                fixRound = correctPopulation;
+//            }
             //correctPopulation = String.format(correctPopulation,"%.2f");
             JSONArray currencyArray = (JSONArray) ((JSONObject) s).get("currencies");
             String currency = (String) (((JSONObject) currencyArray.get(0)).get("code"));
             //add data about country
-            countryData.put(countryName, new Pair<>(fixRound, currency));
-            CityData data = new CityData(countryName, fixRound, currency);
+            countryData.put(countryName, new Pair<>(correctPopulation, currency));
+            CityData data = new CityData(countryName, correctPopulation, currency);
             cityData.put(cityName, data);
         }
 
@@ -113,58 +113,48 @@ public class CityParsingProcess implements IParsingProcess {
         return this.cityData.get(correctCityName);
     }
 
-    /**
-     * This method rounding number by 2 digits
-     *
-     * @param s - to round
-     * @return rounded number
-     */
-    private static String roundby2digits(String s) {
-        String toWorkOn = "";
-        String lastChar = s.charAt(s.length() - 1) + ""; //M OR K
-        if (lastChar.equals("M")|| lastChar.equals("K") || lastChar.equals("B")) {
-            toWorkOn = s.substring(0, s.length() - 1);
-        } else {
-            toWorkOn = s;
-            lastChar = "";
-        }
-        String[] spllited = toWorkOn.split("\\.");
-        String leftSide = spllited[0];
-        String rightSide = spllited[1];
-        int secondNumber;
-        String fixed;
-        if (rightSide.length() > 2) {
-            secondNumber = Integer.parseInt(String.valueOf(rightSide.charAt(1)));
-            int thirdNumber = Integer.parseInt(String.valueOf(rightSide.charAt(2)));
-            if (thirdNumber >= 5) {
-                if (secondNumber == 9) {
-                    secondNumber = 0;
-                    int first_digit = Integer.parseInt(String.valueOf(rightSide.charAt(0)));
-                    first_digit += 1;
-                    fixed = leftSide + "." + first_digit + (secondNumber + "") + lastChar;
-                } else {
-                    secondNumber += 1;
-                    fixed = leftSide + "." + rightSide.charAt(0) + (secondNumber + "") + lastChar;
-
-                }
-            } else {
-                fixed = leftSide + "." + rightSide.charAt(0) + (secondNumber + "") + lastChar;
-            }
-        } else {
-            fixed = leftSide + "." + rightSide + lastChar;
-        }
-        return fixed;
-    }
-
-
-//    public static void main(String[] args) {
-//        System.out.println(roundby2digits("1.496"));
-//        System.out.println(roundby2digits("1.446K"));
-//        System.out.println(roundby2digits("1.79"));
-//        System.out.println(roundby2digits("1.855"));
-//        System.out.println(roundby2digits("236.654K"));
-//        System.out.println(roundby2digits("1,232,232.356M"));
+//    /**
+//     * This method rounding number by 2 digits
+//     *
+//     * @param s - to round
+//     * @return rounded number
+//     */
+//    private static String roundby2digits(String s) {
+//        String toWorkOn = "";
+//        String lastChar = s.charAt(s.length() - 1) + ""; //M OR K
+//        if (lastChar.equals("M")|| lastChar.equals("K") || lastChar.equals("B")) {
+//            toWorkOn = s.substring(0, s.length() - 1);
+//        } else {
+//            toWorkOn = s;
+//            lastChar = "";
+//        }
+//        String[] spllited = toWorkOn.split("\\.");
+//        String leftSide = spllited[0];
+//        String rightSide = spllited[1];
+//        int secondNumber;
+//        String fixed;
+//        if (rightSide.length() > 2) {
+//            secondNumber = Integer.parseInt(String.valueOf(rightSide.charAt(1)));
+//            int thirdNumber = Integer.parseInt(String.valueOf(rightSide.charAt(2)));
+//            if (thirdNumber >= 5) {
+//                if (secondNumber == 9) {
+//                    secondNumber = 0;
+//                    int first_digit = Integer.parseInt(String.valueOf(rightSide.charAt(0)));
+//                    first_digit += 1;
+//                    fixed = leftSide + "." + first_digit + (secondNumber + "") + lastChar;
+//                } else {
+//                    secondNumber += 1;
+//                    fixed = leftSide + "." + rightSide.charAt(0) + (secondNumber + "") + lastChar;
 //
+//                }
+//            } else {
+//                fixed = leftSide + "." + rightSide.charAt(0) + (secondNumber + "") + lastChar;
+//            }
+//        } else {
+//            fixed = leftSide + "." + rightSide + lastChar;
+//        }
+//        return fixed;
 //    }
+
 }
 
