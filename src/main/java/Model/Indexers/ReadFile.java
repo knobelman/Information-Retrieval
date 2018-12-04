@@ -1,11 +1,15 @@
 package Model.Indexers;
+import Model.DataObjects.CityData;
 import Model.DataObjects.ParseableObjects.Doc;
+import Model.Parsers.ParsingProcess.CityParsingProcess;
+import Model.Parsers.ParsingProcess.IParsingProcess;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -14,6 +18,7 @@ import java.util.HashSet;
  * @root - root object
  */
 public class ReadFile {
+    private CityParsingProcess cityParsingProcess;
 
     /**
      * C'tor
@@ -28,6 +33,7 @@ public class ReadFile {
      * return hash set of documents for the next station - parsing
      */
     public ArrayList<Doc> fromFileToDoc(File file) {
+        this.cityParsingProcess = CityParsingProcess.getInstance();
         String path = file.toString();
         Document doc = Jsoup.parse(readFile(path));
         Elements docs = doc.select("DOC");
@@ -37,7 +43,7 @@ public class ReadFile {
         for (Element d: docs){
             String doc_num = d.select("DOCNO").text();
             String doc_content = d.select("TEXT").text();
-            String doc_city = d.select("F[P=104]").text().split(" ")[0];
+            String doc_city = getCityName(d.select("F[P=104]").text());
             String language = d.select("F[P=105").text();
             String doc_city_to_upper = doc_city.toUpperCase();
             int position;
@@ -53,6 +59,18 @@ public class ReadFile {
             documents.add(document);
         }
         return documents;
+    }
+
+    private String getCityName(String text) {
+        String[] tmp = text.split(" ");
+        if(tmp.length>=2)
+            if(this.cityParsingProcess.checkIfExists(text))
+                return (tmp[0] + " " + tmp[1]);
+        for(String s : tmp){
+            if(this.cityParsingProcess.checkIfExists(s))
+                return s;
+        }
+        return "";
     }
 
     /**

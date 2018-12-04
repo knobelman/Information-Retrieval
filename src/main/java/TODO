@@ -1,14 +1,4 @@
 TODO:
-1. CREATE INDEX FOR CITIES //todo - partially done
-    1.1 CONNECT TO API (https://restcountries.eu/) - // todo - done!
-    1.2 GET COUNTRY NAME, POPULATION SIZE, CURRENCY, LIST OF DOCS EXISTS IN //todo - done!
-    1.3 SEND POPULATION SIZE TO PARSE - //todo - to do
-2. SAVE TWO MORE INFORMATION ABOUT TERMS //todo - partially done!
-3. GUI
-    3.5 ADD RESET BUTTON //todo - done for without stemming
-    3.6 ADD SHOW DICTIONARY BUTTON //todo - partially done
-    3.7 ADD LOAD DICTIONARY BUTTON
-4. WRITE REVIEW (WORD)
-6. to add language hash map <String,Doc> // language -> Doc
-
-
+1. Check "getLine" in the labs
+2. Create JAR file and see that it works
+3. Update Outputs for the last part of the paper

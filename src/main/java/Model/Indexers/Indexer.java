@@ -85,7 +85,7 @@ public class Indexer {
         this.cityDictionary = new HashMap<>();
 
         this.threadList = new CopyOnWriteArrayList<>();
-        this.cityParsingProcess = new CityParsingProcess();
+        this.cityParsingProcess = CityParsingProcess.getInstance();
         this.ParserObject = new DocParsingProcess(rootPath, toStem);
         this.numberofDocs = 0;
     }
@@ -112,7 +112,7 @@ public class Indexer {
                         }
                         //add to city dictionary
                         if (!d.getCity().equals("")) {
-                            addToCityDictionary(d);
+                            addToCityPosting(d);
                         }
                         ParserObject.parsing(d);
 
@@ -217,11 +217,11 @@ public class Indexer {
      *
      * @param document - current document
      */
-    public void addToCityDictionary(Doc document) {
+    public void addToCityPosting(Doc document) {
         if (!cityPostingData.containsKey(document.getCity())) { //if city not in the dictionary
             String city = document.getCity(); //get city name from the doc
             //remove spam
-            if (city.equals("--FOR") || city.equals("--") || Character.isDigit(city.charAt(0))) {
+            if (city.contains("FOR") || city.contains("--") || city.equals("THE") || Character.isDigit(city.charAt(0))) {
                 return;
             }
             String doc_num = document.getDoc_num(); // get doc name from the dock

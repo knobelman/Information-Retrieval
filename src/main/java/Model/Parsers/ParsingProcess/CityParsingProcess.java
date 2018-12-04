@@ -30,7 +30,7 @@ public class CityParsingProcess implements IParsingProcess {
      * C'tor
      * Get json file and call init
      */
-    public CityParsingProcess() {
+    private CityParsingProcess() {
         this.cityData = new HashMap<>();
         this.countryData = new HashMap<>();
         this.parser = new JSONParser();
@@ -48,6 +48,15 @@ public class CityParsingProcess implements IParsingProcess {
 //            e.printStackTrace();
         }
     }
+
+    private static class CityParsingProcessHolder {
+        private final static CityParsingProcess INSTANCE = new CityParsingProcess();
+    }
+
+    public static CityParsingProcess getInstance(){
+        return CityParsingProcessHolder.INSTANCE;
+    }
+
 
     /**
      * Initialize cityData HashMap
@@ -113,48 +122,24 @@ public class CityParsingProcess implements IParsingProcess {
         return this.cityData.get(correctCityName);
     }
 
-//    /**
-//     * This method rounding number by 2 digits
-//     *
-//     * @param s - to round
-//     * @return rounded number
-//     */
-//    private static String roundby2digits(String s) {
-//        String toWorkOn = "";
-//        String lastChar = s.charAt(s.length() - 1) + ""; //M OR K
-//        if (lastChar.equals("M")|| lastChar.equals("K") || lastChar.equals("B")) {
-//            toWorkOn = s.substring(0, s.length() - 1);
-//        } else {
-//            toWorkOn = s;
-//            lastChar = "";
-//        }
-//        String[] spllited = toWorkOn.split("\\.");
-//        String leftSide = spllited[0];
-//        String rightSide = spllited[1];
-//        int secondNumber;
-//        String fixed;
-//        if (rightSide.length() > 2) {
-//            secondNumber = Integer.parseInt(String.valueOf(rightSide.charAt(1)));
-//            int thirdNumber = Integer.parseInt(String.valueOf(rightSide.charAt(2)));
-//            if (thirdNumber >= 5) {
-//                if (secondNumber == 9) {
-//                    secondNumber = 0;
-//                    int first_digit = Integer.parseInt(String.valueOf(rightSide.charAt(0)));
-//                    first_digit += 1;
-//                    fixed = leftSide + "." + first_digit + (secondNumber + "") + lastChar;
-//                } else {
-//                    secondNumber += 1;
-//                    fixed = leftSide + "." + rightSide.charAt(0) + (secondNumber + "") + lastChar;
-//
-//                }
-//            } else {
-//                fixed = leftSide + "." + rightSide.charAt(0) + (secondNumber + "") + lastChar;
-//            }
-//        } else {
-//            fixed = leftSide + "." + rightSide + lastChar;
-//        }
-//        return fixed;
-//    }
+    /**
+     *
+     * @param s - name of city
+     * @return - if name is in cityData
+     */
+    public boolean checkIfExists(String s){
+        if(s.equals(""))
+            return false;
+        String[] tmp = s.split(" ");
+        String correctCityName;
+        String secondParth = tmp[0].substring(1, tmp[0].length()).toLowerCase();
+        correctCityName = Character.toUpperCase(tmp[0].charAt(0)) + secondParth;
+        if(tmp.length>1) {
+            secondParth = tmp[1].substring(1, tmp[1].length()).toLowerCase();
+            correctCityName += " " + Character.toUpperCase(tmp[1].charAt(0)) + secondParth;
+        }
+        return cityData.containsKey(correctCityName);
+    }
 
 }
 
