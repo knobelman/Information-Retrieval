@@ -20,7 +20,7 @@ public class GUIController extends Acontroller {
 
     public void saveDictionry(boolean stem) {
         myModel.saveDictionary(stem);
-    }//
+    }////
 
     public void loadDictionary(String path,boolean stem){
         myModel.loadDictionary(path, stem);
