@@ -102,8 +102,12 @@ public class Posting {
             String secondCurrentLine;
             File fFILE = new File(firstFile);
             File sFILE = new File(secondFile);
-            BufferedReader first = new BufferedReader(new FileReader(this.rootPath+"\\"+fFILE));
-            BufferedReader second = new BufferedReader(new FileReader(this.rootPath +"\\"+sFILE));
+//            BufferedReader first = new BufferedReader(new FileReader(this.rootPath+"\\"+fFILE));
+//            BufferedReader second = new BufferedReader(new FileReader(this.rootPath +"\\"+sFILE));
+
+            BufferedReader first = new BufferedReader(new InputStreamReader(new FileInputStream(this.rootPath+"\\"+fFILE), "UTF-8"));
+            BufferedReader second = new BufferedReader(new InputStreamReader(new FileInputStream(this.rootPath +"\\"+sFILE), "UTF-8"));
+
             firstCurrentLine = first.readLine();
             secondCurrentLine = second.readLine();
 
@@ -269,7 +273,8 @@ public class Posting {
         String currTerm, line, fileName, newLine;
         int position;
         try {
-            postingFile = new BufferedReader(new FileReader(this.getRootPath() + "\\0"));//read posting
+            postingFile = new BufferedReader(new InputStreamReader(new FileInputStream(this.getRootPath() + "\\0"), "UTF-8"));
+//            postingFile = new BufferedReader(new FileReader(this.getRootPath() + "\\0"));//read posting
             line = postingFile.readLine();
             do {
                 if (!letters.containsKey(line.toLowerCase().charAt(0))) {//if first char isn't a known letter
@@ -301,7 +306,7 @@ public class Posting {
             fileWriters.get("OTHER").close();
             pFile.delete();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 

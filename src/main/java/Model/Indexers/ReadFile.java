@@ -96,8 +96,9 @@ public class ReadFile {
         BufferedReader br = null;
         StringBuilder sb = new StringBuilder();
         try {
-            br = new BufferedReader(new FileReader(fileName));
-        } catch (FileNotFoundException e) {
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
+//            br = new BufferedReader(new FileReader(fileName));
+        } catch (Exception e) {
 //            e.printStackTrace();
         }
         try {
