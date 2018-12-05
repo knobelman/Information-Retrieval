@@ -301,7 +301,7 @@ public class Posting {
             fileWriters.get("OTHER").close();
             pFile.delete();
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
