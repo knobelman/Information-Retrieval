@@ -10,7 +10,6 @@ import Model.Indexers.Indexer;
 import Model.Indexers.Posting;
 import Model.Indexers.ReadFile;
 import Model.Parsers.ParsingProcess.IParsingProcess;
-import Model.Parsers.ParsingProcess.LanguageParsingProcess;
 import javafx.scene.control.Alert;
 import javafx.util.Pair;
 
@@ -25,7 +24,6 @@ import java.util.HashMap;
  */
 public class Model {
     Indexer indexer;
-    IParsingProcess languageParsingProcess;
     /**
      * This method start indexing process
      * @param pathOfCorpus - the path of the corpus file
@@ -67,11 +65,6 @@ public class Model {
         }catch (Exception e){
 //            e.printStackTrace();
         }
-    }
-
-    public ArrayList<String> openLanguageList(){
-        languageParsingProcess = new LanguageParsingProcess();
-        return ((LanguageParsingProcess)languageParsingProcess).getLanguageCollection();
     }
 
     public void getLine(long position) {

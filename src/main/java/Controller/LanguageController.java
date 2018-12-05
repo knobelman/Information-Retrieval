@@ -7,13 +7,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * Created by Maor on 11/28/2018.
+ * This controller is responsible for showing the Language in the GUI
  */
 public class LanguageController extends Acontroller {
-
-    public ArrayList<String> openLanguageList() {
-        return myModel.openLanguageList();
-    }
 
     public HashMap<String,String> getLanguageDictionary(){
         return myModel.getLanguageDictionary();

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * This class represents the controller class
+ * This controller is responsible for the GUI
  */
 public class GUIController extends Acontroller {
 

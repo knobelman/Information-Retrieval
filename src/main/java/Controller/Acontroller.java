@@ -3,7 +3,7 @@ package Controller;
 import Model.Model;
 
 /**
- * Created by Maor on 11/29/2018.
+ * This controller is responsible to create a single object of model
  */
 public class Acontroller {
     protected static Model myModel;

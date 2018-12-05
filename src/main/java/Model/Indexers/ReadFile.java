@@ -44,7 +44,7 @@ public class ReadFile {
             String doc_num = d.select("DOCNO").text();
             String doc_content = d.select("TEXT").text();
             String doc_city = getCityName(d.select("F[P=104]").text());
-            String language = d.select("F[P=105").text();
+            String language = getLang(d.select("F[P=105]").text());
             String doc_city_to_upper = doc_city.toUpperCase();
             int position;
             HashSet<Integer> positions = new HashSet<>();
@@ -59,6 +59,14 @@ public class ReadFile {
             documents.add(document);
         }
         return documents;
+    }
+
+    private String getLang(String text) {
+        String tmp = text.split(" ")[0];
+        if(!Character.isDigit(tmp.charAt(0)))
+            return tmp;
+        else
+            return "";
     }
 
     private String getCityName(String text) {
