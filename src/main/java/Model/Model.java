@@ -35,6 +35,7 @@ public class Model {
         try {
             long startTime = System.currentTimeMillis();
             indexer.init(new File(pathOfCorpus));
+            this.saveDictionary(stem);//save dic auto
             long endTime = System.currentTimeMillis();
             //finish indexing
             int numberOfDocs = indexer.getNumberOfDocs();
