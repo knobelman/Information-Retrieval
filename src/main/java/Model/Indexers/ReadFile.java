@@ -62,6 +62,8 @@ public class ReadFile {
     }
 
     private String getLang(String text) {
+        if(text.equals("") || text.equals(" "))
+            return "";
         String tmp = text.split(" ")[0];
         if(!Character.isDigit(tmp.charAt(0)))
             return tmp;
@@ -70,6 +72,8 @@ public class ReadFile {
     }
 
     private String getCityName(String text) {
+        if(text.equals("") || text.equals(" "))
+            return "";
         String[] tmp = text.split(" ");
         if(tmp.length>=2)
             if(this.cityParsingProcess.checkIfExists(text))
